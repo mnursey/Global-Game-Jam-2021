@@ -1,6 +1,7 @@
 extends KinematicBody2D
 
 signal health_updated(health)
+signal max_health_updated(max_health)
 signal dead()
 
 const UP = Vector2(0, -1)
@@ -33,6 +34,8 @@ var dash_time = 0.2
 var is_dashing = false
 var can_dash = true
 var dash_direction = Vector2.ZERO
+
+var facing_right = true 
 
 onready var anim_player = $AnimationPlayer
 onready var sprite = $Sprite
@@ -105,10 +108,14 @@ func get_move_input():
 		velocity.x = max(velocity.x, -max_horiz_speed)
 	
 func animate():
-	if velocity.x > 0:
+	if velocity.x > 0.5:
+		facing_right = true
 		$Sprite.flip_h = false
-	else:
+	elif velocity.x < -0.5:
+		facing_right = false
 		$Sprite.flip_h = true
+	else:
+		$Sprite.flip_h = !facing_right
 	if abs(velocity.x) <= 20 && is_on_floor():
 		anim_player.play("idle")
 	elif abs(velocity.x) > 20 && is_on_floor():
@@ -117,6 +124,7 @@ func animate():
 		anim_player.play("jump")
 	else:
 		anim_player.play("fall")
+
 
 func _on_DashTimer_timeout():
 	velocity /= 2

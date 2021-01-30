@@ -1,8 +1,8 @@
 [gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://Art/goblin/goblin_spritesheet.png" type="Texture" id=1]
-[ext_resource path="res://Scenes/Walkie Enemy.gd" type="Script" id=2]
-[ext_resource path="res://Scenes/EnemyHitbox.gd" type="Script" id=3]
+[ext_resource path="res://Scripts/Walkie Enemy.gd" type="Script" id=2]
+[ext_resource path="res://Scripts/EnemyHitbox.gd" type="Script" id=3]
 
 [sub_resource type="RectangleShape2D" id=1]
 
@@ -30,6 +30,10 @@ tracks/0/keys = {
 [node name="Walkie Enemy" type="KinematicBody2D"]
 collision_layer = 2147483712
 script = ExtResource( 2 )
+
+[node name="RayCast2D" type="RayCast2D" parent="."]
+rotation = -0.733038
+enabled = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 scale = Vector2( 0.52, 0.789 )
@@ -61,5 +65,10 @@ collision_mask = 2147483656
 [node name="Hurtbox" type="CollisionShape2D" parent="EnemyHurtbox"]
 scale = Vector2( 0.5, 0.75 )
 shape = SubResource( 4 )
+
+[node name="KnockbackTimer" type="Timer" parent="."]
+wait_time = 0.2
+one_shot = true
 [connection signal="area_entered" from="EnemyHitbox" to="." method="_on_EnemyHitbox_area_entered"]
 [connection signal="area_entered" from="EnemyHurtbox" to="." method="_on_EnemyHurtbox_area_entered"]
+[connection signal="timeout" from="KnockbackTimer" to="." method="_on_KnockbackTimer_timeout"]

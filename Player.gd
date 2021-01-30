@@ -5,7 +5,6 @@ const TILESIZE = 16
 
 var velocity = Vector2()
 var move_speed = 10 * TILESIZE
-var deadzone = 20
 
 var gravity
 var fall_gravity
@@ -22,16 +21,15 @@ var jumps = 2
 
 var max_dashes = 2
 var dashes = 2
-var dash_speed = 10 * TILESIZE
-
-var level_finished = false
-var spawn = true
-var is_attacking = false
-var can_attack = true
+var dash_speed = 20 * TILESIZE
+var dash_time = 0.2
+var is_dashing = false
+var can_dash = true
+var dash_direction = Vector2.ZERO
 
 onready var anim_player = $AnimationPlayer
-onready var body = $CollisionShape2D
-
+onready var sprite = $Sprite
+onready var dash_timer = $DashTimer
 
 func _ready():
 	gravity = 2 * max_jump_height / pow(jump_duration, 2)
@@ -40,24 +38,50 @@ func _ready():
 	min_jump_velocity = -sqrt(2 * gravity * min_jump_height)
 
 func _physics_process(delta):
+	apply_gravity(delta)
+	get_move_input()
+	get_input()
+	apply_movement()
+	animate()
+
+func get_input():
+	if Input.is_action_just_pressed("jump") and jumps > 0:
+				velocity.y = max_jump_velocity
+				jumps -= 1
+	if Input.is_action_just_released("jump") and velocity.y < min_jump_velocity:
+				velocity.y = min_jump_velocity
+	
+	if Input.is_action_just_pressed("dash") and can_dash:
+		is_dashing = true
+		dashes -= 1
+		if dashes == 0:
+			can_dash = false
+		dash_timer.start(dash_time)
 		
+		var move_vector = Vector2.ZERO
+		move_vector.x = -Input.get_action_strength("move_left") + Input.get_action_strength("move_right")
+		move_vector.y = -Input.get_action_strength("move_up") + Input.get_action_strength("move_down")
+		move_vector = move_vector.clamped(1)
+		dash_direction = move_vector * dash_speed
+
+func apply_movement():
+	if is_dashing:
+		velocity = move_and_slide(dash_direction, UP)
+	else:
+		velocity = move_and_slide(velocity, UP)
 	if is_on_floor():
 		jumps = max_jumps
-		
-	move()
-	get_input()
-	
+		dashes = max_dashes
+		can_dash = true
+
+func apply_gravity(delta):
 	if velocity.y < 0:
 		velocity.y += gravity * delta
 	else:
 		velocity.y += gravity * delta
 		velocity.y = lerp(velocity.y, fall_gravity * delta, 0.05)
-	
-	velocity = move_and_slide(velocity, UP)
-	
-	animate()
-	
-func move():
+
+func get_move_input():
 	var move_direction = -int(Input.is_action_pressed("move_left")) + int(Input.is_action_pressed("move_right"))
 	velocity.x = lerp(velocity.x, move_speed * move_direction, 0.2)
 	if velocity.x >= 0:
@@ -65,35 +89,11 @@ func move():
 	else:
 		velocity.x = max(velocity.x, -max_horiz_speed)
 	
-func get_input():
-	if Input.is_action_just_pressed("jump"):
-		if jumps > 0 :
-			jump()
-			jumps -= 1
-	
-	if Input.is_action_just_released("jump") and velocity.y < min_jump_velocity:
-		velocity.y = min_jump_velocity
-	
-	if Input.is_action_just_pressed("dash"):
-		var move_vector = Vector2.ZERO
-		move_vector.x = -Input.get_action_strength("move_left") + Input.get_action_strength("move_right")
-		move_vector.y = -Input.get_action_strength("move_up") + Input.get_action_strength("move_down")
-		velocity = move_vector.normalized() * dash_speed
-
-func jump():
-	velocity.y = max_jump_velocity
-	if !is_on_floor():
-		velocity.y = 0
-		velocity.y = max_jump_velocity
-
-		
 func animate():
 	if velocity.x > 0:
 		$Sprite.flip_h = false
 	else:
 		$Sprite.flip_h = true
-
-	
 	if abs(velocity.x) <= 20 && is_on_floor():
 		anim_player.play("idle")
 	elif abs(velocity.x) > 20 && is_on_floor():
@@ -103,3 +103,6 @@ func animate():
 	else:
 		anim_player.play("fall")
 
+func _on_DashTimer_timeout():
+	velocity /= 2
+	is_dashing = false

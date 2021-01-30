@@ -22,7 +22,7 @@ tracks/0/keys = {
 "values": [ 48, 49, 50 ]
 }
 
-[sub_resource type="Animation" id=5]
+[sub_resource type="Animation" id=3]
 resource_name = "idle"
 length = 0.8
 loop = true
@@ -39,8 +39,7 @@ tracks/0/keys = {
 "values": [ 40, 41, 42, 43 ]
 }
 
-[sub_resource type="Animation" id=3]
-resource_name = "jump"
+[sub_resource type="Animation" id=4]
 length = 0.3
 loop = true
 tracks/0/type = "value"
@@ -56,9 +55,9 @@ tracks/0/keys = {
 "values": [ 56, 57, 58 ]
 }
 
-[sub_resource type="Animation" id=4]
-resource_name = "run"
+[sub_resource type="Animation" id=5]
 length = 0.6
+loop = true
 tracks/0/type = "value"
 tracks/0/path = NodePath("Sprite:frame")
 tracks/0/interp = 1
@@ -83,14 +82,18 @@ shape = SubResource( 1 )
 texture = ExtResource( 2 )
 vframes = 15
 hframes = 8
-frame = 12
+frame = 8
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 anims/fall = SubResource( 2 )
-anims/idle = SubResource( 5 )
-anims/jump = SubResource( 3 )
-anims/run = SubResource( 4 )
+anims/idle = SubResource( 3 )
+anims/jump = SubResource( 4 )
+anims/run = SubResource( 5 )
 
 [node name="Camera2D" type="Camera2D" parent="."]
 current = true
 offset_v = -1.0
+
+[node name="DashTimer" type="Timer" parent="."]
+one_shot = true
+[connection signal="timeout" from="DashTimer" to="." method="_on_DashTimer_timeout"]

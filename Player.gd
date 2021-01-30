@@ -120,7 +120,7 @@ func take_damage(amount):
 	set_health(health - amount)
 
 func dead():
-	pass
+	queue_free()
 
 func set_health(value):
 	var prev_health = health

@@ -21,7 +21,7 @@ _global_script_class_icons={
 [application]
 
 config/name="GGJ2021"
-run/main_scene="res://Scenes/DemoLevel.tscn"
+run/main_scene="res://Scenes/MainMenu.tscn"
 config/icon="res://icon.png"
 
 [display]
@@ -77,9 +77,8 @@ shoot={
 2d_physics/layer_2="Player"
 2d_physics/layer_3="Player_Hurtbox"
 2d_physics/layer_4="Player_Hitbox"
-2d_physics/layer_5="Enemy_Hurtbox"
+2d_physics/layer_5="Enemy_Hutbox"
 2d_physics/layer_6="Enemy_Hitbox"
-2d_physics/layer_7="Enemies"
 
 [rendering]
 

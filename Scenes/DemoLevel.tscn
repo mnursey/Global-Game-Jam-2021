@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://icon.png" type="Texture" id=1]
-[ext_resource path="res://Scenes/Walkie Enemy.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Scenes/WalkingEnemy.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Scenes/Player.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Scenes/FlyingEnemy.tscn" type="PackedScene" id=4]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 163.021, 10 )
@@ -49,5 +50,8 @@ shape = SubResource( 1 )
 
 [node name="Walkie Enemy" parent="." instance=ExtResource( 2 )]
 position = Vector2( 10.715, 86.1165 )
+
+[node name="FlyingEnemy" parent="." instance=ExtResource( 4 )]
+position = Vector2( 337.651, -19.9926 )
 
 [editable path="Player"]

@@ -1,6 +1,6 @@
 extends KinematicBody2D
 
-var health = 100
+var health = 30
 var TILESIZE = 16
 var movespeed = 5 * TILESIZE
 
@@ -20,7 +20,6 @@ onready var raycast = $RayCast2D
 onready var knockback_timer = $KnockbackTimer
 
 func take_damage(amount):
-	print(health)
 	health -= amount
 	if health < 0:
 		queue_free()

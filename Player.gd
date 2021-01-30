@@ -24,6 +24,7 @@ var max_horiz_speed = 225
 
 var max_jumps = 1
 var jumps = 1
+var is_jumping = false
 
 var max_dashes = 1
 var dashes = 1
@@ -37,6 +38,7 @@ onready var anim_player = $AnimationPlayer
 onready var sprite = $Sprite
 onready var dash_timer = $DashTimer
 onready var invincibility_timer = $InvincibilityTimer
+onready var coyote_timer = $CoyoteTimer
 
 func _ready():
 	gravity = 2 * max_jump_height / pow(jump_duration, 2)
@@ -53,6 +55,7 @@ func _physics_process(delta):
 
 func get_input():
 	if Input.is_action_just_pressed("jump") and jumps > 0:
+				is_jumping = true
 				velocity.y = max_jump_velocity
 				jumps -= 1
 	if Input.is_action_just_released("jump") and velocity.y < min_jump_velocity:
@@ -72,10 +75,14 @@ func get_input():
 		dash_direction = move_vector * dash_speed
 
 func apply_movement():
+	var was_on_floor = is_on_floor()
+	
 	if is_dashing:
 		velocity = move_and_slide(dash_direction, UP)
 	else:
 		velocity = move_and_slide(velocity, UP)
+		if !is_on_floor() and was_on_floor and !is_jumping:
+			coyote_timer.start()
 	if is_on_floor():
 		jumps = max_jumps
 		dashes = max_dashes
@@ -85,6 +92,7 @@ func apply_gravity(delta):
 	if velocity.y < 0:
 		velocity.y += gravity * delta
 	else:
+		is_jumping = false
 		velocity.y += gravity * delta
 		velocity.y = lerp(velocity.y, fall_gravity * delta, 0.05)
 
@@ -117,7 +125,7 @@ func _on_DashTimer_timeout():
 func take_damage(amount):
 	if invincibility_timer.is_stopped():
 		invincibility_timer.start()
-	set_health(health - amount)
+		set_health(health - amount)
 
 func dead():
 	queue_free()
@@ -130,3 +138,11 @@ func set_health(value):
 		if health == 0:
 			dead()
 			emit_signal("dead")
+
+
+func _on_Hurtbox_area_entered(area):
+	take_damage(area.deal_damage) #TODO write a deal_damage function that returns an int
+	
+
+func _on_Hurtbox_body_entered(body):
+	take_damage(body.deal_damage)

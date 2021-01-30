@@ -77,6 +77,9 @@ func apply_growth(delta):
 	var hue = 0.6 - min(pow(cur_damage/DAMAGE_MAX, 0.7), 1)*0.6
 	modulate = Color.from_hsv(hue, 1, 1)
 
+func deal_damage():
+	return cur_damage
+
 func _process(delta):
 	timer += delta
 	apply_growth(delta)

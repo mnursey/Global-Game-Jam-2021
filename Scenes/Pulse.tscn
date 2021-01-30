@@ -6,8 +6,8 @@
 [sub_resource type="CircleShape2D" id=1]
 
 [node name="Pulse" type="Area2D"]
-collision_layer = 0
-collision_mask = 0
+collision_layer = 8
+collision_mask = 16
 script = ExtResource( 2 )
 
 [node name="Sprite" type="Sprite" parent="."]

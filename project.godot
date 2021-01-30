@@ -77,8 +77,9 @@ shoot={
 2d_physics/layer_2="Player"
 2d_physics/layer_3="Player_Hurtbox"
 2d_physics/layer_4="Player_Hitbox"
-2d_physics/layer_5="Enemy_Hutbox"
+2d_physics/layer_5="Enemy_Hurtbox"
 2d_physics/layer_6="Enemy_Hitbox"
+2d_physics/layer_7="Enemies"
 
 [rendering]
 

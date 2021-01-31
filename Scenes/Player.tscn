@@ -1,16 +1,15 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://Scripts/Player.gd" type="Script" id=1]
 [ext_resource path="res://Art/player_character_full_sheet.png" type="Texture" id=2]
 [ext_resource path="res://Scenes/AST.tscn" type="PackedScene" id=3]
 [ext_resource path="res://Scenes/HealthBar.tscn" type="PackedScene" id=4]
 [ext_resource path="res://Sound/jump_1.wav" type="AudioStream" id=5]
-[ext_resource path="res://Sound/dead_1.wav" type="AudioStream" id=6]
 
 [sub_resource type="CapsuleShape2D" id=1]
 
 [sub_resource type="Animation" id=2]
-resource_name = "dead"
+resource_name = "Dead"
 length = 0.9
 tracks/0/type = "value"
 tracks/0/path = NodePath("Sprite:frame")
@@ -23,20 +22,6 @@ tracks/0/keys = {
 "transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
 "update": 1,
 "values": [ 9, 10, 11, 12, 13, 14, 15, 16, 17 ]
-}
-tracks/1/type = "audio"
-tracks/1/path = NodePath("DeadAudio")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/keys = {
-"clips": [ {
-"end_offset": 0.0,
-"start_offset": 0.0,
-"stream": ExtResource( 6 )
-} ],
-"times": PoolRealArray( 0.3 )
 }
 
 [sub_resource type="Animation" id=3]
@@ -106,6 +91,7 @@ tracks/0/keys = {
 [sub_resource type="CapsuleShape2D" id=7]
 
 [node name="Player" type="KinematicBody2D"]
+z_index = 1
 collision_layer = 2
 script = ExtResource( 1 )
 
@@ -146,7 +132,6 @@ wait_time = 0.8
 one_shot = true
 
 [node name="AST" parent="." instance=ExtResource( 3 )]
-speed = Vector3( 0, 0, 0 )
 
 [node name="Hurtbox" type="Area2D" parent="."]
 collision_layer = 4

@@ -13,5 +13,5 @@ func take_damage(amount):
 		queue_free()
 
 func get_hit(pulse):
-	velocity += pulse.velocity.normalized * pulse.cur_knockback
+	velocity += pulse.velocity.normalized() * pulse.cur_knockback
 	take_damage(pulse.deal_damage())

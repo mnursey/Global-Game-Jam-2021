@@ -1,5 +1,7 @@
 extends 'res://Scripts/EnemyBase.gd'
 
+signal damaged(health)
+
 var TILESIZE = 16
 var movespeed = 5 * TILESIZE
 
@@ -27,7 +29,8 @@ func _ready():
 func take_damage(amount):
 	hit_audio.play()
 	health -= amount
-	if health < 0:
+	emit_signal("damaged", health)
+	if health <= 0:
 		velocity = Vector2.ZERO
 		movespeed = 0
 		anim_player.play("Dead")

@@ -13,6 +13,7 @@
 [node name="ExampleScene" type="Node2D"]
 
 [node name="Player" parent="." instance=ExtResource( 3 )]
+z_index = 1
 
 [node name="Level" type="Node" parent="."]
 

@@ -49,6 +49,7 @@ onready var jump_audio = $Jump
 onready var hit_audio = $HitAudio
 onready var dash_audio =$DashAudio
 
+
 func _ready():
 	gravity = 2 * max_jump_height / pow(jump_duration, 2)
 	fall_gravity = 2 * max_jump_height / pow(fall_duration, 2)
@@ -84,13 +85,11 @@ func get_input():
 		dash_direction = move_vector * dash_speed
 
 func apply_movement():
-	print(dashes)
-	print(can_dash)
 	var was_on_floor = is_on_floor()
 	
 	if is_dashing:
 		velocity = move_and_slide(dash_direction, UP)
-		velocity = lerp(velocity, velocity/100, 0.2)
+		#velocity = lerp(velocity, velocity/100, 0.2)
 		invincibility_timer.start()
 	else:
 		velocity = move_and_slide(velocity, UP)
@@ -177,7 +176,6 @@ func _on_Hurtbox_body_entered(body):
 
 
 func _on_AnimationPlayer_animation_finished(anim_name):
-	print(anim_name)
 	if anim_name == "dead":
 		sprite.hide()
 

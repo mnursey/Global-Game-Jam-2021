@@ -1,6 +1,9 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://Scripts/StartLabel.gd" type="Script" id=1]
+[ext_resource path="res://Art/menu1.png" type="Texture" id=2]
+
+[sub_resource type="Theme" id=1]
 
 [node name="MainMenu" type="Node2D"]
 
@@ -17,11 +20,22 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="NinePatchRect" type="NinePatchRect" parent="MarginContainer"]
+margin_left = 200.0
+margin_top = 40.0
+margin_right = 439.0
+margin_bottom = 319.0
+theme = SubResource( 1 )
+texture = ExtResource( 2 )
+
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 margin_left = 200.0
 margin_top = 40.0
 margin_right = 439.0
 margin_bottom = 319.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="CenterContainer" type="CenterContainer" parent="MarginContainer/VBoxContainer"]
 margin_right = 239.0

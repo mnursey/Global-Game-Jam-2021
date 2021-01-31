@@ -4,7 +4,7 @@
 [ext_resource path="res://Art/player_character_full_sheet.png" type="Texture" id=2]
 [ext_resource path="res://Scenes/AST.tscn" type="PackedScene" id=3]
 [ext_resource path="res://Scenes/HealthBar.tscn" type="PackedScene" id=4]
-[ext_resource path="res://Sound/jump_1.wav" type="AudioStream" id=5]
+[ext_resource path="res://Sound/jump_2.wav" type="AudioStream" id=5]
 [ext_resource path="res://Sound/dead_1.wav" type="AudioStream" id=6]
 [ext_resource path="res://Sound/walk_2.wav" type="AudioStream" id=7]
 [ext_resource path="res://Sound/player_hurt.wav" type="AudioStream" id=8]
@@ -136,10 +136,10 @@ script = ExtResource( 1 )
 [node name="HealthBar" parent="." instance=ExtResource( 4 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = -152.767
-margin_top = -82.751
-margin_right = -152.767
-margin_bottom = -82.751
+margin_left = -223.593
+margin_top = -120.169
+margin_right = -223.593
+margin_bottom = -120.169
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2( -0.125, 1.625 )
@@ -163,7 +163,7 @@ anims/run = SubResource( 6 )
 
 [node name="ShakeCamera2D" type="Camera2D" parent="."]
 current = true
-zoom = Vector2( 0.5, 0.5 )
+zoom = Vector2( 0.75, 0.75 )
 script = ExtResource( 10 )
 
 [node name="DashTimer" type="Timer" parent="."]

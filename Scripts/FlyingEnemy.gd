@@ -97,7 +97,7 @@ func take_damage(amount):
 func _on_EnemyHurtbox_area_entered(_area):
 	var areas = hurtbox.get_overlapping_areas()
 	for area in areas:
-		if area.get_collision_mask() == 16:
+		if area.get_collision_mask() == 81:
 			get_hit(area)
 
 

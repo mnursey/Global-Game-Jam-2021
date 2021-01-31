@@ -5,6 +5,7 @@ extends Popup
 # var a = 2
 # var b = "text"
 
+onready var ModalTimer = $ModalTimer
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -17,5 +18,11 @@ func _ready():
 
 
 func _on_RoomController_doors_opened():
+	ModalTimer.connect("timeout", self, "_on_timer_timeout") 
+	ModalTimer.start()
+
+
+func _on_timer_timeout():
 	self.popup_centered()
+	self.rect_position = GM.player.get_position() - (self.rect_size / 4.5)
 	get_tree().paused = true

@@ -204,6 +204,8 @@ func set_health(value):
 			dead()
 			
 
+func set_max_health():
+	set_health(max_health)
 
 func _on_Hurtbox_area_entered(area):
 	take_damage(area.deal_damage()) 

@@ -1,10 +1,10 @@
 [gd_resource type="StyleBoxTexture" load_steps=2 format=2]
 
-[ext_resource path="res://Art/button1-9frame (2).png" type="Texture" id=1]
+[ext_resource path="res://Art/button4_pressed.png" type="Texture" id=1]
 
 [resource]
 texture = ExtResource( 1 )
-region_rect = Rect2( 3, 4, 49, 28 )
-margin_right = 0.263278
-margin_top = 11.0644
-margin_bottom = 4.45563
+region_rect = Rect2( 49, 55, 21, 22 )
+margin_left = 3.85537
+margin_right = 3.85537
+margin_bottom = 1.0281

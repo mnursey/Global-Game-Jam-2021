@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=17 format=2]
 
 [ext_resource path="res://Scripts/Player.gd" type="Script" id=1]
 [ext_resource path="res://Art/player_character_full_sheet.png" type="Texture" id=2]
@@ -6,6 +6,9 @@
 [ext_resource path="res://Scenes/HealthBar.tscn" type="PackedScene" id=4]
 [ext_resource path="res://Sound/jump_1.wav" type="AudioStream" id=5]
 [ext_resource path="res://Sound/dead_1.wav" type="AudioStream" id=6]
+[ext_resource path="res://Sound/walk_2.wav" type="AudioStream" id=7]
+[ext_resource path="res://Sound/player_hurt.wav" type="AudioStream" id=8]
+[ext_resource path="res://Sound/dash_2.wav" type="AudioStream" id=9]
 
 [sub_resource type="CapsuleShape2D" id=1]
 
@@ -102,6 +105,24 @@ tracks/0/keys = {
 "update": 1,
 "values": [ 0, 1, 2, 3, 4, 5, 6, 7 ]
 }
+tracks/1/type = "audio"
+tracks/1/path = NodePath("DeadAudio")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"clips": [ {
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource( 7 )
+}, {
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource( 7 )
+} ],
+"times": PoolRealArray( 0, 0.4 )
+}
 
 [sub_resource type="CapsuleShape2D" id=7]
 
@@ -124,7 +145,7 @@ position = Vector2( 1.44758, -7.42192 )
 texture = ExtResource( 2 )
 vframes = 6
 hframes = 9
-frame = 9
+frame = 2
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 playback_speed = 1.5
@@ -139,14 +160,14 @@ current = true
 zoom = Vector2( 0.5, 0.5 )
 
 [node name="DashTimer" type="Timer" parent="."]
+wait_time = 0.5
 one_shot = true
 
 [node name="InvincibilityTimer" type="Timer" parent="."]
-wait_time = 0.8
+wait_time = 0.3
 one_shot = true
 
 [node name="AST" parent="." instance=ExtResource( 3 )]
-speed = Vector3( 0, 0, 0 )
 
 [node name="Hurtbox" type="Area2D" parent="."]
 collision_layer = 4
@@ -161,11 +182,19 @@ wait_time = 0.1
 one_shot = true
 
 [node name="DeadAudio" type="AudioStreamPlayer2D" parent="."]
-stream = ExtResource( 5 )
-volume_db = -5.0
+stream = ExtResource( 7 )
+volume_db = -15.0
 
 [node name="Jump" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 5 )
+volume_db = -10.0
+
+[node name="HitAudio" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource( 8 )
+volume_db = -10.0
+
+[node name="DashAudio" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 9 )
 volume_db = -10.0
 [connection signal="health_updated" from="." to="HealthBar" method="_on_Player_health_updated"]
 [connection signal="max_health_updated" from="." to="HealthBar" method="_on_Player_max_health_updated"]

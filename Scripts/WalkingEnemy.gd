@@ -18,12 +18,14 @@ onready var pit_raycast = $PitRaycast
 onready var wall_raycast = $WallRaycast
 onready var knockback_timer = $KnockbackTimer
 onready var anim_player = $AnimationPlayer
+onready var hit_audio = $HitAudio
 
 func _ready():
 	health = 30
 	anim_player.play("Walk")
 
 func take_damage(amount):
+	hit_audio.play()
 	health -= amount
 	if health < 0:
 		velocity = Vector2.ZERO

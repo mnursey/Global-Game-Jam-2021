@@ -23,6 +23,7 @@ onready var animationPlayer = $AnimationPlayer
 onready var sprite = $Sprite
 onready var knockback_timer = $KnockbackTimer
 onready var soft_collision = $SoftCollision
+onready var hit_audio = $HitAudio
 
 
 func _ready():
@@ -81,6 +82,7 @@ func pick_random_state(state_list):
 
 func take_damage(amount):
 	health -= amount
+	hit_audio.play()
 	if health < 0:
 		velocity = Vector2.ZERO
 		max_speed = 0

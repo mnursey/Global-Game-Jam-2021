@@ -46,6 +46,8 @@ onready var invincibility_timer = $InvincibilityTimer
 onready var coyote_timer = $CoyoteTimer
 onready var death_sound = $DeadAudio
 onready var jump_audio = $Jump
+onready var hit_audio = $HitAudio
+onready var dash_audio =$DashAudio
 
 func _ready():
 	gravity = 2 * max_jump_height / pow(jump_duration, 2)
@@ -76,24 +78,32 @@ func get_input():
 		if dashes == 0:
 			can_dash = false
 		dash_timer.start(dash_time)
+		dash_audio.play()
 		var move_vector = get_global_mouse_position() - position
 		move_vector = move_vector.clamped(1)
 		dash_direction = move_vector * dash_speed
 
 func apply_movement():
+	print(dashes)
+	print(can_dash)
 	var was_on_floor = is_on_floor()
 	
 	if is_dashing:
 		velocity = move_and_slide(dash_direction, UP)
+		velocity = lerp(velocity, velocity/100, 0.2)
+		invincibility_timer.start()
 	else:
 		velocity = move_and_slide(velocity, UP)
 		if !is_on_floor() and was_on_floor and !is_jumping:
 			coyote_timer.start()
 	if is_on_floor():
 		jumps = max_jumps
+		
+	
+	if is_on_floor() and dash_timer.is_stopped():
 		dashes = max_dashes
 		can_dash = true
-
+		
 func apply_gravity(delta):
 	if velocity.y < 0:
 		velocity.y += gravity * delta
@@ -137,6 +147,7 @@ func take_damage(amount):
 	if invincibility_timer.is_stopped():
 		invincibility_timer.start()
 		set_health(health - amount)
+		hit_audio.play()
 		
 func heal(amount):
 	set_health(health + amount)

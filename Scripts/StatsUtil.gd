@@ -47,7 +47,7 @@ const default_stats = {
 	StatName.DAMAGE: 		Vector3(10.0, 0, 0),
 	StatName.SPEED: 		Vector3(200.0, 0, 0),
 	StatName.SCATTER:		Vector3(10.0, 0, 0),
-	StatName.KNOCKBACK: 	Vector3(0.0, 0, 0),
+	StatName.KNOCKBACK: 	Vector3(100.0, 0, 0),
 	StatName.SUCTION: 		Vector3(0.0, 0, 0),
 	StatName.HOMING: 		Vector3(0.0, 0, 0),
 	StatName.GRAVITY: 		Vector3(0.0, 0, 0),

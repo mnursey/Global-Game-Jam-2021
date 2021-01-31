@@ -47,8 +47,13 @@ tracks/0/keys = {
 collision_layer = 2147483712
 script = ExtResource( 2 )
 
-[node name="RayCast2D" type="RayCast2D" parent="."]
-rotation = -0.733038
+[node name="PitRaycast" type="RayCast2D" parent="."]
+rotation = -0.785398
+enabled = true
+
+[node name="WallRaycast" type="RayCast2D" parent="."]
+rotation = -1.5708
+scale = Vector2( 1, 0.33 )
 enabled = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

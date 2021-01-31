@@ -37,11 +37,15 @@ var dash_direction = Vector2.ZERO
 
 var facing_right = true 
 
+var dead = false
+
 onready var anim_player = $AnimationPlayer
 onready var sprite = $Sprite
 onready var dash_timer = $DashTimer
 onready var invincibility_timer = $InvincibilityTimer
 onready var coyote_timer = $CoyoteTimer
+onready var death_sound = $DeadAudio
+onready var jump_audio = $Jump
 
 func _ready():
 	gravity = 2 * max_jump_height / pow(jump_duration, 2)
@@ -51,13 +55,15 @@ func _ready():
 
 func _physics_process(delta):
 	apply_gravity(delta)
-	get_move_input()
-	get_input()
-	apply_movement()
-	animate()
+	if !dead:
+		get_move_input()
+		get_input()
+		apply_movement()
+		animate()
 
 func get_input():
 	if Input.is_action_just_pressed("jump") and jumps > 0:
+				jump_audio.play()
 				is_jumping = true
 				velocity.y = max_jump_velocity
 				jumps -= 1
@@ -70,10 +76,7 @@ func get_input():
 		if dashes == 0:
 			can_dash = false
 		dash_timer.start(dash_time)
-		
-		var move_vector = Vector2.ZERO
-		move_vector.x = -Input.get_action_strength("move_left") + Input.get_action_strength("move_right")
-		move_vector.y = -Input.get_action_strength("move_up") + Input.get_action_strength("move_down")
+		var move_vector = get_global_mouse_position() - position
 		move_vector = move_vector.clamped(1)
 		dash_direction = move_vector * dash_speed
 
@@ -139,9 +142,9 @@ func heal(amount):
 	set_health(health + amount)
 
 func dead():
-	move_speed = 0
-	max_jumps = 0
-	max_dashes = 0
+	dead = true
+	anim_player.play("dead")
+	emit_signal("dead")
 
 
 func set_health(value):
@@ -151,8 +154,7 @@ func set_health(value):
 		emit_signal("health_updated", health)
 		if health == 0:
 			dead()
-			anim_player.play("Dead")
-			emit_signal("dead")
+			
 
 
 func _on_Hurtbox_area_entered(area):
@@ -164,5 +166,7 @@ func _on_Hurtbox_body_entered(body):
 
 
 func _on_AnimationPlayer_animation_finished(anim_name):
-	if anim_name == "Dead":
+	print(anim_name)
+	if anim_name == "dead":
 		sprite.hide()
+

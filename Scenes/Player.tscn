@@ -4,7 +4,7 @@
 [ext_resource path="res://Art/player_character_full_sheet.png" type="Texture" id=2]
 [ext_resource path="res://Scenes/AST.tscn" type="PackedScene" id=3]
 [ext_resource path="res://Scenes/HealthBar.tscn" type="PackedScene" id=4]
-[ext_resource path="res://Sound/jump_1.wav" type="AudioStream" id=5]
+[ext_resource path="res://Sound/jump_2.wav" type="AudioStream" id=5]
 [ext_resource path="res://Sound/dead_1.wav" type="AudioStream" id=6]
 [ext_resource path="res://Sound/walk_2.wav" type="AudioStream" id=7]
 [ext_resource path="res://Sound/player_hurt.wav" type="AudioStream" id=8]
@@ -149,7 +149,7 @@ position = Vector2( 1.44758, -7.42192 )
 texture = ExtResource( 2 )
 vframes = 6
 hframes = 9
-frame = 9
+frame = 19
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 playback_speed = 1.5
@@ -200,7 +200,7 @@ volume_db = -10.0
 
 [node name="DashAudio" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 9 )
-volume_db = -10.0
+volume_db = -12.0
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 [connection signal="health_updated" from="." to="HealthBar" method="_on_Player_health_updated"]

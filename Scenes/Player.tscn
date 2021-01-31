@@ -1,9 +1,11 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=14 format=2]
 
 [ext_resource path="res://Scripts/Player.gd" type="Script" id=1]
 [ext_resource path="res://Art/player_character_full_sheet.png" type="Texture" id=2]
 [ext_resource path="res://Scenes/AST.tscn" type="PackedScene" id=3]
 [ext_resource path="res://Scenes/HealthBar.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Sound/jump_1.wav" type="AudioStream" id=5]
+[ext_resource path="res://Sound/dead_1.wav" type="AudioStream" id=6]
 
 [sub_resource type="CapsuleShape2D" id=1]
 
@@ -21,6 +23,20 @@ tracks/0/keys = {
 "transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
 "update": 1,
 "values": [ 9, 10, 11, 12, 13, 14, 15, 16, 17 ]
+}
+tracks/1/type = "audio"
+tracks/1/path = NodePath("DeadAudio")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"clips": [ {
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource( 6 )
+} ],
+"times": PoolRealArray( 0.3 )
 }
 
 [sub_resource type="Animation" id=3]
@@ -102,7 +118,7 @@ position = Vector2( 1.44758, -7.42192 )
 texture = ExtResource( 2 )
 vframes = 6
 hframes = 9
-frame = 9
+frame = 19
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 playback_speed = 1.5
@@ -142,6 +158,14 @@ margin_left = -159.513
 margin_top = -89.1006
 margin_right = -159.513
 margin_bottom = -89.1006
+
+[node name="DeadAudio" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource( 5 )
+volume_db = -5.0
+
+[node name="Jump" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 5 )
+volume_db = -10.0
 [connection signal="health_updated" from="." to="HealthBar" method="_on_Player_health_updated"]
 [connection signal="max_health_updated" from="." to="HealthBar" method="_on_Player_max_health_updated"]
 [connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_AnimationPlayer_animation_finished"]

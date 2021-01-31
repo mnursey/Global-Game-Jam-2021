@@ -28,6 +28,7 @@ onready var sprite = $Sprite
 onready var knockback_timer = $KnockbackTimer
 onready var soft_collision = $SoftCollision
 
+
 func _ready():
 	state = pick_random_state([IDLE, WANDER])
 	animationPlayer.play("Idle")
@@ -104,3 +105,7 @@ func _on_EnemyHurtbox_area_entered(area):
 func _on_AnimationPlayer_animation_finished(anim_name):
 	if anim_name == "Dead":
 		queue_free()
+
+
+func _on_KnockbackTimer_timeout():
+	pass # Replace with function body.

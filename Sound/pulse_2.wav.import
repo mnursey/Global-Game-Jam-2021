@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/pulse_2.wav-30088f98758f7f3c2718ac308425640f.sample"
+
+[deps]
+
+source_file="res://Sound/pulse_2.wav"
+dest_files=[ "res://.import/pulse_2.wav-30088f98758f7f3c2718ac308425640f.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0

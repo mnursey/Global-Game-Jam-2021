@@ -42,6 +42,8 @@ onready var sprite = $Sprite
 onready var dash_timer = $DashTimer
 onready var invincibility_timer = $InvincibilityTimer
 onready var coyote_timer = $CoyoteTimer
+onready var death_sound = $DeadAudio
+onready var jump_audio = $Jump
 
 func _ready():
 	gravity = 2 * max_jump_height / pow(jump_duration, 2)
@@ -58,6 +60,7 @@ func _physics_process(delta):
 
 func get_input():
 	if Input.is_action_just_pressed("jump") and jumps > 0:
+				jump_audio.play()
 				is_jumping = true
 				velocity.y = max_jump_velocity
 				jumps -= 1

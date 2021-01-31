@@ -44,5 +44,6 @@ tile_data = PoolIntArray(  )
 tile_data = PoolIntArray(  )
 
 [node name="ItemSelectionModal" parent="." instance=ExtResource( 9 )]
+[connection signal="doors_opened" from="RoomController" to="ItemSelectionModal" method="_on_RoomController_doors_opened"]
 
 [editable path="Background"]

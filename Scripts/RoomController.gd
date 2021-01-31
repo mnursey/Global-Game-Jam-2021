@@ -7,6 +7,8 @@ onready var enemies = []
 onready var doors = []
 onready var room_open = false
 
+signal doors_opened
+
 func _physics_process(delta):
 
 	handle_doors()
@@ -46,7 +48,7 @@ func find_doors(node):
 func open_doors():
 	for N in doors:
 		N.open()
-	
+	emit_doors_opened_Signal()
 	return
 	
 func handle_doors():
@@ -59,3 +61,8 @@ func handle_doors():
 		if worked:
 			open_doors()
 			room_open = true
+
+
+
+func emit_doors_opened_Signal():
+	emit_signal("doors_opened")

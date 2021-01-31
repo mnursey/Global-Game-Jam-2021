@@ -67,8 +67,14 @@ func _ready():
 	base_stats = StatsUtil.default_stats.duplicate()
 	recalculate_stats()
 	
+func apply_item(item):
+	EffectBank.absorb(item.get_node('EffectBank'))
+	recalculate_stats()
+	
 func recalculate_stats():
-	set_stats_from_dict(EffectBank.apply_to_base(base_stats))
+	var stats = EffectBank.apply_to_base(base_stats)
+	set_stats_from_dict(stats)
+	AST.set_stats_from_dict(stats)
 	
 func set_stats_from_dict(d):
 	max_health = d[StatsUtil.StatName.MAX_HEALTH].x

@@ -51,6 +51,7 @@ onready var dash_audio =$DashAudio
 
 
 func _ready():
+	GM.player = self
 	gravity = 2 * max_jump_height / pow(jump_duration, 2)
 	fall_gravity = 2 * max_jump_height / pow(fall_duration, 2)
 	max_jump_velocity = -sqrt(2 * gravity * max_jump_height)

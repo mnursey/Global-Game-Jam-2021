@@ -2,13 +2,19 @@ extends 'res://Scripts/EnemyBase.gd'
 
 signal damaged(health)
 
-var air_friction = 200
+var air_friction = 75
 var wander_range = 5
 var max_speed = 50
 var acceleration = 300
 var knockback_distance = 50
 
+var bullet_speed = 100
+var bullet_damage = 10
+var shoot_timer = 0
+
 var aggro_range = 150
+var min_target_range = 75
+var max_target_range = 110
 
 var hit = false
 
@@ -20,6 +26,7 @@ enum {
 
 var state = IDLE
 
+onready var Bullet = load('res://Scenes/Bullet.tscn')
 onready var player_detection_zone = $PlayerDectectionZone
 onready var hurtbox = $EnemyHurtbox
 onready var wanderController = $WanderController
@@ -38,6 +45,7 @@ func _ready():
 func _physics_process(delta):
 	#knockback = knockback.move_toward(Vector2.ZERO, air_friction * delta)
 	#knockback = move_and_slide(knockback)
+	
 	
 	match state:
 		IDLE:
@@ -60,20 +68,44 @@ func _physics_process(delta):
 				update_wander()
 			
 		CHASE:
-			accelerate_towards_point(GM.player.global_position, delta)
-		
+			shoot_timer += delta
+			if player_dist() > max_target_range:
+				accelerate_towards_point(GM.player.global_position, delta)
+			elif player_dist() < min_target_range:
+				accelerate_from_point(GM.player.global_position, delta)
+			else:
+				velocity = velocity.move_toward(Vector2.ZERO, air_friction * delta)
+				if shoot_timer > 1:
+					shoot_timer = 0
+					shoot()
+				
+				
+
 	#if soft_collision.is_colliding():
-	#	velocity += soft_collision.get_push_vector() * delta * 400
-	
+	#	print("soft collision")
+	#	velocity += soft_collision.get_push_vector() * delta * 800
+		
 	sprite.flip_h = velocity.x < 0
 	velocity = move_and_slide(velocity)
+	
+func shoot():
+	var bullet = Bullet.instance().duplicate()
+	bullet.velocity = bullet_speed*global_position.direction_to(GM.player.global_position)
+	bullet.global_position = global_position + 10*bullet.velocity/bullet_speed
+	bullet.damage = bullet_damage
+	get_node("/root").add_child(bullet)
 				
 func accelerate_towards_point(point, delta):
 	var direction = global_position.direction_to(point)
 	velocity = velocity.move_toward(direction * max_speed, acceleration * delta)
 	
+func accelerate_from_point(point, delta):
+	var direction = -global_position.direction_to(point)
+	velocity = velocity.move_toward(direction * max_speed, acceleration * delta)
+
 func player_dist():
 	return (GM.player.global_position - global_position).length()
+	
 		
 func update_wander():
 	state = pick_random_state([IDLE, WANDER])

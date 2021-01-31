@@ -8,6 +8,7 @@ onready var target_position = global_position
 onready var wander_timer = $WanderTimer
 
 func _ready():
+	randomize()
 	update_target_position()
 
 func update_target_position():

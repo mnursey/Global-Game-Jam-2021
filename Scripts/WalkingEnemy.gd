@@ -16,14 +16,19 @@ onready var hurtbox = $EnemyHurtbox
 onready var hitbox = $EnemyHitbox
 onready var raycast = $RayCast2D
 onready var knockback_timer = $KnockbackTimer
+onready var anim_player = $AnimationPlayer
 
 func _ready():
 	health = 30
+	anim_player.play("Walk")
 
 func take_damage(amount):
 	health -= amount
 	if health < 0:
-		queue_free()
+		velocity = Vector2.ZERO
+		movespeed = 0
+		anim_player.play("Dead")
+		
 		
 func _physics_process(delta):
 	apply_gravity(delta)
@@ -71,3 +76,8 @@ func _on_EnemyHurtbox_area_entered(area):
 
 func _on_KnockbackTimer_timeout():
 	hit = false
+
+
+func _on_AnimationPlayer_animation_finished(anim_name):
+	if anim_name == "Dead":
+		queue_free()

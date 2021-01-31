@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=2]
+[gd_scene load_steps=18 format=2]
 
 [ext_resource path="res://Scripts/Player.gd" type="Script" id=1]
 [ext_resource path="res://Art/player_character_full_sheet.png" type="Texture" id=2]
@@ -9,6 +9,7 @@
 [ext_resource path="res://Sound/walk_2.wav" type="AudioStream" id=7]
 [ext_resource path="res://Sound/player_hurt.wav" type="AudioStream" id=8]
 [ext_resource path="res://Sound/dash_3.wav" type="AudioStream" id=9]
+[ext_resource path="res://Scenes/CameraShake.gd" type="Script" id=10]
 
 [sub_resource type="RectangleShape2D" id=1]
 
@@ -158,9 +159,10 @@ anims/idle = SubResource( 4 )
 anims/jump = SubResource( 5 )
 anims/run = SubResource( 6 )
 
-[node name="Camera2D" type="Camera2D" parent="."]
+[node name="ShakeCamera2D" type="Camera2D" parent="."]
 current = true
 zoom = Vector2( 0.5, 0.5 )
+script = ExtResource( 10 )
 
 [node name="DashTimer" type="Timer" parent="."]
 wait_time = 0.5

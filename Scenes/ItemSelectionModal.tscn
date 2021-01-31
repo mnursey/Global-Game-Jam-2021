@@ -1,17 +1,25 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://Scripts/ItemsContainer.gd" type="Script" id=1]
 [ext_resource path="res://Scripts/ItemSelectionModal.gd" type="Script" id=2]
-[ext_resource path="res://Scenes/ItemEntry1.gd" type="Script" id=3]
-[ext_resource path="res://Scenes/ItemEntry2.gd" type="Script" id=4]
-[ext_resource path="res://Scenes/ItemEntry3.gd" type="Script" id=5]
+[ext_resource path="res://Scripts/ItemEntry1.gd" type="Script" id=3]
+[ext_resource path="res://Scripts/ItemEntry2.gd" type="Script" id=4]
+[ext_resource path="res://Scripts/ItemEntry3.gd" type="Script" id=5]
+[ext_resource path="res://Art/pixel_font.tres" type="DynamicFont" id=6]
+
+[sub_resource type="Theme" id=1]
+default_font = ExtResource( 6 )
 
 [node name="ItemSelectionModal" type="Popup"]
 pause_mode = 2
 anchor_right = 1.0
 anchor_bottom = 1.0
 rect_scale = Vector2( 0.5, 0.5 )
+theme = SubResource( 1 )
 script = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 anchor_right = 1.0
@@ -39,11 +47,11 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="Title" type="Label" parent="MarginContainer/VBoxContainer/CenterContainer"]
-margin_left = 273.0
-margin_top = 59.0
-margin_right = 367.0
-margin_bottom = 107.0
-text = "Item Selection
+margin_left = 208.0
+margin_top = 56.0
+margin_right = 432.0
+margin_bottom = 110.0
+text = "Choose an Item
 
 "
 
@@ -114,3 +122,6 @@ text = "Item 3"
 align = 1
 valign = 1
 autowrap = true
+
+[node name="ModalTimer" type="Timer" parent="."]
+one_shot = true

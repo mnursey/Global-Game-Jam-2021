@@ -77,11 +77,26 @@ func _to_string():
 		s += e._to_string()
 	return s
 	
+func get_primary_stat():
+	var primary
+	var max_cost = -INF
+	for e in effects.values():
+		if e.cost > max_cost:
+			primary = e
+			max_cost = e.cost
+			
+	if(StatsUtil.sprite_offsets.has(primary.stat_name)):
+		return primary.stat_name	
+	else:
+		return 	StatsUtil.StatName.FIRE_RATE
+	
+	
 static func print_test_bank():
-	print(generate_effect_bank(1, 1, 1, 0))
+	pass
+	#print(generate_effect_bank(1, 1, 1, 0, ))
 			
 			
-static func generate_effect_bank(num_buffs, num_debuffs, abs_cost, cost_bias, pool = StatsUtil.StatName.values.duplicate()):
+static func generate_effect_bank(num_buffs, num_debuffs, abs_cost, cost_bias, pool):
 	randomize()
 	var new_effect
 	var used_effects = []

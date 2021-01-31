@@ -14,15 +14,18 @@ var facing_right = true
 
 onready var hurtbox = $EnemyHurtbox
 onready var hitbox = $EnemyHitbox
-onready var raycast = $RayCast2D
+onready var pit_raycast = $PitRaycast
+onready var wall_raycast = $WallRaycast
 onready var knockback_timer = $KnockbackTimer
 onready var anim_player = $AnimationPlayer
+onready var hit_audio = $HitAudio
 
 func _ready():
 	health = 30
 	anim_player.play("Walk")
 
 func take_damage(amount):
+	hit_audio.play()
 	health -= amount
 	if health < 0:
 		velocity = Vector2.ZERO
@@ -46,15 +49,17 @@ func apply_gravity(delta):
 		velocity.y += gravity
 	
 func move():
-	if !raycast.is_colliding():
+	if !pit_raycast.is_colliding() or wall_raycast.is_colliding():
 		facing_right = !facing_right
 	if facing_right:
 		velocity.x = movespeed
 		$Sprite.flip_h = false
-		raycast.rotation = -45
+		pit_raycast.rotation = -45
+		wall_raycast.rotation = -90
 	if !facing_right:
 		velocity.x = -movespeed
-		raycast.rotation = 45
+		pit_raycast.rotation = 45
+		wall_raycast.rotation = 90
 		$Sprite.flip_h = true
 		
 

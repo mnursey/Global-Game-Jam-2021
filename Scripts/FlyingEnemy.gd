@@ -23,6 +23,8 @@ onready var animationPlayer = $AnimationPlayer
 onready var sprite = $Sprite
 onready var knockback_timer = $KnockbackTimer
 onready var soft_collision = $SoftCollision
+onready var hit_audio = $HitAudio
+
 
 func _ready():
 	health = 30
@@ -80,6 +82,7 @@ func pick_random_state(state_list):
 
 func take_damage(amount):
 	health -= amount
+	hit_audio.play()
 	if health < 0:
 		velocity = Vector2.ZERO
 		max_speed = 0
@@ -97,3 +100,7 @@ func _on_EnemyHurtbox_area_entered(_area):
 func _on_AnimationPlayer_animation_finished(anim_name):
 	if anim_name == "Dead":
 		queue_free()
+
+
+func _on_KnockbackTimer_timeout():
+	pass # Replace with function body.

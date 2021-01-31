@@ -3,7 +3,7 @@ extends Area2D
 var player = null
 
 func can_see_player():
-	return player
+	return player != null
 	
 func _on_PlayerDecectionZone_body_entered(body):
 	player = body

@@ -52,6 +52,6 @@ shape = SubResource( 1 )
 position = Vector2( 10.715, 86.1165 )
 
 [node name="FlyingEnemy" parent="." instance=ExtResource( 4 )]
-position = Vector2( 337.651, -19.9926 )
+position = Vector2( 327.95, -13.8748 )
 
 [editable path="Player"]

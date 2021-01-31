@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/icon.png-df6bafeb8f0f5a872b74707f23c5f4ef.stex"
+path="res://.import/enemy_drone-Sheet.png-81324e5d0fd47fc9428e2f99502d63b6.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Art/icon.png"
-dest_files=[ "res://.import/icon.png-df6bafeb8f0f5a872b74707f23c5f4ef.stex" ]
+source_file="res://Art/enemy_drone-Sheet.png"
+dest_files=[ "res://.import/enemy_drone-Sheet.png-81324e5d0fd47fc9428e2f99502d63b6.stex" ]
 
 [params]
 

@@ -1,14 +1,29 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://Scripts/Player.gd" type="Script" id=1]
-[ext_resource path="res://character_master_sheet.png" type="Texture" id=2]
+[ext_resource path="res://Art/player_character_full_sheet.png" type="Texture" id=2]
 [ext_resource path="res://Scenes/AST.tscn" type="PackedScene" id=3]
 [ext_resource path="res://Scenes/HealthBar.tscn" type="PackedScene" id=4]
 
 [sub_resource type="CapsuleShape2D" id=1]
 
 [sub_resource type="Animation" id=2]
-resource_name = "fall"
+resource_name = "Dead"
+length = 0.9
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 9, 10, 11, 12, 13, 14, 15, 16, 17 ]
+}
+
+[sub_resource type="Animation" id=3]
 length = 0.1
 loop = true
 tracks/0/type = "value"
@@ -24,8 +39,7 @@ tracks/0/keys = {
 "values": [ 21 ]
 }
 
-[sub_resource type="Animation" id=3]
-resource_name = "idle"
+[sub_resource type="Animation" id=4]
 length = 0.6
 loop = true
 tracks/0/type = "value"
@@ -41,7 +55,7 @@ tracks/0/keys = {
 "values": [ 27, 28 ]
 }
 
-[sub_resource type="Animation" id=4]
+[sub_resource type="Animation" id=5]
 length = 0.2
 loop = true
 tracks/0/type = "value"
@@ -57,7 +71,7 @@ tracks/0/keys = {
 "values": [ 19 ]
 }
 
-[sub_resource type="Animation" id=5]
+[sub_resource type="Animation" id=6]
 length = 0.8
 loop = true
 tracks/0/type = "value"
@@ -73,7 +87,7 @@ tracks/0/keys = {
 "values": [ 0, 1, 2, 3, 4, 5, 6, 7 ]
 }
 
-[sub_resource type="CapsuleShape2D" id=6]
+[sub_resource type="CapsuleShape2D" id=7]
 
 [node name="Player" type="KinematicBody2D"]
 collision_layer = 2
@@ -88,14 +102,15 @@ position = Vector2( 1.44758, -7.42192 )
 texture = ExtResource( 2 )
 vframes = 6
 hframes = 9
-frame = 19
+frame = 9
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 playback_speed = 1.5
-anims/fall = SubResource( 2 )
-anims/idle = SubResource( 3 )
-anims/jump = SubResource( 4 )
-anims/run = SubResource( 5 )
+anims/Dead = SubResource( 2 )
+anims/fall = SubResource( 3 )
+anims/idle = SubResource( 4 )
+anims/jump = SubResource( 5 )
+anims/run = SubResource( 6 )
 
 [node name="Camera2D" type="Camera2D" parent="."]
 current = true
@@ -116,7 +131,7 @@ collision_mask = 32
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
 scale = Vector2( 0.443, 0.33 )
-shape = SubResource( 6 )
+shape = SubResource( 7 )
 
 [node name="CoyoteTimer" type="Timer" parent="."]
 wait_time = 0.1
@@ -129,6 +144,7 @@ margin_right = -159.513
 margin_bottom = -89.1006
 [connection signal="health_updated" from="." to="HealthBar" method="_on_Player_health_updated"]
 [connection signal="max_health_updated" from="." to="HealthBar" method="_on_Player_max_health_updated"]
+[connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_AnimationPlayer_animation_finished"]
 [connection signal="timeout" from="DashTimer" to="." method="_on_DashTimer_timeout"]
 [connection signal="area_entered" from="Hurtbox" to="." method="_on_Hurtbox_area_entered"]
 [connection signal="body_entered" from="Hurtbox" to="." method="_on_Hurtbox_body_entered"]

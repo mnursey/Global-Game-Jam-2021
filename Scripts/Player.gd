@@ -140,18 +140,18 @@ func heal(amount):
 
 func dead():
 	move_speed = 0
-	jumps = 0
-	dashes = 0
-	sprite.hide()
+	max_jumps = 0
+	max_dashes = 0
+
 
 func set_health(value):
 	var prev_health = health
 	health = clamp(value, 0, max_health)
-	print(health)
 	if health != prev_health:
 		emit_signal("health_updated", health)
 		if health == 0:
 			dead()
+			anim_player.play("Dead")
 			emit_signal("dead")
 
 
@@ -161,3 +161,8 @@ func _on_Hurtbox_area_entered(area):
 
 func _on_Hurtbox_body_entered(body):
 	take_damage(body.deal_damage())
+
+
+func _on_AnimationPlayer_animation_finished(anim_name):
+	if anim_name == "Dead":
+		sprite.hide()

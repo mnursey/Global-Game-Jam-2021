@@ -1,9 +1,11 @@
+<<<<<<< HEAD
 [gd_scene load_steps=12 format=2]
+=======
+[gd_scene load_steps=8 format=2]
+>>>>>>> 2e4d672c6fab043372e5f4d39d4f31d6bcf278a6
 
 [ext_resource path="res://Art/tile2/tileset_tile2.tres" type="TileSet" id=1]
-[ext_resource path="res://Scenes/WalkingEnemy.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Scenes/Player.tscn" type="PackedScene" id=3]
-[ext_resource path="res://Scenes/FlyingEnemy.tscn" type="PackedScene" id=4]
 [ext_resource path="res://Art/background/tileset_background.tres" type="TileSet" id=5]
 [ext_resource path="res://Art/tile1/tileset_tile1.tres" type="TileSet" id=6]
 [ext_resource path="res://Art/tile3/tileset_tile3.tres" type="TileSet" id=7]
@@ -20,6 +22,7 @@
 
 [node name="Enemies" type="Node2D" parent="RoomController/Level"]
 
+<<<<<<< HEAD
 [node name="Walkie Enemy" parent="RoomController/Level/Enemies" instance=ExtResource( 2 )]
 position = Vector2( 10.715, 86.1165 )
 
@@ -27,6 +30,9 @@ position = Vector2( 10.715, 86.1165 )
 position = Vector2( 337.651, -19.9926 )
 
 [node name="TileMap1" type="TileMap" parent="RoomController/Level"]
+=======
+[node name="TileMap1" type="TileMap" parent="Level"]
+>>>>>>> 2e4d672c6fab043372e5f4d39d4f31d6bcf278a6
 tile_set = ExtResource( 6 )
 cell_size = Vector2( 16, 16 )
 format = 1

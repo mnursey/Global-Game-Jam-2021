@@ -1,11 +1,8 @@
-<<<<<<< HEAD
 [gd_scene load_steps=14 format=2]
-=======
-[gd_scene load_steps=12 format=2]
->>>>>>> 08bd9598965dca9c16b5db6bc3de08ce1ce45cf6
 
 [ext_resource path="res://Art/tile2/tileset_tile2.tres" type="TileSet" id=1]
 [ext_resource path="res://Scenes/WalkingEnemy.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Scenes/Player.tscn" type="PackedScene" id=3]
 [ext_resource path="res://Scenes/FlyingEnemy.tscn" type="PackedScene" id=4]
 [ext_resource path="res://Art/background/tileset_background.tres" type="TileSet" id=5]
 [ext_resource path="res://Art/tile1/tileset_tile1.tres" type="TileSet" id=6]
@@ -28,8 +25,17 @@
 [node name="FlyingRangedEnemy" parent="RoomController/Level/Enemies" instance=ExtResource( 12 )]
 position = Vector2( 8, -104 )
 
+[node name="FlyingRangedEnemy2" parent="RoomController/Level/Enemies" instance=ExtResource( 12 )]
+position = Vector2( 160, -74.751 )
+
+[node name="FlyingRangedEnemy3" parent="RoomController/Level/Enemies" instance=ExtResource( 12 )]
+position = Vector2( 56, -104 )
+
 [node name="Walkie Enemy" parent="RoomController/Level/Enemies" instance=ExtResource( 2 )]
-position = Vector2( 10.715, 86.1165 )
+position = Vector2( 208, 72 )
+
+[node name="Walkie Enemy2" parent="RoomController/Level/Enemies" instance=ExtResource( 2 )]
+position = Vector2( 97.1149, 72 )
 
 [node name="FlyingEnemy" parent="RoomController/Level/Enemies" instance=ExtResource( 4 )]
 position = Vector2( 337.651, -19.9926 )
@@ -47,6 +53,7 @@ format = 1
 tile_data = PoolIntArray( -196606, 0, 196608, -196605, 0, 196610, -196602, 0, 196608, -196601, 0, 196610, -196596, 0, 196608, -196595, 0, 196610, 196622, 0, 196608, 196623, 0, 196610 )
 
 [node name="TileMap3" type="TileMap" parent="RoomController/Level"]
+position = Vector2( -48, 2.28885 )
 tile_set = ExtResource( 7 )
 cell_size = Vector2( 16, 16 )
 format = 1
@@ -78,7 +85,6 @@ tile_data = PoolIntArray( -131077, 0, 0, -131076, 0, 1, -131075, 0, 1, -131074, 
 
 [node name="Door" parent="RoomController" instance=ExtResource( 10 )]
 position = Vector2( 488, -16 )
-<<<<<<< HEAD
 
 [node name="Platform" parent="RoomController" instance=ExtResource( 13 )]
 position = Vector2( -32, -40 )
@@ -88,5 +94,3 @@ position = Vector2( 96, 8.57808 )
 
 [node name="Player" parent="." instance=ExtResource( 3 )]
 z_index = 1
-=======
->>>>>>> 08bd9598965dca9c16b5db6bc3de08ce1ce45cf6

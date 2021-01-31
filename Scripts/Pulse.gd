@@ -51,9 +51,9 @@ func inherit_props(p):
 		subpulse_delay.x += subpulse_delay.z
 		split_chance.x += split_chance.z
 	else:
-		inherited_vel = p.Player.velocity
-		inherited_vel.y /= 4
-		inherited_vel = Vector2.ZERO
+		pass
+		#inherited_vel = p.Player.velocity
+		#inherited_vel.y /= 4
 
 	
 	is_AST = false

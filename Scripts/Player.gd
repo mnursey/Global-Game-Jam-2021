@@ -51,6 +51,7 @@ onready var dash_audio =$DashAudio
 onready var camera = $ShakeCamera2D
 onready var hurtBox = $Hurtbox/CollisionShape2D
 onready var collisionBox = $CollisionShape2D
+onready var AST = $AST 
 
 func _ready():
 	GM.player = self
@@ -163,7 +164,8 @@ func dead():
 	camera.add_trauma(0.8)
 	hurtBox.set_disabled(true)
 	collisionBox.set_disabled(true)
-
+	AST.disable = true
+	
 func set_health(value):
 	var prev_health = health
 	health = clamp(value, 0, max_health)

@@ -7,6 +7,8 @@ export var base_stats = {}
 export var fire_rate : float = 0
 var fire_rate_timer : float = 0
 
+var disable = false
+
 func _ready():
 	Player = get_parent()
 	base_stats = StatsUtil.default_stats.duplicate()
@@ -37,7 +39,7 @@ func set_stats_from_dict(d):
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	fire_rate_timer += delta
-	if Input.is_action_pressed("shoot") and fire_rate_timer > 1/fire_rate:
+	if !disable && Input.is_action_pressed("shoot") and fire_rate_timer > 1/fire_rate:
 		fire_rate_timer = 0
 		spawn_pulse()
 		

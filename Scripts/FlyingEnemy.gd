@@ -1,5 +1,7 @@
 extends 'res://Scripts/EnemyBase.gd'
 
+signal damaged(health)
+
 var air_friction = 200
 var wander_range = 5
 var max_speed = 50
@@ -82,8 +84,9 @@ func pick_random_state(state_list):
 
 func take_damage(amount):
 	health -= amount
+	emit_signal("damaged", health)
 	hit_audio.play()
-	if health < 0:
+	if health <= 0:
 		velocity = Vector2.ZERO
 		max_speed = 0
 		acceleration = 0

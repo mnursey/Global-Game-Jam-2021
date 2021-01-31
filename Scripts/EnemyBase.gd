@@ -1,5 +1,6 @@
 extends KinematicBody2D
 
+
 var velocity = Vector2.ZERO
 var health
 
@@ -8,6 +9,7 @@ func _ready():
 
 func take_damage(amount):
 	health -= amount
+	emit_signal("damaged", health)
 	if health < 0:
 		GM.remove_enemy(self)
 		queue_free()

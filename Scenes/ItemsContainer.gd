@@ -7,8 +7,6 @@ func _ready():
 	get_random_items()
 
 
-# TODO: Replace this functionality with some actual random stuff
-# - Maybe use EffectBank? Not sure what that is yet.
 func get_random_items():
 	var items = [
 		StatsUtil.generate_item(2, 0.3),
@@ -25,3 +23,5 @@ func get_random_items():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
 #	pass
+
+

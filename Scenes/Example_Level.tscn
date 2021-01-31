@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://Art/tile2/tileset_tile2.tres" type="TileSet" id=1]
 [ext_resource path="res://Scenes/WalkingEnemy.tscn" type="PackedScene" id=2]
@@ -11,6 +11,7 @@
 [ext_resource path="res://Art/debug/tileset_debug.tres" type="TileSet" id=9]
 [ext_resource path="res://Scenes/Door.tscn" type="PackedScene" id=10]
 [ext_resource path="res://Scenes/RoomController.tscn" type="PackedScene" id=11]
+[ext_resource path="res://Scenes/FlyingRangedEnemy.tscn" type="PackedScene" id=12]
 
 [node name="ExampleScene" type="Node2D"]
 
@@ -19,6 +20,9 @@
 [node name="Level" type="Node" parent="RoomController"]
 
 [node name="Enemies" type="Node2D" parent="RoomController/Level"]
+
+[node name="FlyingRangedEnemy" parent="RoomController/Level/Enemies" instance=ExtResource( 12 )]
+position = Vector2( 8, -104 )
 
 [node name="Walkie Enemy" parent="RoomController/Level/Enemies" instance=ExtResource( 2 )]
 position = Vector2( 10.715, 86.1165 )

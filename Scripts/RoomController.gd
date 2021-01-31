@@ -1,6 +1,6 @@
 extends Node
 
-const enemyNames = ['WalkingEnemy', 'FlyingEnemy', 'Walkie Enemy']
+const enemyNames = ['WalkingEnemy', 'FlyingEnemy', 'Walkie Enemy', 'FlyingRangedEnemy']
 const doorNames = ['Door']
 
 onready var enemies = []

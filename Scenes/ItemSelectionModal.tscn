@@ -1,11 +1,16 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://Scripts/ItemsContainer.gd" type="Script" id=1]
+[ext_resource path="res://Scenes/ItemSelectionModal.gd" type="Script" id=2]
+[ext_resource path="res://Scenes/ItemEntry1.gd" type="Script" id=3]
+[ext_resource path="res://Scenes/ItemEntry2.gd" type="Script" id=4]
+[ext_resource path="res://Scenes/ItemEntry3.gd" type="Script" id=5]
 
 [node name="ItemSelectionModal" type="Popup"]
-visible = true
+pause_mode = 2
 anchor_right = 1.0
 anchor_bottom = 1.0
+script = ExtResource( 2 )
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 anchor_right = 1.0
@@ -42,6 +47,7 @@ text = "Item Selection
 "
 
 [node name="ItemsContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+pause_mode = 2
 margin_top = 168.0
 margin_right = 640.0
 margin_bottom = 335.0
@@ -54,6 +60,7 @@ margin_right = 210.0
 margin_bottom = 167.0
 mouse_default_cursor_shape = 2
 size_flags_horizontal = 3
+script = ExtResource( 3 )
 
 [node name="Item1Stats" type="Label" parent="MarginContainer/VBoxContainer/ItemsContainer/ItemEntry1"]
 margin_right = 210.0
@@ -74,6 +81,7 @@ margin_right = 425.0
 margin_bottom = 167.0
 mouse_default_cursor_shape = 2
 size_flags_horizontal = 3
+script = ExtResource( 4 )
 
 [node name="Item2Stats" type="Label" parent="MarginContainer/VBoxContainer/ItemsContainer/ItemEntry2"]
 margin_right = 211.0
@@ -94,6 +102,7 @@ margin_right = 640.0
 margin_bottom = 167.0
 mouse_default_cursor_shape = 2
 size_flags_horizontal = 3
+script = ExtResource( 5 )
 
 [node name="Item3Stats" type="Label" parent="MarginContainer/VBoxContainer/ItemsContainer/ItemEntry3"]
 margin_right = 211.0

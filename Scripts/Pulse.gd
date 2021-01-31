@@ -3,7 +3,6 @@ extends 'res://Scripts/PulseBase.gd'
 var cur_speed
 var cur_size
 var cur_damage
-#var cur_speed
 var cur_knockback
 var cur_suction
 var cur_homing
@@ -55,8 +54,10 @@ func inherit_props(p):
 		subpulse_delay.x += subpulse_delay.z
 		split_chance.x += split_chance.z
 	else:
-		inherited_vel = p.Player.velocity
-		inherited_vel.y /= 4
+		pass
+		#inherited_vel = p.Player.velocity
+		#inherited_vel.y /= 4
+		
 	
 	is_AST = false
 	

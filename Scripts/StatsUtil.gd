@@ -171,8 +171,44 @@ const string_names = {
 	StatName.SPLIT_CHANCE: 	"Subpule Split Chance"
 }
 
+const sprite_offsets = {
+	#Player
+	StatName.MAX_HEALTH:	Vector2(2, 0),
+	StatName.JUMPS:			Vector2(3, 2),
+	StatName.DASHES:		Vector2(3, 2),
+	StatName.MOVE_SPEED:	Vector2(3, 2),
+	#AST
+	StatName.FIRE_RATE: 	Vector2(0, 0),
+	StatName.DISTANCE: 		Vector2(1, 0),
+	StatName.LIFETIME: 		Vector2(0, 1),
+	StatName.SIZE: 			Vector2(3, 2),
+	StatName.DAMAGE: 		Vector2(3, 0),
+	StatName.SPEED: 		Vector2(1, 0),
+	StatName.SCATTER:		Vector2(2, 2),
+	StatName.KNOCKBACK: 	Vector2(3, 1),
+	StatName.SUCTION: 		Vector2(3, 3),
+	StatName.HOMING: 		Vector2(2, 2),
+	StatName.GRAVITY: 		Vector2(3, 3),
+	StatName.SUBPULSES:		Vector2(1, 2),
+	StatName.SUBPULSE_DELAY:Vector2(0, 0),
+	StatName.SPLIT_CHANCE: 	Vector2(1, 1),
+}
 
-
+static func generate_item(magnitude, quality):
+	randomize()
+	var cost = magnitude*(0.75 + randf()/2)
+	var num_fx = int(min(2 + cost*randf()*2, 6))
+	var num_debuffs = int(num_fx/2)
+	var num_buffs = num_fx - num_debuffs
+	
+	var item = load('res://Scenes/Item.tscn').instance().duplicate()
+	var bank = load('res://Scenes/EffectBank.tscn').instance().generate_effect_bank(num_buffs, num_debuffs, cost, cost*quality, StatName.values().duplicate())
+	
+	item.get_node('Sprite').region_rect = Rect2(sprite_offsets[bank.get_primary_stat()]*8, Vector2(8, 8))
+	item.get_node('EffectBank').absorb(bank) 
+	return item
+	
+	
 
 
 static func choose_random(values):

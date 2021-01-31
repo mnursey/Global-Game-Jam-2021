@@ -13,6 +13,6 @@ func _ready():
 
 func _gui_input(event):
 	if (event is InputEventMouseButton && event.pressed && event.button_index == 1):
-		print(get_node("Sprite"))
+		GM.player.apply_item(get_children()[1])
 		get_owner().hide()
 		get_tree().paused = false

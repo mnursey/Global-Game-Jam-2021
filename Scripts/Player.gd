@@ -56,6 +56,8 @@ onready var collisionBox = $CollisionShape2D
 onready var AST = $AST 
 var EffectBank
 
+
+
 func _ready():
 	GM.player = self
 	gravity = 2 * max_jump_height / pow(jump_duration, 2)
@@ -104,7 +106,7 @@ func get_input():
 	if Input.is_action_just_pressed("dash") and can_dash:
 		is_dashing = true
 		dashes -= 1
-		if dashes == 0:
+		if dashes <= 0:
 			can_dash = false
 		dash_timer.start(dash_time)
 		dash_audio.play()

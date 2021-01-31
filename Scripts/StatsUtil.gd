@@ -59,11 +59,11 @@ const default_stats = {
 const DOUBLING_COST = 4
 const costs = {
 	#Player (TEMP VALUES)
-	StatName.MAX_HEALTH:	Vector3(1, 0, 0),
-	StatName.JUMPS:			Vector3(1, 0, 0),
-	StatName.DASHES:		Vector3(1, 0, 0),
-	StatName.MOVE_SPEED:	Vector3(1, 0, 0),
-	StatName.DASH_SPEED:	Vector3(1, 0, 0),
+	StatName.MAX_HEALTH:	Vector3(0.05, 0, 0),
+	StatName.JUMPS:			Vector3(2, 0, 0),
+	StatName.DASHES:		Vector3(2, 0, 0),
+	StatName.MOVE_SPEED:	Vector3(0.05, 0, 0),
+	StatName.DASH_SPEED:	Vector3(0.05, 0, 0),
 	#AST
 	StatName.FIRE_RATE: 	Vector3(1, 0, 0),
 	StatName.DISTANCE: 		Vector3(0.1, 0, 0.1),

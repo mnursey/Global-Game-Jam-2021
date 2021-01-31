@@ -51,6 +51,7 @@ func open_doors():
 	for N in doors:
 		N.open()
 	emit_doors_opened_Signal()
+	GM.player.set_max_health()
 	return
 	
 func handle_doors():

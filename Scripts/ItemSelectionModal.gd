@@ -18,4 +18,5 @@ func _ready():
 
 func _on_RoomController_doors_opened():
 	self.popup_centered()
+	self.rect_position = GM.player.get_position()
 	get_tree().paused = true

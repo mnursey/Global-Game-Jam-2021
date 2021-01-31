@@ -122,3 +122,8 @@ func _process(delta):
 	
 
 
+
+func _on_Pulse_body_entered(body):
+	if !body.is_in_group("Player") and !body.is_in_group("Enemy"):
+		cur_speed = Vector2(0.001, .001)
+		velocity = Vector2(0.001,0.001)

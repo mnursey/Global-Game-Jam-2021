@@ -7,16 +7,15 @@ export var base_stats = {}
 export var fire_rate : float = 0
 var fire_rate_timer : float = 0
 
+var disable = false
+
+signal shot_ast
+
 func _ready():
 	Player = get_parent()
-	base_stats = StatsUtil.default_stats.duplicate()
-	recalculate_stats()
 	
 	is_AST = true
 	fire_rate_timer = 0
-	
-func recalculate_stats():
-	set_stats_from_dict(EffectBank.apply_to_base(base_stats))
 	
 func set_stats_from_dict(d):
 	fire_rate = d[StatsUtil.StatName.FIRE_RATE].x
@@ -37,14 +36,16 @@ func set_stats_from_dict(d):
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	fire_rate_timer += delta
-	if Input.is_action_pressed("shoot") and fire_rate_timer > 1/fire_rate:
+	if !disable && Input.is_action_pressed("shoot") and fire_rate_timer > 1/fire_rate:
 		fire_rate_timer = 0
+		emit_signal("shot_ast")
 		spawn_pulse()
 		
 	if Input.is_action_just_pressed("debug_1"):
 		var item = StatsUtil.generate_item(2, 0.3)
 		item.global_position = global_position
-		get_node('/root').add_child(item)
+		#get_node('/root').add_child(item)
+		Player.apply_item(item)
 		print(item.get_node('EffectBank'))
 		
 		

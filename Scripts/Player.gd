@@ -13,6 +13,8 @@ var move_speed = 10 * TILESIZE
 var max_health = 100
 var health = max_health setget set_health
 
+var base_stats
+
 var gravity
 var fall_gravity
 var max_jump_velocity
@@ -48,17 +50,45 @@ onready var death_sound = $DeadAudio
 onready var jump_audio = $Jump
 onready var hit_audio = $HitAudio
 onready var dash_audio =$DashAudio
+onready var camera = $ShakeCamera2D
+onready var hurtBox = $Hurtbox/CollisionShape2D
+onready var collisionBox = $CollisionShape2D
+onready var AST = $AST 
+var EffectBank
+
 
 
 func _ready():
+	GM.player = self
 	gravity = 2 * max_jump_height / pow(jump_duration, 2)
 	fall_gravity = 2 * max_jump_height / pow(fall_duration, 2)
 	max_jump_velocity = -sqrt(2 * gravity * max_jump_height)
 	min_jump_velocity = -sqrt(2 * gravity * min_jump_height)
+	
+	EffectBank = get_node("AST/EffectBank")
+	base_stats = StatsUtil.default_stats.duplicate()
+	recalculate_stats()
+	
+func apply_item(item):
+	EffectBank.absorb(item.get_node('EffectBank'))
+	recalculate_stats()
+	
+func recalculate_stats():
+	var stats = EffectBank.apply_to_base(base_stats)
+	set_stats_from_dict(stats)
+	AST.set_stats_from_dict(stats)
+	
+func set_stats_from_dict(d):
+	max_health = d[StatsUtil.StatName.MAX_HEALTH].x
+	max_dashes = d[StatsUtil.StatName.DASHES].x
+	max_jumps = d[StatsUtil.StatName.JUMPS].x
+	dash_speed = d[StatsUtil.StatName.DASH_SPEED].x
+	move_speed = d[StatsUtil.StatName.MOVE_SPEED].x
 
 func _physics_process(delta):
-	apply_gravity(delta)
+
 	if !dead:
+		apply_gravity(delta)
 		get_move_input()
 		get_input()
 		apply_movement()
@@ -76,13 +106,15 @@ func get_input():
 	if Input.is_action_just_pressed("dash") and can_dash:
 		is_dashing = true
 		dashes -= 1
-		if dashes == 0:
+		if dashes <= 0:
 			can_dash = false
 		dash_timer.start(dash_time)
 		dash_audio.play()
 		var move_vector = get_global_mouse_position() - position
 		move_vector = move_vector.clamped(1)
 		dash_direction = move_vector * dash_speed
+		camera.add_trauma(0.2)
+		
 
 func apply_movement():
 	var was_on_floor = is_on_floor()
@@ -91,8 +123,10 @@ func apply_movement():
 		velocity = move_and_slide(dash_direction, UP)
 		#velocity = lerp(velocity, velocity/100, 0.2)
 		invincibility_timer.start()
+		sprite.scale = Vector2(0.9, 0.9)
 	else:
 		velocity = move_and_slide(velocity, UP)
+		sprite.scale = Vector2(1, 1)
 		if !is_on_floor() and was_on_floor and !is_jumping:
 			coyote_timer.start()
 	if is_on_floor():
@@ -143,10 +177,11 @@ func _on_DashTimer_timeout():
 	is_dashing = false
 	
 func take_damage(amount):
-	if invincibility_timer.is_stopped():
+	if !dead and invincibility_timer.is_stopped():
 		invincibility_timer.start()
 		set_health(health - amount)
 		hit_audio.play()
+		camera.add_trauma(0.3)
 		
 func heal(amount):
 	set_health(health + amount)
@@ -155,8 +190,11 @@ func dead():
 	dead = true
 	anim_player.play("dead")
 	emit_signal("dead")
-
-
+	camera.add_trauma(0.8)
+	hurtBox.set_disabled(true)
+	collisionBox.set_disabled(true)
+	AST.disable = true
+	
 func set_health(value):
 	var prev_health = health
 	health = clamp(value, 0, max_health)
@@ -166,6 +204,8 @@ func set_health(value):
 			dead()
 			
 
+func set_max_health():
+	set_health(max_health)
 
 func _on_Hurtbox_area_entered(area):
 	take_damage(area.deal_damage()) 
@@ -179,3 +219,6 @@ func _on_AnimationPlayer_animation_finished(anim_name):
 	if anim_name == "dead":
 		sprite.hide()
 
+
+func _on_AST_shot_ast():
+	camera.add_trauma(0.15)

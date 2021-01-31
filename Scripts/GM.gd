@@ -1,5 +1,6 @@
 extends Node
 
+var player
 var enemies = []
 
 func add_enemy(e):
@@ -11,7 +12,8 @@ func remove_enemy(e):
 # Declare member variables here. Examples:
 # var a = 2
 # var b = "text"
-
+func heal_player():
+	player.health = player.max_health
 
 # Called when the node enters the scene tree for the first time.
 func _ready():

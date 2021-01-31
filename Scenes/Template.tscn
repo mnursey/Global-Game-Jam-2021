@@ -1,0 +1,49 @@
+[gd_scene load_steps=10 format=2]
+
+[ext_resource path="res://TileMaps/TileMap1.tscn" type="PackedScene" id=1]
+[ext_resource path="res://TileMaps/TileMap2.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Scenes/Door.tscn" type="PackedScene" id=3]
+[ext_resource path="res://TileMaps/TileMap3.tscn" type="PackedScene" id=4]
+[ext_resource path="res://TileMaps/TileMapMisc.tscn" type="PackedScene" id=5]
+[ext_resource path="res://TileMaps/ExportMap.tscn" type="PackedScene" id=6]
+[ext_resource path="res://TileMaps/Background.tscn" type="PackedScene" id=7]
+[ext_resource path="res://Scenes/RoomController.tscn" type="PackedScene" id=8]
+[ext_resource path="res://Scenes/ItemSelectionModal.tscn" type="PackedScene" id=9]
+
+[node name="Template" type="Node2D"]
+
+[node name="RoomController" parent="." instance=ExtResource( 8 )]
+
+[node name="Door" parent="RoomController" instance=ExtResource( 3 )]
+
+[node name="Enemies" type="Node2D" parent="RoomController"]
+
+[node name="Node2D" type="Node2D" parent="RoomController"]
+
+[node name="Door" parent="RoomController/Node2D" instance=ExtResource( 3 )]
+
+[node name="TileMap1" parent="." instance=ExtResource( 1 )]
+tile_data = PoolIntArray(  )
+
+[node name="TileMap2" parent="." instance=ExtResource( 2 )]
+tile_data = PoolIntArray(  )
+
+[node name="TileMap3" parent="." instance=ExtResource( 4 )]
+tile_data = PoolIntArray(  )
+
+[node name="TileMapMisc" parent="." instance=ExtResource( 5 )]
+tile_data = PoolIntArray(  )
+
+[node name="ExportMap" parent="." instance=ExtResource( 6 )]
+visible = true
+tile_data = PoolIntArray(  )
+
+[node name="Background" parent="." instance=ExtResource( 7 )]
+
+[node name="TileMap" parent="Background/ParallaxLayer" index="0"]
+tile_data = PoolIntArray(  )
+
+[node name="ItemSelectionModal" parent="." instance=ExtResource( 9 )]
+[connection signal="doors_opened" from="RoomController" to="ItemSelectionModal" method="_on_RoomController_doors_opened"]
+
+[editable path="Background"]

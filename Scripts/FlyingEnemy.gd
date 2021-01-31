@@ -4,7 +4,7 @@ signal damaged(health)
 
 var air_friction = 200
 var wander_range = 5
-var max_speed = 50
+var max_speed = 100
 var acceleration = 300
 var knockback_distance = 50
 
@@ -32,7 +32,7 @@ onready var hit_audio = $HitAudio
 
 func _ready():
 	health = 30
-	state = pick_random_state([IDLE, WANDER])
+	state = pick_random_state([IDLE])
 	animationPlayer.play("Idle")
 
 func _physics_process(delta):
@@ -45,8 +45,8 @@ func _physics_process(delta):
 				state = CHASE
 				
 			velocity = velocity.move_toward(Vector2.ZERO, air_friction * delta)
-			if wanderController.get_time_left() == 0:
-				update_wander()
+			#if wanderController.get_time_left() == 0:
+			#	update_wander()
 		WANDER:
 			if player_dist() < aggro_range:
 				state = CHASE

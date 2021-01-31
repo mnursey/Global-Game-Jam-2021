@@ -42,7 +42,7 @@ const default_stats = {
 	#AST
 	StatName.FIRE_RATE: 	Vector3(2.0, 0, 0),
 	StatName.DISTANCE: 		Vector3(10.0, 0, 0),
-	StatName.LIFETIME: 		Vector3(1, 0, 0),
+	StatName.LIFETIME: 		Vector3(0.5, 0, 0),
 	StatName.SIZE: 			Vector3(0.7, 0, 0),
 	StatName.DAMAGE: 		Vector3(10.0, 0, 0),
 	StatName.SPEED: 		Vector3(200.0, 0, 0),

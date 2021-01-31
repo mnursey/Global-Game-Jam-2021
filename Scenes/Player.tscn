@@ -10,7 +10,7 @@
 [sub_resource type="CapsuleShape2D" id=1]
 
 [sub_resource type="Animation" id=2]
-resource_name = "Dead"
+resource_name = "dead"
 length = 0.9
 tracks/0/type = "value"
 tracks/0/path = NodePath("Sprite:frame")
@@ -118,11 +118,11 @@ position = Vector2( 1.44758, -7.42192 )
 texture = ExtResource( 2 )
 vframes = 6
 hframes = 9
-frame = 19
+frame = 9
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 playback_speed = 1.5
-anims/Dead = SubResource( 2 )
+anims/dead = SubResource( 2 )
 anims/fall = SubResource( 3 )
 anims/idle = SubResource( 4 )
 anims/jump = SubResource( 5 )

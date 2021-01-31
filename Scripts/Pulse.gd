@@ -4,7 +4,7 @@ onready var pulse_sound = $PulseSound
 
 var cur_size
 var cur_damage
-#var cur_speed
+var cur_speed
 var cur_knockback
 var cur_suction
 var cur_homing
@@ -35,7 +35,8 @@ func inherit_props(p):
 	subpulse_delay = p.subpulse_delay
 	split_chance = p.split_chance
 	
-	
+	var inherited_vel = Vector2.ZERO
+
 	if not p.is_AST:
 		distance.x += distance.z 
 		lifetime.x += lifetime.z 
@@ -49,10 +50,24 @@ func inherit_props(p):
 		gravity.x += gravity.z 
 		subpulse_delay.x += subpulse_delay.z
 		split_chance.x += split_chance.z
+	else:
+		inherited_vel = p.Player.velocity
+		inherited_vel.y /= 4
+		inherited_vel = Vector2.ZERO
+
 	
 	is_AST = false
+	
 	direction = p.velocity.normalized().rotated(deg2rad((randf()-0.5)*scatter.x))
-		
+
+	global_position = start_position + distance.x*direction
+	
+	var init_vel = direction*speed.x
+	init_vel += inherited_vel
+	cur_speed = init_vel.length();
+	direction = init_vel/cur_speed;
+	
+
 	cur_size = size.x
 	cur_damage = damage.x
 	#cur_speed = speed.x
@@ -61,7 +76,7 @@ func inherit_props(p):
 	cur_homing  = homing.x
 	cur_gravity = gravity.x
 	
-	global_position = start_position + distance.x*direction
+	
 	velocity = direction*speed.x
 	apply_growth(0)
 	

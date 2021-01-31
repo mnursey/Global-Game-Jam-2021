@@ -1,12 +1,14 @@
 extends 'res://Scripts/PulseBase.gd'
 
 onready var EffectBank = $EffectBank
+var Player
 
 export var base_stats = {}
 export var fire_rate : float = 0
 var fire_rate_timer : float = 0
 
 func _ready():
+	Player = get_parent()
 	base_stats = StatsUtil.default_stats.duplicate()
 	recalculate_stats()
 	
@@ -40,7 +42,11 @@ func _process(delta):
 		spawn_pulse()
 		
 	if Input.is_action_just_pressed("debug_1"):
-		EffectBank.print_test_bank()
+		for _i in range(10):
+			var e = EffectBank.generate_effect_bank(2, 2, 1, 0.1, StatsUtil.AST_STATS)
+			print(e)
+			EffectBank.absorb(e)
+		recalculate_stats()
 		
 func spawn_pulse():
 	velocity = (get_global_mouse_position() - global_position).normalized()

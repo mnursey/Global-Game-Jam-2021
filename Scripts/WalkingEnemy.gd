@@ -1,10 +1,8 @@
-extends KinematicBody2D
+extends 'res://Scripts/EnemyBase.gd'
 
-var health = 30
 var TILESIZE = 16
 var movespeed = 5 * TILESIZE
 
-var velocity = Vector2.ZERO
 var knockback = Vector2.ZERO
 var knockback_distance = 50
 
@@ -21,7 +19,9 @@ onready var knockback_timer = $KnockbackTimer
 onready var anim_player = $AnimationPlayer
 
 func _ready():
+	health = 30
 	anim_player.play("Walk")
+
 func take_damage(amount):
 	health -= amount
 	if health < 0:
@@ -63,15 +63,11 @@ func _on_EnemyHitbox_area_entered(area):
 
 
 
-func _on_EnemyHurtbox_area_entered(area):
+func _on_EnemyHurtbox_area_entered(_area):
 	var areas = hurtbox.get_overlapping_areas()
 	for area in areas:
 		if area.get_collision_mask() == 16:
-			hit = true
-			knockback_timer.start()
-			knockback = area.direction
-			knockback = knockback.normalized() * knockback_distance
-			take_damage(area.deal_damage())
+			get_hit(area)
 
 
 func _on_KnockbackTimer_timeout():

@@ -1,10 +1,9 @@
-extends KinematicBody2D
+extends 'res://Scripts/EnemyBase.gd'
 
 var air_friction = 200
 var wander_range = 5
 var max_speed = 50
 var acceleration = 300
-var health = 30
 var knockback_distance = 50
 
 var hit = false
@@ -14,9 +13,6 @@ enum {
 	WANDER,
 	CHASE
 }
-
-var velocity = Vector2.ZERO
-var knockback = Vector2.ZERO
 
 var state = IDLE
 
@@ -30,12 +26,13 @@ onready var soft_collision = $SoftCollision
 
 
 func _ready():
+	health = 30
 	state = pick_random_state([IDLE, WANDER])
 	animationPlayer.play("Idle")
 
 func _physics_process(delta):
-	knockback = knockback.move_toward(Vector2.ZERO, air_friction * delta)
-	knockback = move_and_slide(knockback)
+	#knockback = knockback.move_toward(Vector2.ZERO, air_friction * delta)
+	#knockback = move_and_slide(knockback)
 	
 	match state:
 		IDLE:
@@ -91,15 +88,11 @@ func take_damage(amount):
 		animationPlayer.play("Dead")
 		
 		
-func _on_EnemyHurtbox_area_entered(area):
+func _on_EnemyHurtbox_area_entered(_area):
 	var areas = hurtbox.get_overlapping_areas()
 	for area in areas:
 		if area.get_collision_mask() == 16:
-			hit = true
-			knockback_timer.start()
-			knockback = area.direction
-			knockback = knockback.normalized() * knockback_distance
-			take_damage(area.deal_damage())
+			get_hit(area)
 
 
 func _on_AnimationPlayer_animation_finished(anim_name):

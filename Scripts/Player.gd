@@ -13,6 +13,8 @@ var move_speed = 10 * TILESIZE
 var max_health = 100
 var health = max_health setget set_health
 
+var base_stats
+
 var gravity
 var fall_gravity
 var max_jump_velocity
@@ -52,6 +54,7 @@ onready var camera = $ShakeCamera2D
 onready var hurtBox = $Hurtbox/CollisionShape2D
 onready var collisionBox = $CollisionShape2D
 onready var AST = $AST 
+var EffectBank
 
 
 
@@ -61,6 +64,26 @@ func _ready():
 	fall_gravity = 2 * max_jump_height / pow(fall_duration, 2)
 	max_jump_velocity = -sqrt(2 * gravity * max_jump_height)
 	min_jump_velocity = -sqrt(2 * gravity * min_jump_height)
+	
+	EffectBank = get_node("AST/EffectBank")
+	base_stats = StatsUtil.default_stats.duplicate()
+	recalculate_stats()
+	
+func apply_item(item):
+	EffectBank.absorb(item.get_node('EffectBank'))
+	recalculate_stats()
+	
+func recalculate_stats():
+	var stats = EffectBank.apply_to_base(base_stats)
+	set_stats_from_dict(stats)
+	AST.set_stats_from_dict(stats)
+	
+func set_stats_from_dict(d):
+	max_health = d[StatsUtil.StatName.MAX_HEALTH].x
+	max_dashes = d[StatsUtil.StatName.DASHES].x
+	max_jumps = d[StatsUtil.StatName.JUMPS].x
+	dash_speed = d[StatsUtil.StatName.DASH_SPEED].x
+	move_speed = d[StatsUtil.StatName.MOVE_SPEED].x
 
 func _physics_process(delta):
 
@@ -83,7 +106,7 @@ func get_input():
 	if Input.is_action_just_pressed("dash") and can_dash:
 		is_dashing = true
 		dashes -= 1
-		if dashes == 0:
+		if dashes <= 0:
 			can_dash = false
 		dash_timer.start(dash_time)
 		dash_audio.play()

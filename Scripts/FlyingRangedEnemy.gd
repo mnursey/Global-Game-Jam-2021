@@ -39,7 +39,7 @@ onready var hit_audio = $HitAudio
 
 func _ready():
 	health = 30
-	state = pick_random_state([IDLE, WANDER])
+	state = pick_random_state([IDLE])
 	animationPlayer.play("Idle")
 
 func _physics_process(delta):
@@ -108,7 +108,7 @@ func player_dist():
 	
 		
 func update_wander():
-	state = pick_random_state([IDLE, WANDER])
+	state = pick_random_state([IDLE])
 	wanderController.start_wander_timer(rand_range(1, 3))
 
 func pick_random_state(state_list):

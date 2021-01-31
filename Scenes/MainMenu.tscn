@@ -16,11 +16,9 @@ margin_right = 640.0
 margin_bottom = 360.0
 theme = SubResource( 1 )
 texture = ExtResource( 1 )
-region_rect = Rect2( 16, 1, 91, 126 )
-patch_margin_left = 12
-patch_margin_top = 12
-patch_margin_right = 14
-patch_margin_bottom = 12
+region_rect = Rect2( 16, 1, 89, 126 )
+patch_margin_left = 3
+patch_margin_right = 3
 __meta__ = {
 "_edit_use_anchors_": false
 }

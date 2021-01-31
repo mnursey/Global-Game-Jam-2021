@@ -93,4 +93,5 @@ debug_1={
 [rendering]
 
 quality/2d/use_pixel_snap=true
+environment/default_clear_color=Color( 0.0784314, 0.0941176, 0.180392, 1 )
 environment/default_environment="res://default_env.tres"

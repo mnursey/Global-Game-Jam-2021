@@ -33,7 +33,11 @@ tile_data = PoolIntArray( -2031598, 0, 196611, -1900577, 0, 0, -1900576, 0, 1, -
 [node name="Door" parent="RoomController" index="1"]
 position = Vector2( 728, -112 )
 
+<<<<<<< HEAD:Scenes/GameLevels/OLDTutorialLevel.tscn
+[node name="MoveShoot Tutoiral" type="Label" parent="." index="2"]
+=======
 [node name="MoveShoot Tutoiral" type="Label" parent="." index="1"]
+>>>>>>> f3a2c8053fe4efb9676dff2cfdaf6fb58dffa38a:Scenes/GameLevels/TutorialLevel.tscn
 margin_left = -256.0
 margin_top = 40.0
 margin_right = 48.0
@@ -62,6 +66,9 @@ align = 1
 __meta__ = {
 "_edit_use_anchors_": false
 }
+<<<<<<< HEAD:Scenes/GameLevels/OLDTutorialLevel.tscn
+=======
 
 [node name="ItemSelectionModal" parent="." index="3" instance=ExtResource( 3 )]
 [connection signal="doors_opened" from="RoomController" to="ItemSelectionModal" method="_on_RoomController_doors_opened"]
+>>>>>>> f3a2c8053fe4efb9676dff2cfdaf6fb58dffa38a:Scenes/GameLevels/TutorialLevel.tscn

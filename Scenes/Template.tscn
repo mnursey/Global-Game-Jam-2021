@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://TileMaps/TileMap1.tscn" type="PackedScene" id=1]
 [ext_resource path="res://TileMaps/TileMap2.tscn" type="PackedScene" id=2]
@@ -7,8 +7,19 @@
 [ext_resource path="res://TileMaps/TileMapMisc.tscn" type="PackedScene" id=5]
 [ext_resource path="res://TileMaps/ExportMap.tscn" type="PackedScene" id=6]
 [ext_resource path="res://TileMaps/Background.tscn" type="PackedScene" id=7]
+[ext_resource path="res://Scenes/RoomController.tscn" type="PackedScene" id=8]
 
 [node name="Template" type="Node2D"]
+
+[node name="RoomController" parent="." instance=ExtResource( 8 )]
+
+[node name="Door" parent="RoomController" instance=ExtResource( 3 )]
+
+[node name="Enemies" type="Node2D" parent="RoomController"]
+
+[node name="Node2D" type="Node2D" parent="RoomController"]
+
+[node name="Door" parent="RoomController/Node2D" instance=ExtResource( 3 )]
 
 [node name="TileMap1" parent="." instance=ExtResource( 1 )]
 tile_data = PoolIntArray(  )
@@ -30,11 +41,5 @@ tile_data = PoolIntArray(  )
 
 [node name="TileMap" parent="Background/ParallaxLayer" index="0"]
 tile_data = PoolIntArray(  )
-
-[node name="EntranceDoor" parent="." instance=ExtResource( 3 )]
-
-[node name="ExitDoor" parent="." instance=ExtResource( 3 )]
-
-[node name="Enemies" type="Node2D" parent="."]
 
 [editable path="Background"]

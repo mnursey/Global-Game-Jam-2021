@@ -1,8 +1,7 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://Art/tile2/tileset_tile2.tres" type="TileSet" id=1]
 [ext_resource path="res://Scenes/WalkingEnemy.tscn" type="PackedScene" id=2]
-[ext_resource path="res://Scenes/Player.tscn" type="PackedScene" id=3]
 [ext_resource path="res://Scenes/FlyingEnemy.tscn" type="PackedScene" id=4]
 [ext_resource path="res://Art/background/tileset_background.tres" type="TileSet" id=5]
 [ext_resource path="res://Art/tile1/tileset_tile1.tres" type="TileSet" id=6]
@@ -74,6 +73,3 @@ tile_data = PoolIntArray( -131077, 0, 0, -131076, 0, 1, -131075, 0, 1, -131074, 
 
 [node name="Door" parent="RoomController" instance=ExtResource( 10 )]
 position = Vector2( 488, -16 )
-
-[node name="Player" parent="." instance=ExtResource( 3 )]
-z_index = 1

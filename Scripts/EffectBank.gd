@@ -48,20 +48,20 @@ class Effect:
 		if multiplier.z != 1: s += (n + "/pulse" + (" +" if multiplier.z > 1 else " -") + "%d%%\n") % (abs(multiplier.z-1)*100)
 		return s			
 		
-export var effects = {}
+var effects = {}
 
 func absorb(eb):
 	for e in eb.effects.values():
 		if effects.has(e.stat_name):
 			effects[e.stat_name].absorb(e)
 		else:
-			effects[e.stat_name] = e
+			effects[e.stat_name] = Effect.new(e.stat_name, e.cost, e.addend, e.multiplier)
 			
 func add_effect(e):
 	if effects.has(e.stat_name):
 		effects[e.stat_name].absorb(e)
 	else:
-		effects[e.stat_name] = e
+		effects[e.stat_name] = Effect.new(e.stat_name, e.cost, e.addend, e.multiplier)
 		
 		
 func apply_to_base(stats_dict):
@@ -81,11 +81,15 @@ static func print_test_bank():
 	print(generate_effect_bank(1, 1, 1, 0))
 			
 			
-static func generate_effect_bank(num_buffs, num_debuffs, abs_cost, cost_bias):
+static func generate_effect_bank(num_buffs, num_debuffs, abs_cost, cost_bias, pool = StatsUtil.StatName.values.duplicate()):
 	randomize()
 	var new_effect
 	var used_effects = []
 	var bank = load('res://Scenes/EffectBank.tscn').instance().duplicate()
+	
+	var major_pool = []
+	for s in pool:
+		if s in StatsUtil.MAJOR_STATS: major_pool.append(s)
 
 	#breakpoint
 	var remaining_cost = abs_cost + cost_bias
@@ -100,10 +104,10 @@ static func generate_effect_bank(num_buffs, num_debuffs, abs_cost, cost_bias):
 	budgets.invert()
 	
 	for i in range(num_buffs):
-		if i == 0 and randf() < 0.6:
-			new_effect = generate_random_effect(budgets[i], StatsUtil.MAJOR_STATS.duplicate(), used_effects)
+		if i == 0 and randf() < (0.2 + num_buffs/10):
+			new_effect = generate_random_effect(budgets[i], major_pool, used_effects)
 		else:
-			new_effect = generate_random_effect(budgets[i], StatsUtil.StatName.values().duplicate(), used_effects)
+			new_effect = generate_random_effect(budgets[i], pool, used_effects)
 		
 		used_effects.append(new_effect)
 		bank.add_effect(new_effect)
@@ -123,7 +127,7 @@ static func generate_effect_bank(num_buffs, num_debuffs, abs_cost, cost_bias):
 	budgets.sort()
 	
 	for i in range(num_debuffs):
-		new_effect = generate_random_effect(budgets[i], StatsUtil.StatName.values().duplicate(), used_effects)
+		new_effect = generate_random_effect(budgets[i], pool, used_effects)
 		used_effects.append(new_effect)
 		bank.add_effect(new_effect)
 		
@@ -143,14 +147,7 @@ static func generate_random_effect(cost, stats_pool, forbidden_effects = []) -> 
 	
 	var stat_name = StatsUtil.choose_random(stats_pool)
 	var stat_cost_vector = StatsUtil.costs[stat_name]
-	
-	var variant_weights = [2, 1, 1]
-	if stat_cost_vector.y == 0:
-		variant_weights[1] = 0
-	if stat_cost_vector.z == 0:
-		variant_weights[2] = 0
-	
-	var stat_variant = StatsUtil.choose_weighted(['x', 'y', 'z'], variant_weights)
+	var stat_variant = StatsUtil.choose_weighted(['x', 'y', 'z'], StatsUtil.variant_weights[stat_name])
 	var stat_op = StatsUtil.choose_weighted(['+', '*'], [3, 1])
 	
 	var stat_cost
@@ -168,7 +165,7 @@ static func generate_random_effect(cost, stats_pool, forbidden_effects = []) -> 
 	if stat_cost == 0: #invalid choice
 		return generate_random_effect(cost, stats_pool, forbidden_effects)
 		
-	print(StatsUtil.string_names[stat_name] + " " + stat_op)
+	#print(StatsUtil.string_names[stat_name] + " " + stat_op)
 	if stat_op == '+':
 		var boost = cost/stat_cost
 		if stat_name in StatsUtil.INTEGER_STATS:

@@ -1,10 +1,8 @@
-extends KinematicBody2D
+extends 'res://Scripts/EnemyBase.gd'
 
-var health = 30
 var TILESIZE = 16
 var movespeed = 5 * TILESIZE
 
-var velocity = Vector2.ZERO
 var knockback = Vector2.ZERO
 var knockback_distance = 50
 
@@ -18,6 +16,9 @@ onready var hurtbox = $EnemyHurtbox
 onready var hitbox = $EnemyHitbox
 onready var raycast = $RayCast2D
 onready var knockback_timer = $KnockbackTimer
+
+func _ready():
+	health = 30
 
 func take_damage(amount):
 	health -= amount

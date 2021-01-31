@@ -1,4 +1,4 @@
-extends KinematicBody2D
+extends 'res://Scripts/EnemyBase.gd'
 
 var air_friction = 200
 var wander_range = 5
@@ -11,9 +11,6 @@ enum {
 	CHASE
 }
 
-var velocity = Vector2.ZERO
-var knockback = Vector2.ZERO
-
 var state = IDLE
 
 onready var player_detection_zone = $PlayerDecectionZone
@@ -23,11 +20,12 @@ onready var animationPlayer = $AnimationPlayer
 onready var sprite = $Sprite
 
 func _ready():
+	health = 30
 	state = pick_random_state([IDLE, WANDER])
 
 func _physics_process(delta):
-	knockback = knockback.move_toward(Vector2.ZERO, air_friction * delta)
-	knockback = move_and_slide(knockback)
+	#knockback = knockback.move_toward(Vector2.ZERO, air_friction * delta)
+	#knockback = move_and_slide(knockback)
 	
 	match state:
 		IDLE:

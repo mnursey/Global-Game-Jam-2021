@@ -37,8 +37,8 @@ const default_stats = {
 	StatName.MAX_HEALTH:	Vector3(100, 0, 0),
 	StatName.JUMPS:			Vector3(1, 0, 0),
 	StatName.DASHES:		Vector3(1, 0, 0),
-	StatName.MOVE_SPEED:	Vector3(10, 0, 0),
-	StatName.DASH_SPEED:	Vector3(40, 0, 0),
+	StatName.MOVE_SPEED:	Vector3(160, 0, 0),
+	StatName.DASH_SPEED:	Vector3(320, 0, 0),
 	#AST
 	StatName.FIRE_RATE: 	Vector3(2.0, 0, 0),
 	StatName.DISTANCE: 		Vector3(10.0, 0, 0),

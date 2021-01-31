@@ -98,8 +98,10 @@ func apply_movement():
 		velocity = move_and_slide(dash_direction, UP)
 		#velocity = lerp(velocity, velocity/100, 0.2)
 		invincibility_timer.start()
+		sprite.scale = Vector2(0.9, 0.9)
 	else:
 		velocity = move_and_slide(velocity, UP)
+		sprite.scale = Vector2(1, 1)
 		if !is_on_floor() and was_on_floor and !is_jumping:
 			coyote_timer.start()
 	if is_on_floor():
@@ -189,7 +191,6 @@ func _on_Hurtbox_body_entered(body):
 func _on_AnimationPlayer_animation_finished(anim_name):
 	if anim_name == "dead":
 		sprite.hide()
-
 
 
 func _on_AST_shot_ast():

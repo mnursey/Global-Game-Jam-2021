@@ -10,13 +10,12 @@ func _ready():
 
 func get_random_items():
 	var items = [
-		StatsUtil.generate_item(2, 0.3),
-		StatsUtil.generate_item(2, 0.3),
-		StatsUtil.generate_item(2, 0.3)
+		StatsUtil.generate_item(2, 0.5),
+		StatsUtil.generate_item(2, 0.5),
+		StatsUtil.generate_item(2, 0.5)
 	]
 	
 	for i in range(len(itemEntries)):
 		itemEntries[i].add_child(items[i])
 		itemStats[i].text = items[i].get_node("EffectBank").to_string()
-	
 	

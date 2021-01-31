@@ -56,6 +56,8 @@ func inherit_props(p):
 		#inherited_vel.y /= 4
 
 	
+	inherited_vel = Vector2.ZERO
+	
 	is_AST = false
 	
 	direction = p.velocity.normalized().rotated(deg2rad((randf()-0.5)*scatter.x))

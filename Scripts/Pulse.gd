@@ -121,4 +121,6 @@ func _process(delta):
 		queue_free()
 	
 
-
+func _on_Pulse_body_entered(body):
+	if !body.is_in_group("Player"):
+		queue_free()

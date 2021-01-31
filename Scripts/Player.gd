@@ -53,6 +53,8 @@ onready var hurtBox = $Hurtbox/CollisionShape2D
 onready var collisionBox = $CollisionShape2D
 onready var AST = $AST 
 
+
+
 func _ready():
 	GM.player = self
 	gravity = 2 * max_jump_height / pow(jump_duration, 2)

@@ -76,6 +76,10 @@ rotation = -1.5708
 scale = Vector2( 1, 0.33 )
 enabled = true
 
+[node name="FloorRaycast" type="RayCast2D" parent="."]
+scale = Vector2( 1, 0.25 )
+enabled = true
+
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2( -0.334091, 1.44771 )
 scale = Vector2( 0.591, 0.859 )

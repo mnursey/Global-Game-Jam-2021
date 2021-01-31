@@ -48,7 +48,9 @@ onready var death_sound = $DeadAudio
 onready var jump_audio = $Jump
 onready var hit_audio = $HitAudio
 onready var dash_audio =$DashAudio
-
+onready var camera = $ShakeCamera2D
+onready var hurtBox = $Hurtbox/CollisionShape2D
+onready var collisionBox = $CollisionShape2D
 
 func _ready():
 	GM.player = self
@@ -58,8 +60,9 @@ func _ready():
 	min_jump_velocity = -sqrt(2 * gravity * min_jump_height)
 
 func _physics_process(delta):
-	apply_gravity(delta)
+
 	if !dead:
+		apply_gravity(delta)
 		get_move_input()
 		get_input()
 		apply_movement()
@@ -144,10 +147,11 @@ func _on_DashTimer_timeout():
 	is_dashing = false
 	
 func take_damage(amount):
-	if invincibility_timer.is_stopped():
+	if !dead and invincibility_timer.is_stopped():
 		invincibility_timer.start()
 		set_health(health - amount)
 		hit_audio.play()
+		camera.add_trauma(0.3)
 		
 func heal(amount):
 	set_health(health + amount)
@@ -156,7 +160,9 @@ func dead():
 	dead = true
 	anim_player.play("dead")
 	emit_signal("dead")
-
+	camera.add_trauma(0.8)
+	hurtBox.set_disabled(true)
+	collisionBox.set_disabled(true)
 
 func set_health(value):
 	var prev_health = health

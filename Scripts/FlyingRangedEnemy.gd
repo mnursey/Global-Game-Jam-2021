@@ -4,7 +4,7 @@ signal damaged(health)
 
 var air_friction = 75
 var wander_range = 5
-var max_speed = 50
+var max_speed = 100
 var acceleration = 300
 var knockback_distance = 50
 

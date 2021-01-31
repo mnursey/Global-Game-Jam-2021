@@ -20,7 +20,3 @@ func get_random_items():
 		itemStats[i].text = items[i].get_node("EffectBank").to_string()
 	
 	
-func _gui_input(event):
-	if (event is InputEventMouseButton && event.pressed && event.button_index == 1):
-		get_owner().hide()
-		get_tree().paused = false

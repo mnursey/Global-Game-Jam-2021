@@ -30,8 +30,9 @@ func _ready():
 func find_enemies(node):
 	for N in node.get_children():
 		
-		if enemyNames.has(N.name):
-			enemies.append(N)
+		for e in enemyNames:
+			if e in N.name:
+				enemies.append(N)
 		
 		if N.get_child_count() > 0:
 			find_enemies(N)
@@ -39,8 +40,9 @@ func find_enemies(node):
 func find_doors(node):
 	for N in node.get_children():
 		
-		if doorNames.has(N.name):
-			doors.append(N)
+		for d in doorNames:
+			if d in N.name:
+				doors.append(N)
 		
 		if N.get_child_count() > 0:
 			find_doors(N)

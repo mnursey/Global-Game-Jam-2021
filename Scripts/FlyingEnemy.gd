@@ -8,6 +8,8 @@ var max_speed = 50
 var acceleration = 300
 var knockback_distance = 50
 
+var aggro_range = 150
+
 var hit = false
 
 enum {
@@ -39,13 +41,16 @@ func _physics_process(delta):
 	
 	match state:
 		IDLE:
+			if player_dist() < aggro_range:
+				state = CHASE
+				
 			velocity = velocity.move_toward(Vector2.ZERO, air_friction * delta)
-			seek_player()
-			
 			if wanderController.get_time_left() == 0:
 				update_wander()
 		WANDER:
-			seek_player()
+			if player_dist() < aggro_range:
+				state = CHASE
+				
 			if wanderController.get_time_left() == 0:
 				update_wander()
 				
@@ -55,24 +60,20 @@ func _physics_process(delta):
 				update_wander()
 			
 		CHASE:
-			var player = player_detection_zone.player
-			if player != null:
-				accelerate_towards_point(player.global_position, delta)
-			else:
-				state = IDLE
-	if soft_collision.is_colliding():
-		velocity += soft_collision.get_push_vector() * delta * 400
+			accelerate_towards_point(GM.player.global_position, delta)
+		
+	#if soft_collision.is_colliding():
+	#	velocity += soft_collision.get_push_vector() * delta * 400
+	
+	sprite.flip_h = velocity.x < 0
 	velocity = move_and_slide(velocity)
 				
 func accelerate_towards_point(point, delta):
 	var direction = global_position.direction_to(point)
 	velocity = velocity.move_toward(direction * max_speed, acceleration * delta)
-	sprite.flip_h = velocity.x < 0
-
-
-func seek_player():
-	if player_detection_zone.can_see_player():
-		state = CHASE
+	
+func player_dist():
+	return (GM.player.global_position - global_position).length()
 		
 func update_wander():
 	state = pick_random_state([IDLE, WANDER])

@@ -1,5 +1,6 @@
 extends Node
 
+var player
 var enemies = []
 
 func add_enemy(e):

@@ -24,6 +24,10 @@ config/name="GGJ2021"
 run/main_scene="res://Scenes/DemoLevel.tscn"
 config/icon="res://icon.png"
 
+[autoload]
+
+GM="*res://Scripts/GM.gd"
+
 [display]
 
 window/size/width=640

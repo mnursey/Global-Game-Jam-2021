@@ -10,9 +10,6 @@ extents = Vector2( 163.021, 10 )
 
 [node name="DemoLevel" type="Node2D"]
 
-[node name="Player" parent="." instance=ExtResource( 3 )]
-position = Vector2( 94, 75 )
-
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
 
 [node name="icon" type="Sprite" parent="StaticBody2D"]
@@ -33,7 +30,7 @@ scale = Vector2( 5.1088, 0.291295 )
 texture = ExtResource( 1 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D2"]
-position = Vector2( 147.968, 105.452 )
+position = Vector2( 93.2396, 145.163 )
 shape = SubResource( 1 )
 
 [node name="StaticBody2D3" type="StaticBody2D" parent="."]
@@ -53,5 +50,8 @@ position = Vector2( 10.715, 86.1165 )
 
 [node name="FlyingEnemy" parent="." instance=ExtResource( 4 )]
 position = Vector2( 327.95, -13.8748 )
+
+[node name="Player" parent="." instance=ExtResource( 3 )]
+position = Vector2( 94, 75 )
 
 [editable path="Player"]

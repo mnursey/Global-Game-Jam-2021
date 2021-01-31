@@ -127,7 +127,9 @@ tracks/1/keys = {
 
 [sub_resource type="CapsuleShape2D" id=7]
 
-[node name="Player" type="KinematicBody2D"]
+[node name="Player" type="KinematicBody2D" groups=[
+"Player",
+]]
 collision_layer = 2
 script = ExtResource( 1 )
 

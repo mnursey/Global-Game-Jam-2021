@@ -25,8 +25,17 @@
 [node name="FlyingRangedEnemy" parent="RoomController/Level/Enemies" instance=ExtResource( 12 )]
 position = Vector2( 8, -104 )
 
+[node name="FlyingRangedEnemy2" parent="RoomController/Level/Enemies" instance=ExtResource( 12 )]
+position = Vector2( 160, -74.751 )
+
+[node name="FlyingRangedEnemy3" parent="RoomController/Level/Enemies" instance=ExtResource( 12 )]
+position = Vector2( 56, -104 )
+
 [node name="Walkie Enemy" parent="RoomController/Level/Enemies" instance=ExtResource( 2 )]
-position = Vector2( 10.715, 86.1165 )
+position = Vector2( 208, 72 )
+
+[node name="Walkie Enemy2" parent="RoomController/Level/Enemies" instance=ExtResource( 2 )]
+position = Vector2( 97.1149, 72 )
 
 [node name="FlyingEnemy" parent="RoomController/Level/Enemies" instance=ExtResource( 4 )]
 position = Vector2( 337.651, -19.9926 )
@@ -44,6 +53,7 @@ format = 1
 tile_data = PoolIntArray( -196606, 0, 196608, -196605, 0, 196610, -196602, 0, 196608, -196601, 0, 196610, -196596, 0, 196608, -196595, 0, 196610, 196622, 0, 196608, 196623, 0, 196610 )
 
 [node name="TileMap3" type="TileMap" parent="RoomController/Level"]
+position = Vector2( -48, 2.28885 )
 tile_set = ExtResource( 7 )
 cell_size = Vector2( 16, 16 )
 format = 1

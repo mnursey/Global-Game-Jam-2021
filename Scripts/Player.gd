@@ -88,6 +88,8 @@ func get_input():
 		var move_vector = get_global_mouse_position() - position
 		move_vector = move_vector.clamped(1)
 		dash_direction = move_vector * dash_speed
+		camera.add_trauma(0.2)
+		
 
 func apply_movement():
 	var was_on_floor = is_on_floor()
@@ -188,3 +190,7 @@ func _on_AnimationPlayer_animation_finished(anim_name):
 	if anim_name == "dead":
 		sprite.hide()
 
+
+
+func _on_AST_shot_ast():
+	camera.add_trauma(0.15)

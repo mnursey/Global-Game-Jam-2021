@@ -9,6 +9,8 @@ var fire_rate_timer : float = 0
 
 var disable = false
 
+signal shot_ast
+
 func _ready():
 	Player = get_parent()
 	base_stats = StatsUtil.default_stats.duplicate()
@@ -41,6 +43,7 @@ func _process(delta):
 	fire_rate_timer += delta
 	if !disable && Input.is_action_pressed("shoot") and fire_rate_timer > 1/fire_rate:
 		fire_rate_timer = 0
+		emit_signal("shot_ast")
 		spawn_pulse()
 		
 	if Input.is_action_just_pressed("debug_1"):

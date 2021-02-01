@@ -110,7 +110,7 @@ func get_input():
 			can_dash = false
 		dash_timer.start(dash_time)
 		dash_audio.play()
-		var move_vector = get_global_mouse_position() - position
+		var move_vector = get_global_mouse_position() - global_position
 		move_vector = move_vector.clamped(1)
 		dash_direction = move_vector * dash_speed
 		camera.add_trauma(0.2)

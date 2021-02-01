@@ -114,6 +114,9 @@ func get_input():
 		move_vector = move_vector.clamped(1)
 		dash_direction = move_vector * dash_speed
 		camera.add_trauma(0.2)
+	
+	if Input.is_action_just_pressed("restart"):
+		get_tree().reload_current_scene()
 		
 
 func apply_movement():

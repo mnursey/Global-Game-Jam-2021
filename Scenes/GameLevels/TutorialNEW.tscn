@@ -8,9 +8,6 @@
 
 [node name="Template" instance=ExtResource( 4 )]
 
-[node name="Door" parent="RoomController" index="0"]
-position = Vector2( 856, 64 )
-
 [node name="WalkingEnemy" parent="RoomController/Enemies" index="0" instance=ExtResource( 2 )]
 position = Vector2( 600, 120 )
 

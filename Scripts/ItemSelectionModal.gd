@@ -24,5 +24,5 @@ func _on_RoomController_doors_opened():
 
 func _on_timer_timeout():
 	self.popup_centered()
-	self.rect_position = GM.player.get_position() - (self.rect_size / 4.5)
-	get_tree().paused = true
+	self.rect_position = GM.player.get_global_position() - (self.rect_size / 4.5)
+	#get_tree().paused = true

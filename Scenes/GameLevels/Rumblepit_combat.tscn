@@ -1,14 +1,10 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://Scenes/OneWayPlatform.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Scenes/Template.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Scenes/WalkingEnemy.tscn" type="PackedScene" id=3]
-[ext_resource path="res://Scenes/Player.tscn" type="PackedScene" id=4]
 
 [node name="Template" instance=ExtResource( 2 )]
-
-[node name="Door" parent="RoomController" index="0"]
-position = Vector2( 8, 208 )
 
 [node name="WalkingEnemy" parent="RoomController/Enemies" index="0" instance=ExtResource( 3 )]
 position = Vector2( 208, 56 )
@@ -57,8 +53,5 @@ position = Vector2( 312, 184 )
 
 [node name="Platform4" parent="." index="10" instance=ExtResource( 1 )]
 position = Vector2( 312, 136 )
-
-[node name="Player" parent="." index="11" instance=ExtResource( 4 )]
-position = Vector2( 56, 216 )
 
 [editable path="Background"]

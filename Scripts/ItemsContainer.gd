@@ -10,9 +10,9 @@ func _ready():
 
 func get_random_items():
 	var items = [
-		StatsUtil.generate_item(2, 0.5),
-		StatsUtil.generate_item(2, 0.5),
-		StatsUtil.generate_item(2, 0.5)
+		StatsUtil.generate_item(4, 0.5),
+		StatsUtil.generate_item(4, 0.5),
+		StatsUtil.generate_item(4, 0.5)
 	]
 	
 	for i in range(len(itemEntries)):

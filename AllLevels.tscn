@@ -15,14 +15,23 @@ position = Vector2( -5200, 120 )
 [node name="Template" parent="." instance=ExtResource( 1 )]
 position = Vector2( 0, -8 )
 
+[node name="ItemSelectionModal" parent="Template" index="7"]
+visible = true
+
 [node name="Template3" parent="." instance=ExtResource( 5 )]
 position = Vector2( 3736, 8 )
 
 [node name="Enemies" parent="Template3/RoomController" index="0"]
 visible = true
 
+[node name="ItemSelectionModal" parent="Template3" index="7"]
+visible = true
+
 [node name="Template2" parent="." instance=ExtResource( 6 )]
 position = Vector2( 2280, -120 )
+
+[node name="ItemSelectionModal" parent="Template2" index="7"]
+visible = true
 
 [node name="Template4" parent="." instance=ExtResource( 2 )]
 position = Vector2( 4456, -120 )
@@ -48,7 +57,11 @@ position = Vector2( 7544, -440 )
 [node name="TileMap1" parent="." instance=ExtResource( 8 )]
 position = Vector2( 8488, -408 )
 
+[editable path="Template"]
+
 [editable path="Template3"]
+
+[editable path="Template2"]
 
 [editable path="Template4"]
 

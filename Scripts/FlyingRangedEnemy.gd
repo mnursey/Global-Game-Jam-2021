@@ -27,7 +27,6 @@ enum {
 var state = IDLE
 
 onready var Bullet = load('res://Scenes/Bullet.tscn')
-onready var player_detection_zone = $PlayerDectectionZone
 onready var hurtbox = $EnemyHurtbox
 onready var wanderController = $WanderController
 onready var animationPlayer = $AnimationPlayer

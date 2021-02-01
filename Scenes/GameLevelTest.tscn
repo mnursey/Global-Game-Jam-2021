@@ -28,6 +28,8 @@ position = Vector2( 1128, 16 )
 [node name="ExportMap" parent="Template4" index="5"]
 visible = false
 
+[editable path="Template"]
+
 [editable path="Template2"]
 
 [editable path="Template3"]

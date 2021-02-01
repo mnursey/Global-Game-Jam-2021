@@ -27,7 +27,7 @@ _global_script_class_icons={
 [application]
 
 config/name="GGJ2021"
-run/main_scene="res://Scenes/Example_Level.tscn"
+run/main_scene="res://Scenes/MainMenu.tscn"
 config/icon="res://icon.png"
 
 [autoload]

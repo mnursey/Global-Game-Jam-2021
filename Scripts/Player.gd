@@ -86,6 +86,9 @@ func set_stats_from_dict(d):
 	move_speed = d[StatsUtil.StatName.MOVE_SPEED].x
 
 func _physics_process(delta):
+	if Input.is_action_just_pressed("restart"):
+		get_tree().reload_current_scene()
+		
 
 	if !dead:
 		apply_gravity(delta)
@@ -115,9 +118,6 @@ func get_input():
 		dash_direction = move_vector * dash_speed
 		camera.add_trauma(0.2)
 	
-	if Input.is_action_just_pressed("restart"):
-		get_tree().reload_current_scene()
-		
 
 func apply_movement():
 	var was_on_floor = is_on_floor()

@@ -12,52 +12,53 @@
 [node name="AllLevels" type="Node2D"]
 position = Vector2( -5200, 120 )
 
+[node name="Template3" parent="." instance=ExtResource( 5 )]
+position = Vector2( 1024, -72 )
+
+[node name="ItemSelectionModal" parent="Template3" index="7"]
+visible = true
+
+[node name="Template2" parent="." instance=ExtResource( 6 )]
+position = Vector2( 5160, -440 )
+
+[node name="ItemSelectionModal" parent="Template2" index="7"]
+visible = true
+
+[node name="Template4" parent="." instance=ExtResource( 2 )]
+position = Vector2( 1744, -200 )
+
+[node name="ExportMap" parent="Template4" index="5"]
+visible = false
+
+[node name="Template5" parent="." instance=ExtResource( 3 )]
+position = Vector2( 2696, -104 )
+
+[node name="ExportMap" parent="Template5" index="5"]
+visible = false
+
+[node name="Template6" parent="." instance=ExtResource( 4 )]
+position = Vector2( 6448, -392 )
+
+[node name="ExportMap" parent="Template6" index="5"]
+visible = false
+
+[node name="Template7" parent="." instance=ExtResource( 7 )]
+position = Vector2( 7560, -440 )
+
+[node name="TileMap1" parent="." instance=ExtResource( 8 )]
+position = Vector2( 8504, -408 )
+
 [node name="Template" parent="." instance=ExtResource( 1 )]
 position = Vector2( 0, -8 )
 
 [node name="ItemSelectionModal" parent="Template" index="7"]
 visible = true
 
-[node name="Template3" parent="." instance=ExtResource( 5 )]
-position = Vector2( 3736, 8 )
-
-[node name="Enemies" parent="Template3/RoomController" index="0"]
-visible = true
-
-[node name="ItemSelectionModal" parent="Template3" index="7"]
-visible = true
-
-[node name="Template2" parent="." instance=ExtResource( 6 )]
-position = Vector2( 2280, -120 )
-
-[node name="ItemSelectionModal" parent="Template2" index="7"]
-visible = true
-
-[node name="Template4" parent="." instance=ExtResource( 2 )]
-position = Vector2( 4456, -120 )
-
-[node name="ExportMap" parent="Template4" index="5"]
-visible = false
-
-[node name="Template5" parent="." instance=ExtResource( 3 )]
-position = Vector2( 5400, -24 )
-
-[node name="ExportMap" parent="Template5" index="5"]
-visible = false
-
-[node name="Template6" parent="." instance=ExtResource( 4 )]
-position = Vector2( 6440, -392 )
-
-[node name="ExportMap" parent="Template6" index="5"]
-visible = false
-
-[node name="Template7" parent="." instance=ExtResource( 7 )]
-position = Vector2( 7544, -440 )
-
-[node name="TileMap1" parent="." instance=ExtResource( 8 )]
-position = Vector2( 8488, -408 )
-
-[editable path="Template"]
+[node name="MoveandShootTutorial" parent="Template" index="8"]
+text = "A and D to move
+Space to Jump
+Left Click to Shoot
+Right Click or Shift to Dash"
 
 [editable path="Template3"]
 
@@ -68,3 +69,5 @@ position = Vector2( 8488, -408 )
 [editable path="Template5"]
 
 [editable path="Template6"]
+
+[editable path="Template"]

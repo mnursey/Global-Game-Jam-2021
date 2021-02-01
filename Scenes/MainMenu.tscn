@@ -1,12 +1,10 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://Scripts/MainMenu.gd" type="Script" id=1]
-[ext_resource path="res://Art/menu1.png" type="Texture" id=2]
+[ext_resource path="res://Art/NinePatchRect.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Button1-NineFrame.tres" type="StyleBox" id=3]
 [ext_resource path="res://Art/pixel_font.tres" type="DynamicFont" id=4]
 [ext_resource path="res://button1 - NineFrame-Pressed.tres" type="StyleBox" id=5]
-
-[sub_resource type="Theme" id=1]
 
 [node name="MainMenu" type="Control"]
 anchor_right = 1.0
@@ -18,18 +16,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="NinePatchRect" type="NinePatchRect" parent="."]
-margin_right = 640.0
-margin_bottom = 360.0
-theme = SubResource( 1 )
-texture = ExtResource( 2 )
-region_rect = Rect2( 15, 0, 90, 127 )
-patch_margin_left = 2
-patch_margin_top = 3
-patch_margin_right = 2
-__meta__ = {
-"_edit_use_anchors_": false
-}
+[node name="NinePatchRect" parent="." instance=ExtResource( 2 )]
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 anchor_right = 1.0

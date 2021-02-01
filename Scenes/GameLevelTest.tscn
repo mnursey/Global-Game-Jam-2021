@@ -1,35 +1,85 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://Scenes/GameLevels/TutorialNEW.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Scenes/GameLevels/HaloBridge.tscn" type="PackedScene" id=2]
-[ext_resource path="res://Scenes/GameLevels/Snowy Valleys Combat.tscn" type="PackedScene" id=3]
-[ext_resource path="res://Scenes/GameLevels/CombatRoom1.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Art/lazer_door-Sheet.png" type="Texture" id=3]
+[ext_resource path="res://Scripts/Door.gd" type="Script" id=4]
+
+[sub_resource type="AtlasTexture" id=1]
+atlas = ExtResource( 3 )
+region = Rect2( 0, 0, 16, 32 )
+
+[sub_resource type="AtlasTexture" id=2]
+atlas = ExtResource( 3 )
+region = Rect2( 0, 32, 16, 32 )
+
+[sub_resource type="AtlasTexture" id=3]
+atlas = ExtResource( 3 )
+region = Rect2( 16, 32, 16, 32 )
+
+[sub_resource type="AtlasTexture" id=4]
+atlas = ExtResource( 3 )
+region = Rect2( 32, 32, 16, 32 )
+
+[sub_resource type="AtlasTexture" id=5]
+atlas = ExtResource( 3 )
+region = Rect2( 48, 32, 16, 32 )
+
+[sub_resource type="AtlasTexture" id=6]
+atlas = ExtResource( 3 )
+region = Rect2( 64, 32, 16, 32 )
+
+[sub_resource type="AtlasTexture" id=7]
+atlas = ExtResource( 3 )
+region = Rect2( 80, 32, 16, 32 )
+
+[sub_resource type="AtlasTexture" id=8]
+atlas = ExtResource( 3 )
+region = Rect2( 96, 32, 16, 32 )
+
+[sub_resource type="SpriteFrames" id=9]
+animations = [ {
+"frames": [ SubResource( 1 ) ],
+"loop": true,
+"name": "off",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 2 ), SubResource( 3 ), SubResource( 4 ), SubResource( 5 ), SubResource( 6 ), SubResource( 7 ), SubResource( 8 ) ],
+"loop": true,
+"name": "on",
+"speed": 14.0
+} ]
+
+[sub_resource type="RectangleShape2D" id=10]
+extents = Vector2( 6.2281, 15.7923 )
 
 [node name="GameLevel" type="Node2D"]
 
 [node name="Template" parent="." instance=ExtResource( 1 )]
-position = Vector2( -3680, 32 )
 
 [node name="Template2" parent="." instance=ExtResource( 2 )]
-position = Vector2( -1384, -80 )
+position = Vector2( 2320, -112 )
+
+[node name="Door" parent="Template2/RoomController" index="0"]
+visible = false
+script = ExtResource( 4 )
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="Template2/RoomController/Door" index="0"]
+frames = SubResource( 9 )
+animation = "on"
+playing = true
+
+[node name="StaticBody2D" type="StaticBody2D" parent="Template2/RoomController/Door" index="1"]
+visible = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Template2/RoomController/Door/StaticBody2D"]
+visible = false
+shape = SubResource( 10 )
 
 [node name="TileMap1" parent="Template2" index="1"]
 tile_data = PoolIntArray( 851877, 0, 196608, 851878, 0, 196610 )
 
-[node name="Template3" parent="." instance=ExtResource( 4 )]
-position = Vector2( 72, 48 )
-
-[node name="Enemies" parent="Template3/RoomController" index="0"]
-visible = true
-
-[node name="Template4" parent="." instance=ExtResource( 3 )]
-position = Vector2( 1128, 16 )
-
-[node name="ExportMap" parent="Template4" index="5"]
+[node name="ExportMap" parent="Template2" index="5"]
 visible = false
 
 [editable path="Template2"]
-
-[editable path="Template3"]
-
-[editable path="Template4"]

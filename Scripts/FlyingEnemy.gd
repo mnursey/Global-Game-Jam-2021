@@ -32,6 +32,7 @@ onready var hit_audio = $HitAudio
 
 func _ready():
 	health = 30
+	contact_damage = 20
 	state = pick_random_state([IDLE])
 	animationPlayer.play("Idle")
 
@@ -84,14 +85,15 @@ func pick_random_state(state_list):
 	return state_list.pop_front()
 
 func take_damage(amount):
-	health -= amount
-	emit_signal("damaged", health)
+	.take_damage(amount)
 	hit_audio.play()
 	if health <= 0:
+		#damage = 0
 		velocity = Vector2.ZERO
 		max_speed = 0
 		acceleration = 0
 		animationPlayer.play("Dead")
+		
 		
 		
 func _on_EnemyHurtbox_area_entered(_area):

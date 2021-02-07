@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=2]
+[gd_scene load_steps=20 format=2]
 
 [ext_resource path="res://Scripts/Player.gd" type="Script" id=1]
 [ext_resource path="res://Art/player_character_full_sheet.png" type="Texture" id=2]
@@ -11,6 +11,7 @@
 [ext_resource path="res://Sound/dash_3.wav" type="AudioStream" id=9]
 [ext_resource path="res://Scripts/CameraShake.gd" type="Script" id=10]
 [ext_resource path="res://Sound/finalspacefull.wav" type="AudioStream" id=11]
+[ext_resource path="res://Sound/finalspacereduction.wav" type="AudioStream" id=12]
 
 [sub_resource type="RectangleShape2D" id=1]
 
@@ -210,7 +211,11 @@ volume_db = -10.0
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
-[node name="MusicPlayer" type="AudioStreamPlayer" parent="."]
+[node name="Music1" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 12 )
+autoplay = true
+
+[node name="Music2" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 11 )
 autoplay = true
 [connection signal="health_updated" from="." to="HealthBar" method="_on_Player_health_updated"]

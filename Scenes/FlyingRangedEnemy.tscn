@@ -166,7 +166,6 @@ value = 30.0
 texture_over = null
 [connection signal="damaged" from="." to="HealthBar" method="_on_FlyingEnemy_damaged"]
 [connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_AnimationPlayer_animation_finished"]
-[connection signal="area_entered" from="EnemyHitbox" to="." method="_on_EnemyHitbox_area_entered"]
 [connection signal="area_entered" from="EnemyHurtbox" to="." method="_on_EnemyHurtbox_area_entered"]
 [connection signal="timeout" from="KnockbackTimer" to="." method="_on_KnockbackTimer_timeout"]
 [connection signal="timeout" from="WanderController/WanderTimer" to="WanderController" method="_on_WanderTimer_timeout"]

@@ -38,6 +38,7 @@ onready var hit_audio = $HitAudio
 
 func _ready():
 	health = 30
+	contact_damage = 0
 	state = pick_random_state([IDLE])
 	animationPlayer.play("Idle")
 
@@ -103,7 +104,9 @@ func accelerate_from_point(point, delta):
 	velocity = velocity.move_toward(direction * max_speed, acceleration * delta)
 
 func player_dist():
-	return (GM.player.global_position - global_position).length()
+	if GM.player: return (GM.player.global_position - global_position).length()
+	return INF
+	
 	
 		
 func update_wander():
@@ -115,8 +118,7 @@ func pick_random_state(state_list):
 	return state_list.pop_front()
 
 func take_damage(amount):
-	health -= amount
-	emit_signal("damaged", health)
+	.take_damage(amount)
 	hit_audio.play()
 	if health <= 0:
 		velocity = Vector2.ZERO

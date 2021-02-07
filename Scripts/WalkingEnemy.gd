@@ -29,14 +29,14 @@ onready var hit_audio = $HitAudio
 
 func _ready():
 	health = 30
+	contact_damage = 25
 	anim_player.play("Walk")
 	turn_to_face(1)
 
 func take_damage(amount):
+	.take_damage(amount)
 	jumping = true
 	hit_audio.play()
-	health -= amount
-	emit_signal("damaged", health)
 	if health <= 0:
 		velocity = Vector2.ZERO
 		movespeed = 0

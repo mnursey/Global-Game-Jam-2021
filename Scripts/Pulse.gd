@@ -10,6 +10,12 @@ var cur_suction
 var cur_homing
 var cur_gravity
 
+var s_vel
+var g_vel = Vector2.ZERO
+
+var targeted_enemy = null
+var retarget_timer = 1
+
 var timer
 var has_spawned_subpulse = false
 
@@ -35,8 +41,6 @@ func inherit_props(p):
 	subpulse_delay = p.subpulse_delay
 	split_chance = p.split_chance
 	
-	var inherited_vel = Vector2.ZERO
-
 	if not p.is_AST:
 		distance.x += distance.z 
 		lifetime.x += lifetime.z 
@@ -50,43 +54,28 @@ func inherit_props(p):
 		gravity.x += gravity.z 
 		subpulse_delay.x += subpulse_delay.z
 		split_chance.x += split_chance.z
-	else:
-		pass
-		#inherited_vel = p.Player.velocity
-		#inherited_vel.y /= 4
-
-	
-	inherited_vel = Vector2.ZERO
 	
 	is_AST = false
 	
 	direction = p.velocity.normalized().rotated(deg2rad((randf()-0.5)*scatter.x))
-
 	global_position = start_position + distance.x*direction
-	
-	var init_vel = direction*speed.x
-	init_vel += inherited_vel
-	cur_speed = init_vel.length();
-	direction = init_vel/cur_speed;
-	
 
 	cur_size = size.x
 	cur_damage = damage.x
-	#cur_speed = speed.x
+	cur_speed = speed.x
 	cur_knockback = knockback.x
 	cur_suction = suction.x
 	cur_homing  = homing.x
 	cur_gravity = gravity.x
 	
-	
-	velocity = direction*speed.x
+	s_vel = direction*speed.x
 	apply_growth(0)
 	
 
 func apply_growth(delta):
 	cur_size = max(cur_size + size.y*delta, 0.1)
 	cur_damage = max(cur_damage + damage.y*delta, 1)
-	#cur_speed += speed.y*delta
+	cur_speed += speed.y*delta
 	cur_knockback += knockback.y*delta
 	cur_suction += suction.y*delta
 	cur_homing  += homing.y*delta
@@ -95,18 +84,54 @@ func apply_growth(delta):
 	scale = Vector2(cur_size, cur_size)
 	var hue = 0.6 - min(pow(cur_damage/DAMAGE_MAX, 0.7), 1)*0.6
 	modulate = Color.from_hsv(hue, 1, 1)
+	
+func retarget_homing():
+	var min_dist = StatsUtil.HOMING_RANGE*StatsUtil.HOMING_RANGE
+	for enemy in GM.enemies:
+		if enemy:
+			var sqr_dist = (enemy.global_position - global_position).length_squared()
+			if sqr_dist < min_dist:
+				min_dist = sqr_dist
+				targeted_enemy = enemy
+			
+func home_in(delta):
+	var to_enemy = (targeted_enemy.global_position - global_position).normalized()
+	var angle = abs(direction.angle_to(to_enemy))
+	if(angle > 0.01):
+		var slerp_amount = deg2rad(cur_homing)*delta/angle
+		direction = direction.slerp(to_enemy, slerp_amount)
+		
+func succ(delta):
+	var succ_range = pow(cur_suction, 2)
+	for enemy in GM.enemies:
+		if enemy:
+			var to_enemy = enemy.global_position - global_position
+			var sqr_dist = max(to_enemy.length_squared(), StatsUtil.MIN_SUCC_RANGE)
+			if sqr_dist < succ_range:
+				enemy.velocity -= StatsUtil.MIN_SUCC_RANGE*to_enemy/sqr_dist*cur_suction*delta
+	
 
 func deal_damage():
 	return cur_damage
 
 func _process(delta):
-
 	timer += delta
 	apply_growth(delta)
 	
-	#direction = new_drection_after_homing()
-	velocity += direction*speed.y*delta
-	velocity += Vector2(0, 1)*cur_gravity*delta
+	if cur_homing != 0:
+		retarget_timer += delta
+		if retarget_timer > 0.2:
+			retarget_timer = 0
+			retarget_homing()
+		if targeted_enemy:
+			home_in(delta)
+			
+	if cur_suction != 0:
+		succ(delta);
+	
+	s_vel = cur_speed*direction
+	g_vel += Vector2(0, 1)*cur_gravity*delta
+	velocity = s_vel + g_vel
 	position += velocity*delta
 	
 	if timer > lifetime.x*subpulse_delay.x and remaining_pulses > 0 and not has_spawned_subpulse:
@@ -125,5 +150,6 @@ func _process(delta):
 
 func _on_Pulse_body_entered(body):
 	if !body.is_in_group("Player") and !body.is_in_group("Enemy"):
-		cur_speed = Vector2(0.001, .001)
-		velocity = Vector2(0.001,0.001)
+		pass
+		#cur_speed = 0
+		#velocity = direction*0.01

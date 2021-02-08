@@ -1,5 +1,6 @@
 extends 'res://Scripts/PulseBase.gd'
 
+onready var raycast = $RayCast2D
 onready var pulse_sound = $PulseSound
 
 var cur_size
@@ -18,10 +19,12 @@ var retarget_timer = 1
 
 var timer
 var has_spawned_subpulse = false
+var halted
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	timer = 0;
+	halted = false
 	pulse_sound.play()
 
 func inherit_props(p):
@@ -109,14 +112,13 @@ func succ(delta):
 			var sqr_dist = max(to_enemy.length_squared(), StatsUtil.MIN_SUCC_RANGE)
 			if sqr_dist < succ_range:
 				enemy.velocity -= StatsUtil.MIN_SUCC_RANGE*to_enemy/sqr_dist*cur_suction*delta
-	
 
-func deal_damage():
-	return cur_damage
-
-func _process(delta):
+func _physics_process(delta):
 	timer += delta
 	apply_growth(delta)
+	
+	if cur_suction != 0:
+		succ(delta);
 	
 	if cur_homing != 0:
 		retarget_timer += delta
@@ -126,18 +128,24 @@ func _process(delta):
 		if targeted_enemy:
 			home_in(delta)
 			
-	if cur_suction != 0:
-		succ(delta);
-	
 	s_vel = cur_speed*direction
 	g_vel += Vector2(0, 1)*cur_gravity*delta
 	velocity = s_vel + g_vel
-	position += velocity*delta
+	var displacement = velocity*delta
 	
+	raycast.force_raycast_update()
+	raycast.cast_to = displacement
+	if raycast.is_colliding():
+		timer = INF
+		global_position = raycast.get_collision_point() + 0.1*(raycast.get_collision_point() - global_position)
+		velocity -= 2*velocity.dot(raycast.get_collision_normal())*raycast.get_collision_normal()
+		print(raycast.get_collider())
+	else:
+		position += displacement
+		
 	if timer > lifetime.x*subpulse_delay.x and remaining_pulses > 0 and not has_spawned_subpulse:
 		has_spawned_subpulse = true
 		spawn_pulse()
-		
 		
 		if randf() < (1 - pow(1 - BASE_SPLIT_CHANCE, split_chance.x)):
 			spawn_pulse()
@@ -146,10 +154,13 @@ func _process(delta):
 		queue_free()
 	
 
-
-
 func _on_Pulse_body_entered(body):
-	if !body.is_in_group("Player") and !body.is_in_group("Enemy"):
+	if body.is_in_group("Enemy"):
+		body.get_hit(self)
+	elif !body.is_in_group("Player"):
 		pass
 		#cur_speed = 0
 		#velocity = direction*0.01
+		
+func deal_damage(target):
+	target.get_hit(self)

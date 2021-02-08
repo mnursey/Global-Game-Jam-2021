@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://Scenes/GameLevels/TutorialNEW.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Scenes/GameLevels/Chasms_Combat_.tscn" type="PackedScene" id=2]
@@ -8,6 +8,7 @@
 [ext_resource path="res://Scenes/GameLevels/HaloBridge.tscn" type="PackedScene" id=6]
 [ext_resource path="res://Scenes/GameLevels/BridgeRoom.tscn" type="PackedScene" id=7]
 [ext_resource path="res://win.tscn" type="PackedScene" id=8]
+[ext_resource path="res://Scenes/FlyingRangedEnemy.tscn" type="PackedScene" id=9]
 
 [node name="AllLevels" type="Node2D"]
 position = Vector2( -5200, 120 )
@@ -50,6 +51,9 @@ position = Vector2( 8504, -408 )
 
 [node name="Template" parent="." instance=ExtResource( 1 )]
 position = Vector2( 0, -8 )
+
+[node name="FlyingRangedEnemy" parent="Template/RoomController/Enemies" index="2" instance=ExtResource( 9 )]
+position = Vector2( 210.252, 105.126 )
 
 [node name="ItemSelectionModal" parent="Template" index="7"]
 visible = true

@@ -168,6 +168,7 @@ anims/run = SubResource( 6 )
 current = true
 zoom = Vector2( 0.75, 0.75 )
 script = ExtResource( 10 )
+mouse_tracking = 0.25
 
 [node name="DashTimer" type="Timer" parent="."]
 wait_time = 0.5

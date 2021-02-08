@@ -10,7 +10,7 @@ var knockback_distance = 50
 
 var aggro_range = 150
 
-var hit = false
+var buffered_dodge = false
 
 enum {
 	IDLE,
@@ -29,12 +29,24 @@ onready var knockback_timer = $KnockbackTimer
 onready var soft_collision = $SoftCollision
 onready var hit_audio = $HitAudio
 
+const variant_health = [30, 90, 300]
+const variant_speed = [100, 150, 200]
+const variant_damage = [20, 35, 50]
+const variant_acceleration = [300, 300, 600]
+
 
 func _ready():
-	health = 30
-	contact_damage = 20
+	set_variant(int(pow(randf(), 2) * 3))
 	state = pick_random_state([IDLE])
 	animationPlayer.play("Idle")
+	
+func set_variant(v):
+	variant = v
+	health = variant_health[v]
+	contact_damage = variant_damage[v]
+	max_speed = variant_speed[v]
+	acceleration = variant_acceleration[v]
+	Healthbar.init(health)
 
 func _physics_process(delta):
 	#knockback = knockback.move_toward(Vector2.ZERO, air_friction * delta)
@@ -62,6 +74,14 @@ func _physics_process(delta):
 			
 		CHASE:
 			accelerate_towards_point(GM.player.global_position, delta)
+			
+			if buffered_dodge:
+				var player_dir = (GM.player.global_position - global_position).normalized()
+				if velocity.normalized().dot(player_dir) > 0.93:
+					buffered_dodge = false
+					var dodge_vel = max_speed * player_dir.tangent()
+					dodge_vel *= sign(randf() - 0.5)
+					velocity += dodge_vel
 		
 	#if soft_collision.is_colliding():
 	#	velocity += soft_collision.get_push_vector() * delta * 400
@@ -93,14 +113,15 @@ func take_damage(amount):
 		max_speed = 0
 		acceleration = 0
 		animationPlayer.play("Dead")
+	elif variant >= 1 and randf() > 0.5:
+		buffered_dodge = true
 		
-		
-		
-func _on_EnemyHurtbox_area_entered(_area):
-	var areas = hurtbox.get_overlapping_areas()
-	for area in areas:
-		if area.get_collision_mask() == 81:
-			get_hit(area)
+func _on_EnemyHurtbox_area_entered(area):
+	#var areas = hurtbox.get_overlapping_areas()
+	#for area in areas:
+	#if area.get_collision_mask() == 81:
+	#	get_hit(area)
+	pass
 
 
 func _on_AnimationPlayer_animation_finished(anim_name):

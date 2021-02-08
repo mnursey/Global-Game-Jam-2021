@@ -206,11 +206,10 @@ static func generate_random_effect(cost, stats_pool, forbidden_effects = []) -> 
 	var stat_op = StatsUtil.choose_weighted(['+', '*'], [3, 1])
 	var stat_cost = stat_cost_vector[stat_variant]
 	effect_vector[stat_variant] = 1
-
-	#Failsafe
-	if stat_cost == 0: #invalid choice
+	
+	if stat_cost == 0 or (stat_name in StatsUtil.SYMMETRICAL_STATS and sign(stat_cost) != sign(cost)):
 		return generate_random_effect(cost, stats_pool, forbidden_effects)
-		
+
 	#print(StatsUtil.string_names[stat_name] + " " + stat_op)
 	if stat_op == '+':
 		var boost = StatsUtil.purchase(stat_name, stat_variant, '+', cost)

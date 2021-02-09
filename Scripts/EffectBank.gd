@@ -25,6 +25,17 @@ class Effect:
 			multiplier.z *= e.multiplier.z 
 		else:
 			print("ERROR: Cannot merge effects due to incompatible stat types")
+			
+	func get_unpacked():
+		var list = []
+		for i in range(3):
+			if addend[i] != 0: list.append(UnpackedEffect.new(stat_name, addend[i], i, '+'))
+		for i in range(3):
+			if multiplier[i] != 1: list.append(UnpackedEffect.new(stat_name, multiplier[i], i, '+'))
+
+		#if multiplier.x != 1:
+		#if multiplier.x != 1:
+		
 		
 	func apply_to_base(b:Vector3):
 		b += addend
@@ -37,16 +48,42 @@ class Effect:
 		#breakpoint
 		var s = ""
 		var n = StatsUtil.string_names[stat_name]
+		var suffixes = ["", "/sec", "/pulse"]
 		
-		if addend.x != 0: s += (n + (" +" if addend.x > 0 else " -") + "%.2f\n") % abs(addend.x)
-		if multiplier.x != 1: s += (n + (" +" if multiplier.x > 1 else " -") + "%d%%\n") % (abs(multiplier.x-1)*100)
+		for i in range(3):
+			if addend[i] != 0: s += (n + suffixes[i] + (" +" if addend[i] > 0 else " -") + "%.2f\n") % abs(addend[i])
+			if multiplier[i] != 1: s += (n + suffixes[i] + (" +" if multiplier[i] > 1 else " -") + "%d%%\n") % (abs(multiplier[i]-1)*100)
+		return s	
 		
-		if addend.y != 0: s += (n + "/sec" + (" +" if addend.y > 0 else " -") + "%.2f\n") % abs(addend.y)
-		if multiplier.y != 1: s += (n + "/sec" + (" +" if multiplier.y > 1 else " -") + "%d%%\n") % (abs(multiplier.y-1)*100)
+	
 		
-		if addend.z != 0: s += (n + "/pulse" + (" +" if addend.z > 0 else " -") + "%.2f\n") % abs(addend.z)
-		if multiplier.z != 1: s += (n + "/pulse" + (" +" if multiplier.z > 1 else " -") + "%d%%\n") % (abs(multiplier.z-1)*100)
-		return s			
+		
+	class UnpackedEffect:
+		var stat_name
+		var value
+		var variant
+		var op
+		var cost
+		
+		func _init(n, val, v, o):
+			stat_name = n
+			value = val
+			variant = v
+			op = o
+			#cost = value*StatsUtil.costs[stat_name] if op == '+' else 
+			
+		func _to_string():
+			var suffixes = ["", "/sec", "/pulse"]
+	
+			if op == '+':
+				return (StatsUtil.string_names[stat_name] + suffixes[variant] + (" +" if value > 0 else " -") + "%.2f\n") % abs(value)
+			else:
+				return (StatsUtil.string_names[stat_name] + suffixes[variant] + (" +" if value > 1 else " -") + "%.2f\n") % (abs(value-1)*100)
+			
+		
+		
+		
+				
 		
 var effects = {}
 
@@ -94,6 +131,9 @@ func get_primary_stat():
 static func print_test_bank():
 	pass
 	#print(generate_effect_bank(1, 1, 1, 0, ))
+	
+func compare_effects(e1, e2):
+	return e1.cost < e2.cost
 			
 			
 static func generate_effect_bank(num_buffs, num_debuffs, abs_cost, cost_bias, pool):
@@ -104,7 +144,7 @@ static func generate_effect_bank(num_buffs, num_debuffs, abs_cost, cost_bias, po
 	
 	var major_pool = []
 	for s in pool:
-		if s in StatsUtil.MAJOR_STATS: major_pool.append(s)
+		if s in StatsUtil.DPS_STATS: major_pool.append(s)
 
 	#breakpoint
 	var remaining_cost = abs_cost + cost_bias
@@ -162,33 +202,21 @@ static func generate_random_effect(cost, stats_pool, forbidden_effects = []) -> 
 	
 	var stat_name = StatsUtil.choose_random(stats_pool)
 	var stat_cost_vector = StatsUtil.costs[stat_name]
-	var stat_variant = StatsUtil.choose_weighted(['x', 'y', 'z'], StatsUtil.variant_weights[stat_name])
+	var stat_variant = StatsUtil.choose_weighted([0, 1, 2], StatsUtil.variant_weights[stat_name])
 	var stat_op = StatsUtil.choose_weighted(['+', '*'], [3, 1])
+	var stat_cost = stat_cost_vector[stat_variant]
+	effect_vector[stat_variant] = 1
 	
-	var stat_cost
-	if stat_variant == 'x':
-		stat_cost = stat_cost_vector.x
-		effect_vector.x = 1
-	elif stat_variant == 'y':
-		stat_cost = stat_cost_vector.y
-		effect_vector.y = 1
-	else: # stat_variant == 'z'
-		stat_cost = stat_cost_vector.z
-		effect_vector.z = 1
-		
-	#Failsafe
-	if stat_cost == 0: #invalid choice
+	if stat_cost == 0 or (stat_name in StatsUtil.SYMMETRICAL_STATS and sign(stat_cost) != sign(cost)):
 		return generate_random_effect(cost, stats_pool, forbidden_effects)
-		
+
 	#print(StatsUtil.string_names[stat_name] + " " + stat_op)
 	if stat_op == '+':
-		var boost = cost/stat_cost
-		if stat_name in StatsUtil.INTEGER_STATS:
-			boost = round(boost) if abs(boost) > 0.5 else sign(boost)
+		var boost = StatsUtil.purchase(stat_name, stat_variant, '+', cost)
 		effect_vector *= boost
 		effect = Effect.new(stat_name, boost*stat_cost, effect_vector, Vector3.ONE)
 	else:
-		effect_vector *= (pow(2, float(cost)/StatsUtil.DOUBLING_COST) - 1)
+		effect_vector *= StatsUtil.purchase(stat_name, stat_variant, '*', cost) - 1
 		effect_vector += Vector3.ONE
 		effect = Effect.new(stat_name, cost, Vector3.ZERO, effect_vector)
 			

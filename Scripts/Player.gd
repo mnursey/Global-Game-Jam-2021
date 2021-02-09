@@ -10,6 +10,8 @@ const TILESIZE = 16
 var velocity = Vector2()
 var move_speed = 10 * TILESIZE
 
+var mouse_vector = Vector2.ZERO
+
 var max_health = 100
 var health = max_health setget set_health
 
@@ -35,11 +37,13 @@ var dash_speed = 20 * TILESIZE
 var dash_time = 0.2
 var is_dashing = false
 var can_dash = true
-var dash_direction = Vector2.ZERO
+var dash_vector = Vector2.ZERO
 
 var facing_right = true 
-
 var dead = false
+
+var music_hutzpah = 0
+var target_music_hutzpah = 0
 
 onready var anim_player = $AnimationPlayer
 onready var sprite = $Sprite
@@ -54,6 +58,8 @@ onready var camera = $ShakeCamera2D
 onready var hurtBox = $Hurtbox/CollisionShape2D
 onready var collisionBox = $CollisionShape2D
 onready var AST = $AST 
+onready var music_reduced = $Music1
+onready var music_combat = $Music2
 var EffectBank
 
 
@@ -68,6 +74,9 @@ func _ready():
 	EffectBank = get_node("AST/EffectBank")
 	base_stats = StatsUtil.default_stats.duplicate()
 	recalculate_stats()
+	
+	music_reduced.volume_db = 0
+	music_combat.volume_db = -80
 	
 func apply_item(item):
 	EffectBank.absorb(item.get_node('EffectBank'))
@@ -86,59 +95,76 @@ func set_stats_from_dict(d):
 	move_speed = d[StatsUtil.StatName.MOVE_SPEED].x
 
 func _physics_process(delta):
-
+	if Input.is_action_just_pressed("restart"):
+		get_tree().reload_current_scene()
+		
 	if !dead:
 		apply_gravity(delta)
 		get_move_input()
 		get_input()
 		apply_movement()
 		animate()
+		
+func _process(delta):
+	mouse_vector = get_global_mouse_position() - global_position
+	
+	target_music_hutzpah = 0
+	for enemy in GM.enemies:
+		if enemy and (enemy.global_position - global_position).length_squared() < 150000:
+			target_music_hutzpah = 1
+			break
+	
+	var volume_changed = true
+	if target_music_hutzpah > music_hutzpah:
+		music_hutzpah = min(music_hutzpah + delta, 1)
+	elif target_music_hutzpah < music_hutzpah:
+		music_hutzpah = max(music_hutzpah - delta, 0)
+	else:
+		volume_changed = false
+		
+	if volume_changed:
+		music_combat.volume_db = 20*log(max(pow(music_hutzpah, 0.5), 0.0001))
+		music_reduced.volume_db = 20*log(max(pow(1 - music_hutzpah, 0.5), 0.0001))
+	
 
 func get_input():
 	if Input.is_action_just_pressed("jump") and jumps > 0:
-				jump_audio.play()
-				is_jumping = true
-				velocity.y = max_jump_velocity
-				jumps -= 1
+		jump_audio.play()
+		is_jumping = true
+		velocity.y = max_jump_velocity
+		jumps -= 1
+		
 	if Input.is_action_just_released("jump") and velocity.y < min_jump_velocity:
-				velocity.y = min_jump_velocity
+		velocity.y = min_jump_velocity
 	
-	if Input.is_action_just_pressed("dash") and can_dash:
+	if Input.is_action_just_pressed("dash") and dashes > 0:
 		is_dashing = true
 		dashes -= 1
-		if dashes <= 0:
-			can_dash = false
 		dash_timer.start(dash_time)
+		invincibility_timer.start(dash_time)
 		dash_audio.play()
-		var move_vector = get_global_mouse_position() - position
-		move_vector = move_vector.clamped(1)
-		dash_direction = move_vector * dash_speed
+		dash_vector = mouse_vector.normalized() * dash_speed
 		camera.add_trauma(0.2)
 	
-	if Input.is_action_just_pressed("restart"):
-		get_tree().reload_current_scene()
-		
 
 func apply_movement():
 	var was_on_floor = is_on_floor()
 	
 	if is_dashing:
-		velocity = move_and_slide(dash_direction, UP)
+		velocity = move_and_slide(dash_vector, Vector2.UP)
 		#velocity = lerp(velocity, velocity/100, 0.2)
-		invincibility_timer.start()
 		sprite.scale = Vector2(0.9, 0.9)
 	else:
 		velocity = move_and_slide(velocity, UP)
 		sprite.scale = Vector2(1, 1)
 		if !is_on_floor() and was_on_floor and !is_jumping:
 			coyote_timer.start()
+			
 	if is_on_floor():
 		jumps = max_jumps
 		
-	
 	if is_on_floor() and dash_timer.is_stopped():
 		dashes = max_dashes
-		can_dash = true
 		
 func apply_gravity(delta):
 	if velocity.y < 0:
@@ -225,3 +251,4 @@ func _on_AnimationPlayer_animation_finished(anim_name):
 
 func _on_AST_shot_ast():
 	camera.add_trauma(0.15)
+	

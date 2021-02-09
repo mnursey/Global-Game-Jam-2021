@@ -15,6 +15,7 @@ script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
+next_world = "res://AllLevels.tscn"
 
 [node name="NinePatchRect" parent="." instance=ExtResource( 2 )]
 

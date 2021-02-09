@@ -13,11 +13,11 @@ default_font = ExtResource( 6 )
 
 [node name="ItemSelectionModal" type="Popup"]
 pause_mode = 2
-visible = true
 anchor_right = 1.0
 anchor_bottom = 1.0
 rect_scale = Vector2( 0.5, 0.5 )
 theme = SubResource( 1 )
+popup_exclusive = true
 script = ExtResource( 2 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -80,6 +80,7 @@ margin_right = 360.0
 margin_bottom = 307.0
 mouse_default_cursor_shape = 2
 size_flags_horizontal = 3
+alignment = 1
 script = ExtResource( 3 )
 
 [node name="Item1Stats" type="Label" parent="MarginContainer/VBoxContainer/ItemsContainer/ItemEntry1"]
@@ -101,6 +102,7 @@ margin_right = 724.0
 margin_bottom = 307.0
 mouse_default_cursor_shape = 2
 size_flags_horizontal = 3
+alignment = 1
 script = ExtResource( 4 )
 
 [node name="Item2Stats" type="Label" parent="MarginContainer/VBoxContainer/ItemsContainer/ItemEntry2"]
@@ -122,6 +124,7 @@ margin_right = 1088.0
 margin_bottom = 307.0
 mouse_default_cursor_shape = 2
 size_flags_horizontal = 3
+alignment = 1
 script = ExtResource( 5 )
 
 [node name="Item3Stats" type="Label" parent="MarginContainer/VBoxContainer/ItemsContainer/ItemEntry3"]

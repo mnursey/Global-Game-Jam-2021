@@ -1,16 +1,20 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://Scripts/World Generator.gd" type="Script" id=1]
-[ext_resource path="res://Scenes/Levels/Ian's Test Levels/new interface tileset.tres" type="TileSet" id=2]
-[ext_resource path="res://Scenes/Levels/Ian's Test Levels/Test 1.tscn" type="PackedScene" id=3]
-[ext_resource path="res://Scenes/Levels/Ian's Test Levels/Test 2.tscn" type="PackedScene" id=4]
-[ext_resource path="res://Scenes/Levels/Ian's Test Levels/Test 3.tscn" type="PackedScene" id=5]
-[ext_resource path="res://Scenes/Levels/Ian's Test Levels/Test 4.tscn" type="PackedScene" id=6]
-[ext_resource path="res://Scenes/Levels/Ian's Test Levels/Test 5.tscn" type="PackedScene" id=7]
+[ext_resource path="res://Art/debug/tileset_debug.tres" type="TileSet" id=2]
+[ext_resource path="res://Scenes/GameLevels/TutorialNEW.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Scenes/GameLevels/BridgeRoom.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Scenes/GameLevels/HaloBridge.tscn" type="PackedScene" id=5]
+[ext_resource path="res://Scenes/GameLevels/Chasms_Combat_.tscn" type="PackedScene" id=6]
+[ext_resource path="res://Scenes/GameLevels/Rumblepit_combat.tscn" type="PackedScene" id=7]
+[ext_resource path="res://Scripts/TempCam.gd" type="Script" id=8]
+[ext_resource path="res://Scenes/GameLevels/CombatRoom2.tscn" type="PackedScene" id=9]
 
 [node name="Node2D" type="Node2D"]
 script = ExtResource( 1 )
-level_scenes = [ ExtResource( 3 ), ExtResource( 4 ), ExtResource( 5 ), ExtResource( 6 ), ExtResource( 7 ) ]
+level_scenes = [ ExtResource( 3 ), ExtResource( 4 ), ExtResource( 6 ), ExtResource( 9 ), ExtResource( 5 ), ExtResource( 7 ) ]
 name_of_interface_tilemap = "ExportMap"
 interface_tileset = ExtResource( 2 )
-interface_tile_names = [ "door", "hint", "wall", "wall_single" ]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+script = ExtResource( 8 )

@@ -8,7 +8,7 @@
 [node name="HealthBar" type="Control"]
 anchor_right = 0.125
 anchor_bottom = 0.022
-margin_bottom = 0.0799994
+margin_bottom = 0.0799999
 script = ExtResource( 4 )
 __meta__ = {
 "_edit_use_anchors_": false

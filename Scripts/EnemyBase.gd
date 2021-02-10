@@ -13,9 +13,9 @@ func _ready():
 
 func take_damage(amount):
 	health -= amount
-	emit_signal("damaged", health)
+	#emit_signal("damaged", health)
 	Healthbar.update_health(health)
-	if health < 0:
+	if health <= 0:
 		contact_damage = 0
 		GM.remove_enemy(self)
 

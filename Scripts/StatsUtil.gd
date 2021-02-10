@@ -36,7 +36,7 @@ const SYMMETRICAL_STATS = [StatName.GRAVITY] # Stats that have the same cost whe
 
 const default_stats = {
 	#Player 
-	StatName.MAX_HEALTH:	Vector3(100, 0, 0),
+	StatName.MAX_HEALTH:	Vector3(100000, 0, 0),
 	StatName.JUMPS:			Vector3(1, 0, 0),
 	StatName.DASHES:		Vector3(1, 0, 0),
 	StatName.MOVE_SPEED:	Vector3(160, 0, 0),
@@ -71,14 +71,14 @@ const costs = {
 	StatName.FIRE_RATE: 	Vector3(2, 0, 0),
 	StatName.DISTANCE: 		Vector3(0.1, 0, 0.1),
 	StatName.LIFETIME: 		Vector3(2, 0, 3),
-	StatName.SIZE: 			Vector3(3, 4, 6),
-	StatName.DAMAGE: 		Vector3(0.5, 0.25, 0.5),
+	StatName.SIZE: 			Vector3(4, 6, 8),
+	StatName.DAMAGE: 		Vector3(1, 0.5, 1),
 	StatName.SPEED: 		Vector3(0.02, 0.02, 0.02),
 	StatName.SCATTER:		Vector3(-0.05, 0, -0.05),
 	StatName.KNOCKBACK: 	Vector3(0.025,0.01,0.015),
 	StatName.SUCTION: 		Vector3(0.02,0.01,0.02),
-	StatName.HOMING: 		Vector3(0.025, 0.015, 0.025),
-	StatName.GRAVITY: 		Vector3(-0.02, -0.01, -0.02),
+	StatName.HOMING: 		Vector3(0.05, 0.03, 0.05),
+	StatName.GRAVITY: 		Vector3(-0.01, -0.005, -0.01),
 	StatName.SUBPULSES:		Vector3(2, 0, 0),
 	StatName.SUBPULSE_DELAY:Vector3(-5, 0, -5),
 	StatName.SPLIT_CHANCE: 	Vector3(1, 0, 1)

@@ -1,10 +1,11 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://Art/enemy_drone-Sheet.png" type="Texture" id=1]
 [ext_resource path="res://Scripts/FlyingEnemy.gd" type="Script" id=2]
 [ext_resource path="res://Scripts/EnemyHitbox.gd" type="Script" id=3]
 [ext_resource path="res://Scripts/WanderController.gd" type="Script" id=4]
 [ext_resource path="res://Scripts/EnemyHealthBar.gd" type="Script" id=5]
+[ext_resource path="res://Scenes/TeleportParticles.tscn" type="PackedScene" id=6]
 [ext_resource path="res://Sound/explosion_1.wav" type="AudioStream" id=7]
 [ext_resource path="res://Sound/hit_1.wav" type="AudioStream" id=8]
 [ext_resource path="res://Scenes/HealthBar.tscn" type="PackedScene" id=9]
@@ -142,6 +143,11 @@ value = 30.0
 max_value = 30.0
 value = 30.0
 texture_over = null
+
+[node name="Particles2D" parent="." instance=ExtResource( 6 )]
+
+[node name="RayCast2D" type="RayCast2D" parent="."]
+cast_to = Vector2( 0, 0 )
 [connection signal="damaged" from="." to="HealthBar" method="_on_FlyingEnemy_damaged"]
 [connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_AnimationPlayer_animation_finished"]
 [connection signal="area_entered" from="EnemyHitbox" to="." method="_on_EnemyHitbox_area_entered"]

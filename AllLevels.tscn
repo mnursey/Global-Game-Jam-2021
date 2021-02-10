@@ -52,6 +52,12 @@ position = Vector2( 8504, -408 )
 [node name="Template" parent="." instance=ExtResource( 1 )]
 position = Vector2( 0, -8 )
 
+[node name="WalkingEnemy" parent="Template/RoomController/Enemies" index="0"]
+position = Vector2( 192.207, 209.434 )
+
+[node name="FlyingEnemy" parent="Template/RoomController/Enemies" index="1"]
+position = Vector2( 93.3662, 70.0519 )
+
 [node name="FlyingRangedEnemy" parent="Template/RoomController/Enemies" index="2" instance=ExtResource( 9 )]
 position = Vector2( 210.252, 105.126 )
 

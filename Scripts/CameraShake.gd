@@ -9,7 +9,6 @@ var player # Assign the node this camera will follow.
 
 
 var trauma = 0.0  # Current shake strength.
-
 var trauma_power = 2  # Trauma exponent. Use [2, 3].
 
 onready var noise = OpenSimplexNoise.new()
@@ -26,11 +25,14 @@ func _process(delta):
 	if player:
 		global_position = player.global_position + player.mouse_vector*mouse_tracking
 	if trauma:
-		trauma = max(trauma - decay * delta, 0)
+		trauma = max(trauma - trauma*decay*delta, 0)
 		shake()
 		
 func add_trauma(amount):
 	trauma = min(trauma + amount, 1.0)
+	
+func set_trauma(amount):
+	trauma = max(trauma, amount)
 
 func shake():
 	var amount = pow(trauma, trauma_power)

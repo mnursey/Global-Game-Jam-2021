@@ -2,6 +2,8 @@ extends 'res://Scripts/PulseBase.gd'
 
 onready var raycast = $RayCast2D
 onready var pulse_sound = $PulseSound
+onready var particles = $Particles2D
+onready var sprite = $AnimatedSprite
 
 var cur_size
 var cur_damage
@@ -19,12 +21,12 @@ var retarget_timer = 1
 
 var timer
 var has_spawned_subpulse = false
-var halted
+var dead = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	timer = 0;
-	halted = false
+	#halted = false
 	pulse_sound.play()
 
 func inherit_props(p):
@@ -60,7 +62,7 @@ func inherit_props(p):
 	
 	is_AST = false
 	
-	direction = p.velocity.normalized().rotated(deg2rad((randf()-0.5)*scatter.x))
+	direction = p.velocity.normalized().rotated(deg2rad((randf()-0.5)*max(scatter.x, 0)))
 	global_position = start_position + distance.x*direction
 
 	cur_size = size.x
@@ -115,46 +117,58 @@ func succ(delta):
 
 func _physics_process(delta):
 	timer += delta
-	apply_growth(delta)
 	
-	if cur_suction != 0:
-		succ(delta);
-	
-	if cur_homing != 0:
-		retarget_timer += delta
-		if retarget_timer > 0.2:
-			retarget_timer = 0
-			retarget_homing()
-		if targeted_enemy:
-			home_in(delta)
+	if not dead:
+		
+		apply_growth(delta)
+		
+		if cur_suction != 0:
+			succ(delta);
+		
+		if cur_homing != 0:
+			retarget_timer += delta
+			if retarget_timer > 0.2:
+				retarget_timer = 0
+				retarget_homing()
+			if targeted_enemy:
+				home_in(delta)
+				
+		s_vel = cur_speed*direction
+		g_vel += Vector2(0, 1)*cur_gravity*delta
+		velocity = s_vel + g_vel
+		var displacement = velocity*delta
+		
+		raycast.force_raycast_update()
+		raycast.cast_to = displacement
+		if raycast.is_colliding():
+			timer = INF
+			global_position = raycast.get_collision_point() + 0.1*(raycast.get_collision_point() - global_position)
+			velocity -= 2*velocity.dot(raycast.get_collision_normal())*raycast.get_collision_normal()
+			print(raycast.get_collider())
+		else:
+			position += displacement
 			
-	s_vel = cur_speed*direction
-	g_vel += Vector2(0, 1)*cur_gravity*delta
-	velocity = s_vel + g_vel
-	var displacement = velocity*delta
-	
-	raycast.force_raycast_update()
-	raycast.cast_to = displacement
-	if raycast.is_colliding():
-		timer = INF
-		global_position = raycast.get_collision_point() + 0.1*(raycast.get_collision_point() - global_position)
-		velocity -= 2*velocity.dot(raycast.get_collision_normal())*raycast.get_collision_normal()
-		print(raycast.get_collider())
-	else:
-		position += displacement
-		
-	if timer > lifetime.x*subpulse_delay.x and remaining_pulses > 0 and not has_spawned_subpulse:
-		has_spawned_subpulse = true
-		spawn_pulse()
-		
-		if randf() < (1 - pow(1 - BASE_SPLIT_CHANCE, split_chance.x)):
+		if timer > lifetime.x*subpulse_delay.x and remaining_pulses > 0 and not has_spawned_subpulse:
+			has_spawned_subpulse = true
 			spawn_pulse()
-	
-	if timer > lifetime.x:	
+			
+			if randf() < (1 - pow(1 - BASE_SPLIT_CHANCE, split_chance.x)):
+				spawn_pulse()
+		
+		if timer > lifetime.x:	
+			timer = 0
+			dead = true
+			sprite.visible = false
+			particles.emitting = false
+			
+	elif timer > 1:
 		queue_free()
+		
 	
 
 func _on_Pulse_body_entered(body):
+	if dead: return
+	
 	if body.is_in_group("Enemy"):
 		body.get_hit(self)
 	elif !body.is_in_group("Player"):

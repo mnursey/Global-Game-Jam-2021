@@ -14,9 +14,16 @@ var shot_cooldown = 1
 var shoot_timer = 0
 
 var aggro_range = 150
-var min_target_range = 75
-var max_target_range = 110
+#var min_target_range = 75
+#var max_target_range = 110
 
+var target_point = Vector2.ZERO
+var target_points = [Vector2(100, -100), Vector2(0, -120), Vector2(-100, -100)]
+var current_target_point_id = 0
+var offset_change_timer = INF
+var target_point_offset = Vector2.ZERO
+var teleport_timer = 0
+var can_teleport = false
 var reposition_side = 0
 
 enum {
@@ -33,20 +40,19 @@ onready var wanderController = $WanderController
 onready var animationPlayer = $AnimationPlayer
 onready var sprite = $Sprite
 onready var knockback_timer = $KnockbackTimer
-onready var soft_collision = $SoftCollision
+onready var raycast = $RayCast2D
+onready var particles = $Particles2D
 onready var hit_audio = $HitAudio
 
-const variant_health = [30, 80, 200]
-const variant_speed = [50, 75, 100]
-const variant_damage = [10, 15, 20]
-const variant_acceleration = [300, 400, 500]
-const variant_bullet_speed = [120, 150, 120]
-const variant_shot_cooldown = [1, 0.3, 1]
-const variant_ranges = [[80, 130], [0, 50], [0, 50]]
-
+const variant_health = [30, 80, 200, 500]
+const variant_speed = [50, 75, 100, 150]
+const variant_damage = [10, 15, 20, 20]
+const variant_acceleration = [300, 400, 500, 500]
+const variant_bullet_speed = [120, 120, 150, 200]
+const variant_shot_cooldown = [1, 0.4, 1, 0.1]
 
 func _ready():
-	set_variant(2) #int(pow(randf(), 2) * 3))
+	set_variant(3)#int(pow(randf(), 2) * 3))
 	state = pick_random_state([IDLE])
 	animationPlayer.play("Idle")
 	
@@ -58,30 +64,23 @@ func set_variant(v):
 	acceleration = variant_acceleration[v]
 	bullet_speed = variant_bullet_speed[v]
 	shot_cooldown = variant_shot_cooldown[v]
-	min_target_range = variant_ranges[v][0]
-	max_target_range = variant_ranges[v][1]
 	Healthbar.init(health)
 
-func _physics_process(delta):
-	#knockback = knockback.move_toward(Vector2.ZERO, air_friction * delta)
-	#knockback = move_and_slide(knockback)
-	
-	var target_point
-	if variant == 0:
-		target_point = GM.player.global_position
-	else:
-		target_point = GM.player.global_position + Vector2(100, -100)
-		if reposition_side > 0 or (reposition_side == 0 and global_position.x > GM.player.global_position.x):
-			target_point = GM.player.global_position + Vector2(100, -100)
-		else:
-			target_point = GM.player.global_position + Vector2(-100, -100)
 
-	var player_dist = (target_point - global_position).length()
+func _physics_process(delta):
 	
 	match state:
 		IDLE:
 			if player_dist() < aggro_range:
 				state = CHASE
+				
+				if variant <= 1:
+					pass
+				elif variant <= 2:
+					target_point = target_points[0] if randf() > 0.5 else target_points[2]
+				else:
+					current_target_point_id = int(randf()*3)
+					target_points[current_target_point_id]
 				
 			velocity = velocity.move_toward(Vector2.ZERO, air_friction * delta)
 			if wanderController.get_time_left() == 0:
@@ -99,34 +98,69 @@ func _physics_process(delta):
 				update_wander()
 			
 		CHASE:
-			shoot_timer += delta
-			var target_in_range = false
-			if player_dist > max_target_range:
-				accelerate_towards_point(target_point, delta)
-			elif player_dist < min_target_range:
-				accelerate_from_point(target_point, delta)
+			if variant == 1 or variant == 2:
+				if offset_change_timer > 1.5:
+					offset_change_timer = 0
+					target_point_offset = Vector2(randf(), randf()).normalized() * 50
+				else:
+					offset_change_timer += delta
+	
+			if variant == 0:
+				target_point = Vector2.ZERO
+			elif variant <= 2:
+				if reposition_side > 0 or (reposition_side == 0 and global_position.x > GM.player.global_position.x):
+					target_point = target_points[0]
+				else:
+					target_point = target_points[2] 
 			else:
-				target_in_range = true
-				reposition_side = 0
-				velocity = velocity.move_toward(Vector2.ZERO, air_friction * delta)
+				if teleport_timer < 0:
+					can_teleport = true
+					
+					var possible_ids = [0, 1, 2]
+					possible_ids.remove(current_target_point_id)
+					current_target_point_id = possible_ids[int(randf()*2)]
+					target_point = target_points[current_target_point_id]
+				else:
+					teleport_timer -= delta
+					
+			var abs_target_point = GM.player.global_position + target_point + target_point_offset
+			var target_dist = (abs_target_point - global_position).length()
+					
+			if variant == 3: raycast.cast_to = abs_target_point - global_position
+
+			var can_shoot = false
+			if variant == 1:
+				if target_dist > 130:
+					accelerate_towards_point(abs_target_point, delta)
+				elif target_dist < 70:
+					accelerate_from_point(abs_target_point, delta)
+				else:
+					can_shoot = true
+					velocity = velocity.move_toward(Vector2.ZERO, air_friction * delta)
+					
+			else:
+				can_shoot = target_dist < 50
+				if target_dist > 20:
+					accelerate_towards_point(abs_target_point, delta)
+					if variant == 3 and can_teleport: attempt_teleport(abs_target_point)
+				else:
+					reposition_side = 0
+					velocity = velocity.move_toward(Vector2.ZERO, air_friction * delta)
 			
-			if target_in_range or reposition_side != 0:
+			shoot_timer += delta
+			if can_shoot or reposition_side != 0:
 				if shoot_timer > shot_cooldown:
 					shoot_timer = 0
 					var leading = GM.player.velocity/2 if variant != 1 else Vector2.ZERO
 					var bullet_vector = bullet_speed*global_position.direction_to(GM.player.global_position + leading)
+					if variant == 3:
+						bullet_vector = bullet_vector.rotated((randf()-0.5)*deg2rad(15))
 					shoot(bullet_vector)
 					if variant == 2:
 						shoot(bullet_vector.rotated(deg2rad(15)))
 						shoot(bullet_vector.rotated(deg2rad(-15)))
-						
-				
-				
-
-	#if soft_collision.is_colliding():
-	#	print("soft collision")
-	#	velocity += soft_collision.get_push_vector() * delta * 800
-		
+					
+							
 	sprite.flip_h = velocity.x < 0
 	velocity = move_and_slide(velocity)
 	
@@ -144,6 +178,19 @@ func accelerate_towards_point(point, delta):
 func accelerate_from_point(point, delta):
 	var direction = -global_position.direction_to(point)
 	velocity = velocity.move_toward(direction * max_speed, acceleration * delta)
+	
+func attempt_teleport(point):
+	raycast.enabled = true
+	raycast.force_raycast_update()
+	if not raycast.is_colliding():
+		can_teleport = false
+		teleport_timer = 1 + randf()
+		velocity = Vector2.ZERO
+		shoot_timer = -0.3
+		
+		global_position = point
+		particles.emitting = true
+	raycast.enabled = false
 
 func player_dist():
 	if GM.player: return (GM.player.global_position - global_position).length()
@@ -168,6 +215,7 @@ func take_damage(amount):
 		acceleration = 0
 		animationPlayer.play("Dead")
 	elif variant >= 1 and reposition_side == 0 and randf() > 0.5:
+		offset_change_timer = INF
 		reposition_side = 1 if global_position.x < GM.player.global_position.x else -1
 		
 		

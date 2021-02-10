@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=18 format=2]
 
 [ext_resource path="res://Art/walking_enemy_master_sheet.png" type="Texture" id=1]
 [ext_resource path="res://Scripts/WalkingEnemy.gd" type="Script" id=2]
@@ -7,6 +7,7 @@
 [ext_resource path="res://Sound/dead_1.wav" type="AudioStream" id=5]
 [ext_resource path="res://Art/healthbar_yellow.png" type="Texture" id=6]
 [ext_resource path="res://Scripts/EnemyHealthBar.gd" type="Script" id=7]
+[ext_resource path="res://Art/TinyTexture.png" type="Texture" id=8]
 [ext_resource path="res://Art/healthbar_red.png" type="Texture" id=9]
 
 [sub_resource type="RectangleShape2D" id=1]
@@ -62,6 +63,23 @@ tracks/0/keys = {
 
 [sub_resource type="RectangleShape2D" id=5]
 
+[sub_resource type="Curve" id=6]
+_data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 1, 0.209091 ), 0.0, 0.0, 0, 0 ]
+
+[sub_resource type="CurveTexture" id=7]
+curve = SubResource( 6 )
+
+[sub_resource type="ParticlesMaterial" id=8]
+emission_shape = 1
+emission_sphere_radius = 4.0
+flag_disable_z = true
+spread = 0.0
+gravity = Vector3( 0, 0, 0 )
+orbit_velocity = 0.0
+orbit_velocity_random = 0.0
+scale_curve = SubResource( 7 )
+color = Color( 1, 0.192157, 0.478431, 1 )
+
 [node name="WalkingEnemy" type="KinematicBody2D" groups=[
 "Enemy",
 ]]
@@ -69,17 +87,17 @@ collision_layer = 2147483712
 script = ExtResource( 2 )
 
 [node name="PitRaycast" type="RayCast2D" parent="."]
-rotation = -0.785398
 enabled = true
+cast_to = Vector2( 15, 15 )
 
 [node name="WallRaycast" type="RayCast2D" parent="."]
-rotation = -1.5708
-scale = Vector2( 1, 0.33 )
+position = Vector2( 0, 5 )
 enabled = true
+cast_to = Vector2( 20, 0 )
 
 [node name="FloorRaycast" type="RayCast2D" parent="."]
-scale = Vector2( 1, 0.25 )
 enabled = true
+cast_to = Vector2( 0, 12 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2( -0.334091, 1.44771 )
@@ -164,6 +182,14 @@ __meta__ = {
 }
 
 [node name="UpdateTween" type="Tween" parent="HealthBar"]
+
+[node name="Particles2D" type="Particles2D" parent="."]
+emitting = false
+amount = 30
+lifetime = 0.4
+local_coords = false
+process_material = SubResource( 8 )
+texture = ExtResource( 8 )
 [connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_AnimationPlayer_animation_finished"]
 [connection signal="area_entered" from="EnemyHitbox" to="." method="_on_EnemyHitbox_area_entered"]
 [connection signal="area_entered" from="EnemyHurtbox" to="." method="_on_EnemyHurtbox_area_entered"]

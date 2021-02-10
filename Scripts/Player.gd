@@ -74,6 +74,7 @@ func _ready():
 	EffectBank = get_node("AST/EffectBank")
 	base_stats = StatsUtil.default_stats.duplicate()
 	recalculate_stats()
+	health = max_health
 	
 	music_reduced.volume_db = 0
 	music_combat.volume_db = -80
@@ -144,7 +145,7 @@ func get_input():
 		invincibility_timer.start(dash_time)
 		dash_audio.play()
 		dash_vector = mouse_vector.normalized() * dash_speed
-		camera.add_trauma(0.2)
+		camera.set_trauma(0.4)
 	
 
 func apply_movement():
@@ -210,7 +211,7 @@ func take_damage(amount):
 		invincibility_timer.start()
 		set_health(health - amount)
 		hit_audio.play()
-		camera.add_trauma(0.3)
+		camera.set_trauma(0.5)
 		
 func heal(amount):
 	set_health(health + amount)
@@ -219,7 +220,7 @@ func dead():
 	dead = true
 	anim_player.play("dead")
 	emit_signal("dead")
-	camera.add_trauma(0.8)
+	camera.set_trauma(0.8)
 	hurtBox.set_disabled(true)
 	collisionBox.set_disabled(true)
 	AST.disable = true
@@ -250,5 +251,5 @@ func _on_AnimationPlayer_animation_finished(anim_name):
 
 
 func _on_AST_shot_ast():
-	camera.add_trauma(0.15)
+	camera.set_trauma(0.2)
 	

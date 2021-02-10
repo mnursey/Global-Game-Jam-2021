@@ -12,7 +12,7 @@ func _input(event):
 	
 	if (event is InputEventMouseButton):
 		if (event.button_index == BUTTON_LEFT):		# Handle click & drag
-			#current = true
+			current = true
 			if (event.is_pressed()):
 				is_dragging = true
 			elif (!event.is_pressed()):

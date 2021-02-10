@@ -11,8 +11,7 @@ export(Array, TileSet) var tilesets_to_exclude
 export(Array, String) var interface_tile_names = [
 	"door",
 	"hint",
-	"hall_single",
-	"wall_single"
+	"wall"
 ]
 export(int) var MAX_DOOR_SIZE = 3 # UNUSED
 
@@ -35,9 +34,9 @@ func _ready():
 	init_my_tilemap()
 	init_interface_tileset_id_lookup()
 	load_levels()
-	add_level_to_scene_tree(0, true)
-	for i in range(len(loaded_scenes)):
-		spawn_level_for_each_unused_door()
+	#add_level_to_scene_tree(0, true)
+	#for i in range(len(loaded_scenes)):
+	#	spawn_level_for_each_unused_door()
 	
 
 
@@ -45,11 +44,10 @@ func _input(event):
 	
 	# Hotkeys
 	if Input.is_key_pressed(KEY_SPACE):
-		#spawn_level_for_each_unused_door()
+		spawn_level_for_each_unused_door()
 		pass
 	if Input.is_key_pressed(KEY_G):
-		#dbg_draw_rect(Rect2(Vector2(0, 0), Vector2(1, 1)), Color.red, 1)
-		#add_level_to_scene_tree(0)
+		add_level_to_scene_tree(0, true)
 		pass
 	if Input.is_key_pressed(KEY_F):
 		pass
@@ -148,6 +146,11 @@ func load_levels():
 		scene_data["left_door_used_indexes"] = []
 		loaded_scenes.append(scene_data)
 	clear_interface_tilemaps_from_loaded_levels()
+	#print("loaded: ", len(loaded_scenes), ", levels")
+	#dbg_print_level_data(loaded_scenes[0])
+	#dbg_print_level_data(loaded_scenes[1])
+	#dbg_print_level_data(loaded_scenes[2])
+	#dbg_print_level_data(loaded_scenes[3])
 
 
 
@@ -185,7 +188,8 @@ func add_level_to_scene_tree(level_index, spawn_player = false):
 		if (tilemap.name != name_of_interface_tilemap and !tilesets_to_exclude.has(tilemap.tile_set)):
 			var used_cells = tilemap.get_used_cells()
 			for cell in used_cells:
-				my_tilemap.set_cellv(cell + scene_position, wall_tile_id)
+				pass
+				#my_tilemap.set_cellv(cell + scene_position, wall_tile_id)
 	if (!spawn_player):
 		var player_nodes = get_children_recursive_by_name(scene_instance, "Player")
 		if (len(player_nodes) >= 1):
@@ -211,15 +215,16 @@ func spawn_level_from_room(level_index):
 
 
 func spawn_level_for_each_unused_door():
-	#print("_________________________")
-	#print("Spawning level for each door...")
+	print("_________________________")
+	print("Spawning level for each door...")
 	
 	# First get all the scenes that are currently spawned
 	var spawned_scene_indexes = []
 	for i in range(len(loaded_scenes)):
 		if (loaded_scenes[i]["is_spawned"]):
 			spawned_scene_indexes.append(i)
-	
+	print(len(spawned_scene_indexes), "spanwed scenes found")
+	dbg_print_level_data(loaded_scenes[spawned_scene_indexes[0]])
 	# Then spawn levels at each of their doors
 	for i in spawned_scene_indexes:
 		for door_coords in loaded_scenes[i]["top_door_local_coords"]:
@@ -233,6 +238,7 @@ func spawn_level_for_each_unused_door():
 				var local_door_coords = right_door_coords[door_index]
 				var global_door_coords = door_coords_to_global(local_door_coords, loaded_scenes[i]["interface_tilemap"])
 				var door_tiles_world_pos = door_coords_to_world_space(local_door_coords, loaded_scenes[i]["interface_tilemap"])
+				print("Attempgint to spawn level")
 				var success = spawn_level_from_door(door_tiles_world_pos, Vector2.RIGHT)
 				if (success):
 					loaded_scenes[i]["right_door_used_indexes"].append(door_index)
@@ -246,7 +252,7 @@ func spawn_level_for_each_unused_door():
 
 
 func spawn_level_from_door(door_tiles_world_pos: Array, door_direction: Vector2):
-	#print("Spawning level from door...")
+	print("Spawning level from door...")
 	
 	# Find some loaded levels that might make good neighbors
 	var candidate_levels = find_levels_with_door_constraints(door_direction * -1, 1)
@@ -388,7 +394,7 @@ func find_position_for_level(level_index:int, from_door_global: Array, to_door_g
 func translate_tilemaps_in_scene(scene, translation: Vector2):
 	var tilemaps = get_all_tilemaps_in_node(scene)
 	for tilemap in tilemaps:
-		tilemap.position = translation
+		tilemap.position += translation
 
 
 
@@ -664,7 +670,7 @@ func fill_line_single(begin: Vector2, end: Vector2, corner_before: bool, corner_
 			elif (!is_horizontal):
 				my_tilemap.set_cellv(begin + (dir_normalized * i) + Vector2.RIGHT, interface_tileset_id_lookup["wall"])
 				my_tilemap.set_cellv(begin + (dir_normalized * i) + Vector2.LEFT, interface_tileset_id_lookup["wall"])
-		my_tilemap.set_cellv(begin + (dir_normalized * i), interface_tileset_id_lookup["hall_single"])
+		my_tilemap.set_cellv(begin + (dir_normalized * i), interface_tileset_id_lookup["wall"])
 
 
 

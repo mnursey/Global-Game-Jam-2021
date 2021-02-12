@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://Art/bullet2-Sheet_bw.png" type="Texture" id=1]
 [ext_resource path="res://Scripts/Pulse.gd" type="Script" id=2]
@@ -31,17 +31,21 @@ animations = [ {
 "speed": 5.0
 } ]
 
-[sub_resource type="Curve" id=9]
+[sub_resource type="Curve" id=7]
 _data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 0.987342, 0.154545 ), -1.32587, 0.0, 0, 0 ]
 
-[sub_resource type="CurveTexture" id=10]
+[sub_resource type="CurveTexture" id=8]
 width = 64
+curve = SubResource( 7 )
+
+[sub_resource type="Curve" id=9]
+_data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 1, 1 ), 0.0, 0.0, 0, 0 ]
+
+[sub_resource type="CurveTexture" id=10]
 curve = SubResource( 9 )
 
-[sub_resource type="CurveTexture" id=8]
-
-[sub_resource type="ParticlesMaterial" id=7]
-trail_size_modifier = SubResource( 8 )
+[sub_resource type="ParticlesMaterial" id=11]
+trail_size_modifier = SubResource( 10 )
 emission_shape = 1
 emission_sphere_radius = 1.0
 flag_disable_z = true
@@ -54,11 +58,11 @@ orbit_velocity_random = 0.0
 damping = 10.0
 angle = 90.0
 angle_random = 1.0
-scale_curve = SubResource( 10 )
+scale_curve = SubResource( 8 )
 
 [node name="Pulse" type="Area2D"]
 collision_layer = 0
-collision_mask = 64
+collision_mask = 65
 script = ExtResource( 2 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -68,12 +72,15 @@ shape = SubResource( 1 )
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
 position = Vector2( -0.375, -0.25 )
 frames = SubResource( 6 )
+frame = 3
 speed_scale = 2.0
 playing = true
 
 [node name="PulseSound" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource( 3 )
 volume_db = -10.0
+max_distance = 1000.0
+attenuation = 0.31864
 
 [node name="RayCast2D" type="RayCast2D" parent="."]
 cast_to = Vector2( 0, 0 )
@@ -81,8 +88,7 @@ cast_to = Vector2( 0, 0 )
 [node name="Particles2D" type="Particles2D" parent="."]
 amount = 20
 lifetime = 0.75
-visibility_rect = Rect2( -100, -100, 200, 200 )
 local_coords = false
-process_material = SubResource( 7 )
+process_material = SubResource( 11 )
 texture = ExtResource( 4 )
 [connection signal="body_entered" from="." to="." method="_on_Pulse_body_entered"]

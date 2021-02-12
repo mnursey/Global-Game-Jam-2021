@@ -40,13 +40,14 @@ onready var anim_player = $AnimationPlayer
 onready var hit_audio = $HitAudio
 
 const variant_health = [40, 120, 400, 1000]
-const variant_speed = [5, 9, 12, 10]
+const variant_speed = [6, 9, 12, 10]
 const variant_damage = [25, 40, 70, 100]
+const variant_kb_resist = [1.5, 2, 2.5, 3.5]
 const variant_jump_height = [3, 4, 5, 5]
 const variant_raycast_length = [20, 25, 30, 25]
 
 func _ready():
-	set_variant(3)#int(pow(randf(), 2) * 3))
+	set_variant(0)#int(pow(randf(), 2) * 4))
 	anim_player.play("Walk")
 	turn_to_face(1)
 	
@@ -62,8 +63,9 @@ func set_variant(v):
 
 func take_damage(amount):
 	if is_dashing: return
-	
+
 	.take_damage(amount)
+	aggro = true
 	jumping = true
 	hit_audio.play()
 	if health <= 0:
@@ -76,11 +78,9 @@ func take_damage(amount):
 		
 func _physics_process(delta):
 	apply_gravity(delta)
-	if true or !hit:
-		move(delta)
-		velocity = move_and_slide(velocity)
-	if false and hit:
-		velocity = move_and_slide(knockback)
+	movement_logic(delta)
+	.move()
+
 	
 	
 func apply_gravity(delta):
@@ -89,7 +89,7 @@ func apply_gravity(delta):
 	else:
 		velocity.y += gravity*delta
 	
-func move(delta):
+func movement_logic(delta):
 	if not is_dashing:
 		dash_cooldown_timer -= delta
 		

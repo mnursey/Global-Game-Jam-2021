@@ -1,7 +1,12 @@
 extends Node
 
+const PARTICLE_EMITTING_PULSE_CAP = 50
+const SOFT_PULSE_CAP = 200
+const HARD_PULSE_CAP = 400
+
 var player
 var enemies = []
+var pulse_count = 0
 
 func add_enemy(e):
 	enemies.append(e)

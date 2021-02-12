@@ -16,13 +16,23 @@ class Effect:
 		#True if both modify the same stat in the same way (they share an overlapping point in 3D effect-space)
 		return e.stat_name == stat_name and ((addend.dot(e.addend) != 0 or (multiplier-Vector3.ONE).dot((e.multiplier-Vector3.ONE)) != 0))
 		
-	func absorb(e:Effect):
+	func absorb(e:Effect, respect_caps = false):
 		if stat_name == e.stat_name:
 			cost += e.cost
+			
 			addend += e.addend
 			multiplier.x *= e.multiplier.x 
 			multiplier.y *= e.multiplier.y 
 			multiplier.z *= e.multiplier.z 
+			
+			if respect_caps:
+				for variant in range(3):
+					var final = StatsUtil.default_stats[stat_name][variant] + addend[variant]
+					if final < StatsUtil.caps[stat_name][0][variant]:
+						addend[variant] = StatsUtil.caps[stat_name][0][variant] - StatsUtil.default_stats[stat_name][variant]
+					elif final > StatsUtil.caps[stat_name][1][variant]:
+						addend[variant] = StatsUtil.caps[stat_name][1][variant] - StatsUtil.default_stats[stat_name][variant]
+
 		else:
 			print("ERROR: Cannot merge effects due to incompatible stat types")
 			
@@ -31,17 +41,15 @@ class Effect:
 		for i in range(3):
 			if addend[i] != 0: list.append(UnpackedEffect.new(stat_name, addend[i], i, '+'))
 		for i in range(3):
-			if multiplier[i] != 1: list.append(UnpackedEffect.new(stat_name, multiplier[i], i, '+'))
+			if multiplier[i] != 1: list.append(UnpackedEffect.new(stat_name, multiplier[i], i, '*'))
 
-		#if multiplier.x != 1:
-		#if multiplier.x != 1:
+		return list
 		
 		
 	func apply_to_base(b:Vector3):
 		b += addend
-		b.x *= multiplier.x
-		b.y *= multiplier.y
-		b.z *= multiplier.z
+		for variant in range(3):
+			b[variant] = clamp(b[variant] * multiplier[variant], StatsUtil.caps[stat_name][0][variant], StatsUtil.caps[stat_name][1][variant])
 		return b
 		
 	func _to_string():
@@ -55,9 +63,6 @@ class Effect:
 			if multiplier[i] != 1: s += (n + suffixes[i] + (" +" if multiplier[i] > 1 else " -") + "%d%%\n") % (abs(multiplier[i]-1)*100)
 		return s	
 		
-	
-		
-		
 	class UnpackedEffect:
 		var stat_name
 		var value
@@ -70,15 +75,14 @@ class Effect:
 			value = val
 			variant = v
 			op = o
-			#cost = value*StatsUtil.costs[stat_name] if op == '+' else 
+			cost = StatsUtil.appraise(stat_name, variant, op, value)
 			
 		func _to_string():
 			var suffixes = ["", "/sec", "/pulse"]
-	
 			if op == '+':
 				return (StatsUtil.string_names[stat_name] + suffixes[variant] + (" +" if value > 0 else " -") + "%.2f\n") % abs(value)
 			else:
-				return (StatsUtil.string_names[stat_name] + suffixes[variant] + (" +" if value > 1 else " -") + "%.2f\n") % (abs(value-1)*100)
+				return (StatsUtil.string_names[stat_name] + suffixes[variant] + (" +" if value > 1 else " -") + "%d%%\n") % (abs(value-1)*100)
 			
 		
 		
@@ -107,7 +111,15 @@ func apply_to_base(stats_dict):
 		if effects.has(stat):
 			final_stats[stat] = effects[stat].apply_to_base(stats_dict[stat])
 	return final_stats
-				
+	
+func get_unpacked():
+	var unpacked_effects = []
+	for effect in effects.values():
+		for e in effect.get_unpacked():
+			unpacked_effects.append(e)
+	unpacked_effects.sort_custom(self, "sort_by_cost_descending")
+	return unpacked_effects
+		
 func _to_string():
 	var s = ""
 	for e in effects.values():
@@ -132,8 +144,8 @@ static func print_test_bank():
 	pass
 	#print(generate_effect_bank(1, 1, 1, 0, ))
 	
-func compare_effects(e1, e2):
-	return e1.cost < e2.cost
+func sort_by_cost_descending(e1:Effect.UnpackedEffect, e2:Effect.UnpackedEffect):
+	return e1.cost > e2.cost
 			
 			
 static func generate_effect_bank(num_buffs, num_debuffs, abs_cost, cost_bias, pool):

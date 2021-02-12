@@ -19,7 +19,7 @@ func _ready():
 	randomize()
 	noise.seed = randi()
 	noise.period = 4
-	noise.octaves = 2
+	noise.octaves = 3
 
 func _process(delta):
 	if player:

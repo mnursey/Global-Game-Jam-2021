@@ -16,14 +16,8 @@ position = Vector2( -5200, 120 )
 [node name="Template3" parent="." instance=ExtResource( 5 )]
 position = Vector2( 1024, -72 )
 
-[node name="ItemSelectionModal" parent="Template3" index="7"]
-visible = true
-
 [node name="Template2" parent="." instance=ExtResource( 6 )]
 position = Vector2( 5160, -440 )
-
-[node name="ItemSelectionModal" parent="Template2" index="7"]
-visible = true
 
 [node name="Template4" parent="." instance=ExtResource( 2 )]
 position = Vector2( 1744, -200 )
@@ -60,9 +54,6 @@ position = Vector2( 93.3662, 70.0519 )
 
 [node name="FlyingRangedEnemy" parent="Template/RoomController/Enemies" index="2" instance=ExtResource( 9 )]
 position = Vector2( 210.252, 105.126 )
-
-[node name="ItemSelectionModal" parent="Template" index="7"]
-visible = true
 
 [node name="MoveandShootTutorial" parent="Template" index="8"]
 text = "A and D to move

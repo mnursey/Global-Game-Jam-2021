@@ -25,7 +25,6 @@ var max_jump_height = 3.2 * TILESIZE
 var min_jump_height= 0.8 * TILESIZE
 var jump_duration = 0.3
 var fall_duration = 0.325
-var max_horiz_speed = 225
 
 var max_jumps = 1
 var jumps = 1
@@ -94,6 +93,8 @@ func set_stats_from_dict(d):
 	max_jumps = d[StatsUtil.StatName.JUMPS].x
 	dash_speed = d[StatsUtil.StatName.DASH_SPEED].x
 	move_speed = d[StatsUtil.StatName.MOVE_SPEED].x
+	if max_dashes + max_jumps <= 0:
+		max_dashes = 1
 
 func _physics_process(delta):
 	if Input.is_action_just_pressed("restart"):
@@ -138,14 +139,20 @@ func get_input():
 	if Input.is_action_just_released("jump") and velocity.y < min_jump_velocity:
 		velocity.y = min_jump_velocity
 	
-	if Input.is_action_just_pressed("dash") and dashes > 0:
+	if (Input.is_action_just_pressed("dash") or Input.is_action_just_pressed("dash2")) and dashes > 0:
 		is_dashing = true
 		dashes -= 1
 		dash_timer.start(dash_time)
 		invincibility_timer.start(dash_time)
 		dash_audio.play()
-		dash_vector = mouse_vector.normalized() * dash_speed
 		camera.set_trauma(0.4)
+		
+		if Input.is_action_just_pressed("dash"):
+			dash_vector = mouse_vector.normalized() * dash_speed
+		else:
+			dash_vector = Vector2(-int(Input.is_action_pressed("move_left")) + int(Input.is_action_pressed("move_right")), -int(Input.is_action_pressed("move_up")) + int(Input.is_action_pressed("move_down"))).normalized() * dash_speed
+			
+
 	
 
 func apply_movement():
@@ -178,10 +185,6 @@ func apply_gravity(delta):
 func get_move_input():
 	var move_direction = -int(Input.is_action_pressed("move_left")) + int(Input.is_action_pressed("move_right"))
 	velocity.x = lerp(velocity.x, move_speed * move_direction, 0.2)
-	if velocity.x >= 0:
-		velocity.x = min(velocity.x, max_horiz_speed)
-	else:
-		velocity.x = max(velocity.x, -max_horiz_speed)
 	
 func animate():
 	if velocity.x > 0.5:
@@ -251,5 +254,5 @@ func _on_AnimationPlayer_animation_finished(anim_name):
 
 
 func _on_AST_shot_ast():
-	camera.set_trauma(0.2)
+	camera.set_trauma(0.4)
 	

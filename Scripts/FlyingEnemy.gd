@@ -26,7 +26,7 @@ enum {
 
 var state = IDLE
 
-onready var player_detection_zone = $PlayerDectectionZone
+#onready var player_detection_zone = $PlayerDectectionZone
 onready var hurtbox = $EnemyHurtbox
 onready var wanderController = $WanderController
 onready var animationPlayer = $AnimationPlayer
@@ -40,10 +40,11 @@ const variant_health = [30, 90, 300, 800]
 const variant_speed = [100, 150, 300, 300]
 const variant_damage = [20, 35, 50, 60]
 const variant_acceleration = [300, 300, 600, 600]
+const variant_kb_resist = [1, 1.5, 2, 3]
 
 
 func _ready():
-	set_variant(3) #int(pow(randf(), 2) * 4))
+	set_variant(0)#int(pow(randf(), 2) * 4))
 	state = pick_random_state([IDLE])
 	animationPlayer.play("Idle")
 	
@@ -53,6 +54,7 @@ func set_variant(v):
 	contact_damage = variant_damage[v]
 	max_speed = variant_speed[v]
 	acceleration = variant_acceleration[v]
+	knockback_resist = variant_kb_resist[v]
 	Healthbar.init(health)
 
 func _physics_process(delta):
@@ -62,7 +64,7 @@ func _physics_process(delta):
 	match state:
 		IDLE:
 			if player_dist() < aggro_range:
-				state = CHASE if variant < 2 else STALK
+				begin_chase()
 				
 			velocity = velocity.move_toward(Vector2.ZERO, air_friction * delta)
 			#if wanderController.get_time_left() == 0:
@@ -136,7 +138,10 @@ func _physics_process(delta):
 	#	velocity += soft_collision.get_push_vector() * delta * 400
 	
 	sprite.flip_h = velocity.x < 0
-	velocity = move_and_slide(velocity)
+	.move()
+	
+func begin_chase():
+	state = CHASE if variant < 2 else STALK
 				
 func accelerate_towards_point(point, delta):
 	var direction = global_position.direction_to(point)
@@ -176,6 +181,8 @@ func pick_random_state(state_list):
 func take_damage(amount):
 	.take_damage(amount)
 	hit_audio.play()
+	if state == IDLE:
+		begin_chase()
 	if health <= 0:
 		velocity = Vector2.ZERO
 		max_speed = 0
@@ -183,19 +190,7 @@ func take_damage(amount):
 		animationPlayer.play("Dead")
 	elif variant >= 1 and randf() > 0.5:
 		buffered_dodge = true
-		
-func _on_EnemyHurtbox_area_entered(area):
-	#var areas = hurtbox.get_overlapping_areas()
-	#for area in areas:
-	#if area.get_collision_mask() == 81:
-	#	get_hit(area)
-	pass
-
 
 func _on_AnimationPlayer_animation_finished(anim_name):
 	if anim_name == "Dead":
 		queue_free()
-
-
-func _on_KnockbackTimer_timeout():
-	pass # Replace with function body.

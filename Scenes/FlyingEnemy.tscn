@@ -122,10 +122,14 @@ autostart = true
 [node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource( 7 )
 volume_db = -15.0
+max_distance = 1000.0
+attenuation = 0.3
 
 [node name="HitAudio" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource( 8 )
 volume_db = -10.0
+max_distance = 1000.0
+attenuation = 0.3
 
 [node name="HealthBar" parent="." instance=ExtResource( 9 )]
 margin_left = -9.0

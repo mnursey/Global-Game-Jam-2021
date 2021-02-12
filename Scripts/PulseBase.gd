@@ -49,11 +49,16 @@ var stat_weights = {
 	"split chance" : Vector3(1, 0, 1)
 }
 
-func spawn_pulse():
+func spawn_pulse(is_split = false):
+	GM.pulse_count += 1
 	var pulse = Pulse.instance()
 	pulse.inherit_props(self)
+	
+	if is_split:
+		pulse.mute = true
+		pulse.disable_particles = GM.pulse_count > GM.PARTICLE_EMITTING_PULSE_CAP
+		
 	get_node("/root").add_child(pulse)
+	return pulse
 
-func _ready():
-	#stats["distance"] = 
-	pass # Replace with function body.
+

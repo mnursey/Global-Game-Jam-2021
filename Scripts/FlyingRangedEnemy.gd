@@ -48,11 +48,12 @@ const variant_health = [30, 80, 200, 500]
 const variant_speed = [50, 75, 100, 150]
 const variant_damage = [10, 15, 20, 20]
 const variant_acceleration = [300, 400, 500, 500]
+const variant_kb_resist = [4, 4, 4, 4]
 const variant_bullet_speed = [120, 120, 150, 200]
 const variant_shot_cooldown = [1, 0.4, 1, 0.1]
 
 func _ready():
-	set_variant(3)#int(pow(randf(), 2) * 3))
+	set_variant(0)#int(pow(randf(), 2) * 4))
 	state = pick_random_state([IDLE])
 	animationPlayer.play("Idle")
 	
@@ -62,6 +63,7 @@ func set_variant(v):
 	bullet_damage = variant_damage[v]
 	max_speed = variant_speed[v]
 	acceleration = variant_acceleration[v]
+	knockback_resist = variant_kb_resist[v]
 	bullet_speed = variant_bullet_speed[v]
 	shot_cooldown = variant_shot_cooldown[v]
 	Healthbar.init(health)
@@ -72,15 +74,7 @@ func _physics_process(delta):
 	match state:
 		IDLE:
 			if player_dist() < aggro_range:
-				state = CHASE
-				
-				if variant <= 1:
-					pass
-				elif variant <= 2:
-					target_point = target_points[0] if randf() > 0.5 else target_points[2]
-				else:
-					current_target_point_id = int(randf()*3)
-					target_points[current_target_point_id]
+				begin_chase()
 				
 			velocity = velocity.move_toward(Vector2.ZERO, air_friction * delta)
 			if wanderController.get_time_left() == 0:
@@ -129,7 +123,7 @@ func _physics_process(delta):
 			if variant == 3: raycast.cast_to = abs_target_point - global_position
 
 			var can_shoot = false
-			if variant == 1:
+			if variant == 0:
 				if target_dist > 130:
 					accelerate_towards_point(abs_target_point, delta)
 				elif target_dist < 70:
@@ -162,7 +156,17 @@ func _physics_process(delta):
 					
 							
 	sprite.flip_h = velocity.x < 0
-	velocity = move_and_slide(velocity)
+	.move()
+	
+func begin_chase():
+	state = CHASE			
+	if variant <= 1:
+		pass
+	elif variant <= 2:
+		target_point = target_points[0] if randf() > 0.5 else target_points[2]
+	else:
+		current_target_point_id = int(randf()*3)
+		target_points[current_target_point_id]
 	
 func shoot(bullet_vector):
 	var bullet = Bullet.instance().duplicate()
@@ -209,6 +213,8 @@ func pick_random_state(state_list):
 func take_damage(amount):
 	.take_damage(amount)
 	hit_audio.play()
+	if state == IDLE: 
+		begin_chase()
 	if health <= 0:
 		velocity = Vector2.ZERO
 		max_speed = 0

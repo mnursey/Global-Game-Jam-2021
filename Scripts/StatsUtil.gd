@@ -1,7 +1,7 @@
 class_name StatsUtil
 
 const HOMING_RANGE = 300
-const MIN_SUCC_RANGE = 70
+const MIN_SUCC_RANGE = 50
 
 enum StatName {
 	#Player Stats
@@ -30,13 +30,13 @@ enum StatName {
 const PLAYER_STATS = [StatName.MAX_HEALTH, StatName.JUMPS, StatName.DASHES, StatName.MOVE_SPEED, StatName.DASH_SPEED]
 const AST_STATS = [StatName.FIRE_RATE, StatName.DISTANCE, StatName.LIFETIME, StatName.SIZE, StatName.DAMAGE, StatName.SPEED, StatName.SCATTER, StatName.KNOCKBACK, StatName.SUCTION, StatName.HOMING, StatName.GRAVITY, StatName.SUBPULSES, StatName.SUBPULSE_DELAY, StatName.SPLIT_CHANCE]
 const DPS_STATS = [StatName.FIRE_RATE, StatName.DAMAGE, StatName.SUBPULSES]
-const INTEGER_STATS = [StatName.JUMPS, StatName.DASHES, StatName.MAX_HEALTH, StatName.SUBPULSES]
+const INTEGER_STATS = [StatName.MAX_HEALTH, StatName.JUMPS, StatName.DASHES, StatName.MOVE_SPEED, StatName.DASH_SPEED, StatName.DISTANCE, StatName.SPEED, StatName.KNOCKBACK, StatName.SUCTION, StatName.HOMING, StatName.GRAVITY, StatName.SUBPULSES, StatName.SPLIT_CHANCE]
 const SYMMETRICAL_STATS = [StatName.GRAVITY] # Stats that have the same cost whether positive or negative
 
 
 const default_stats = {
 	#Player 
-	StatName.MAX_HEALTH:	Vector3(100000, 0, 0),
+	StatName.MAX_HEALTH:	Vector3(100, 0, 0),
 	StatName.JUMPS:			Vector3(1, 0, 0),
 	StatName.DASHES:		Vector3(1, 0, 0),
 	StatName.MOVE_SPEED:	Vector3(160, 0, 0),
@@ -58,7 +58,29 @@ const default_stats = {
 	StatName.SPLIT_CHANCE: 	Vector3(1.0, 0, 0)
 }
 
-const DOUBLING_COST = 4
+const doubling_costs = {
+	StatName.MAX_HEALTH:	6,
+	StatName.JUMPS:			6,
+	StatName.DASHES:		6,
+	StatName.MOVE_SPEED:	4,
+	StatName.DASH_SPEED:	4,
+	#AST
+	StatName.FIRE_RATE: 	10,
+	StatName.DISTANCE: 		4,
+	StatName.LIFETIME: 		6,
+	StatName.SIZE: 			4,
+	StatName.DAMAGE: 		10,
+	StatName.SPEED: 		6,
+	StatName.SCATTER:		4,
+	StatName.KNOCKBACK: 	6,
+	StatName.SUCTION: 		6,
+	StatName.HOMING: 		8,
+	StatName.GRAVITY: 		4,
+	StatName.SUBPULSES:		10,
+	StatName.SUBPULSE_DELAY:4,
+	StatName.SPLIT_CHANCE: 	8
+}
+
 const LN_2 = 0.693
 const costs = {
 	#Player (TEMP VALUES)
@@ -69,18 +91,18 @@ const costs = {
 	StatName.DASH_SPEED:	Vector3(0.05, 0, 0),
 	#AST
 	StatName.FIRE_RATE: 	Vector3(2, 0, 0),
-	StatName.DISTANCE: 		Vector3(0.1, 0, 0.1),
+	StatName.DISTANCE: 		Vector3(0.2, 0, 0.4),
 	StatName.LIFETIME: 		Vector3(2, 0, 3),
-	StatName.SIZE: 			Vector3(4, 6, 8),
+	StatName.SIZE: 			Vector3(8, 6, 12),
 	StatName.DAMAGE: 		Vector3(1, 0.5, 1),
 	StatName.SPEED: 		Vector3(0.02, 0.02, 0.02),
 	StatName.SCATTER:		Vector3(-0.05, 0, -0.05),
-	StatName.KNOCKBACK: 	Vector3(0.025,0.01,0.015),
+	StatName.KNOCKBACK: 	Vector3(0.05,0.02,0.03),
 	StatName.SUCTION: 		Vector3(0.02,0.01,0.02),
 	StatName.HOMING: 		Vector3(0.05, 0.03, 0.05),
 	StatName.GRAVITY: 		Vector3(-0.01, -0.005, -0.01),
 	StatName.SUBPULSES:		Vector3(2, 0, 0),
-	StatName.SUBPULSE_DELAY:Vector3(-5, 0, -5),
+	StatName.SUBPULSE_DELAY:Vector3(-10, 0, -15),
 	StatName.SPLIT_CHANCE: 	Vector3(1, 0, 1)
 }
 
@@ -88,25 +110,25 @@ const costs = {
 const caps = {
 	#Player (TEMP VALUES)
 	StatName.MAX_HEALTH:	[Vector3(1, 0, 0), Vector3(INF, 0, 0)],
-	StatName.JUMPS:			[Vector3(1, 0, 0), Vector3(INF, 0, 0)],
-	StatName.DASHES:		[Vector3(1, 0, 0), Vector3(INF, 0, 0)],
-	StatName.MOVE_SPEED:	[Vector3(1, 0, 0), Vector3(INF, 0, 0)],
-	StatName.DASH_SPEED:	[Vector3(25, 0, 0), Vector3(INF, 0, 0)],
+	StatName.JUMPS:			[Vector3(0, 0, 0), Vector3(INF, 0, 0)],
+	StatName.DASHES:		[Vector3(0, 0, 0), Vector3(INF, 0, 0)],
+	StatName.MOVE_SPEED:	[Vector3(50, 0, 0), Vector3(INF, 0, 0)],
+	StatName.DASH_SPEED:	[Vector3(50, 0, 0), Vector3(INF, 0, 0)],
 	#AST
 	StatName.FIRE_RATE: 	[Vector3(0.5, 0, 0), Vector3(INF, 0, 0)],
-	StatName.DISTANCE: 		[Vector3(-200, 0, -50), Vector3(200, 0, 50)],
+	StatName.DISTANCE: 		[Vector3(-50, 0, -25), Vector3(50, 0, 25)],
 	StatName.LIFETIME: 		[Vector3(0.1, 0, -5), Vector3(10, 0, 5)],
 	StatName.SIZE: 			[Vector3(0.2, -10, -1), Vector3(10, +10, +5)],
 	StatName.DAMAGE: 		[Vector3(1, -50, -50), Vector3(INF, INF, INF)],
-	StatName.SPEED: 		[Vector3(-3000, -INF, -INF), Vector3(3000, INF, INF)],
+	StatName.SPEED: 		[Vector3(-1000, -INF, -INF), Vector3(1000, INF, INF)],
 	StatName.SCATTER:		[Vector3(0, 0, -360), Vector3(360, 0, 360)],
-	StatName.KNOCKBACK: 	[Vector3(1, 0, 0), Vector3(1, 0, 0)],
-	StatName.SUCTION: 		[Vector3(1, 0, 0), Vector3(1, 0, 0)],
+	StatName.KNOCKBACK: 	[Vector3(-100, -INF, -INF), Vector3(INF, INF, INF)],
+	StatName.SUCTION: 		[Vector3(-300, -INF, -INF), Vector3(INF, INF, INF)],
 	StatName.HOMING: 		[Vector3(-50, -INF, -INF), Vector3(INF, INF, INF)],
 	StatName.GRAVITY: 		[Vector3(-INF, -INF, -INF), Vector3(INF, INF, INF)],
 	StatName.SUBPULSES:		[Vector3(0, 0, 0), Vector3(30, 0, 0)],
 	StatName.SUBPULSE_DELAY:[Vector3(0, 0, -1), Vector3(1, 0, 1)],
-	StatName.SPLIT_CHANCE: 	[Vector3(0, 0, -10), Vector3(20, 0, 10)],
+	StatName.SPLIT_CHANCE: 	[Vector3(0, 0, -10), Vector3(50, 0, 10)],
 }
 
 #Min/Max stat values attainable by a pulse after all cumulative effects
@@ -171,7 +193,7 @@ const string_names = {
 	StatName.GRAVITY: 		"Pulse Gravity",
 	StatName.SUBPULSES:		"Subpulses",
 	StatName.SUBPULSE_DELAY:"Subpulse Delay",
-	StatName.SPLIT_CHANCE: 	"Subpule Split Chance"
+	StatName.SPLIT_CHANCE: 	"Subpulse Split Chance"
 }
 
 const sprite_offsets = {
@@ -204,7 +226,7 @@ static func purchase(stat, variant, op, cost):
 		if stat in INTEGER_STATS: amount = round(amount) if abs(amount) > 0.5 else sign(amount)
 		if stat in SYMMETRICAL_STATS: amount *= sign(randf()-0.5)
 	else:
-		amount = pow(2, float(cost)*sign(costs[stat][variant])/DOUBLING_COST)
+			amount = pow(2, float(cost)*sign(costs[stat][variant])/doubling_costs[stat])
 		
 	return amount
 	
@@ -212,9 +234,10 @@ static func appraise(stat, variant, op, amount):
 	var cost
 	if stat in SYMMETRICAL_STATS: amount = abs(amount)
 	if op == '+':
-		amount = float(amount)*costs[stat][variant]
+		cost = float(amount)*costs[stat][variant]
 	else:
-		cost = log(float(amount)*sign(costs[stat][variant]))*LN_2*DOUBLING_COST
+		cost = log(float(amount)*sign(costs[stat][variant]))*LN_2*doubling_costs[stat]
+	return cost
 		
 
 static func generate_item(magnitude, quality):

@@ -55,7 +55,7 @@ func _process(delta):
 		#	EffectBank.absorb(e)
 		#recalculate_stats()
 		
-func spawn_pulse():
+func spawn_pulse(is_split = false):
 	velocity = (get_global_mouse_position() - global_position).normalized()
 	.spawn_pulse()
 

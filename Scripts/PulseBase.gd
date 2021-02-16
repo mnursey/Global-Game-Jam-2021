@@ -2,7 +2,7 @@ extends Node2D
 
 onready var Pulse = load("res://Scenes/Pulse.tscn")
 
-const DAMAGE_MAX : float = 100.0
+const DAMAGE_MAX : float = 70.0
 const LOG_DAMAGE_MAX : float = log(DAMAGE_MAX)
 const BASE_SPLIT_CHANCE = 0.05
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=2]
+[gd_scene load_steps=21 format=2]
 
 [ext_resource path="res://Scripts/Player.gd" type="Script" id=1]
 [ext_resource path="res://Art/player_character_full_sheet.png" type="Texture" id=2]
@@ -12,6 +12,7 @@
 [ext_resource path="res://Scripts/CameraShake.gd" type="Script" id=10]
 [ext_resource path="res://Sound/finalspacefull.wav" type="AudioStream" id=11]
 [ext_resource path="res://Sound/finalspacereduction.wav" type="AudioStream" id=12]
+[ext_resource path="res://Scenes/StatsDisplay.tscn" type="PackedScene" id=13]
 
 [sub_resource type="RectangleShape2D" id=1]
 
@@ -170,6 +171,13 @@ margin_top = -120.915
 margin_right = -226.849
 margin_bottom = -120.915
 rect_scale = Vector2( 1.4, 1.4 )
+
+[node name="StatsDisplay" parent="ShakeCamera2D" instance=ExtResource( 13 )]
+visible = false
+margin_left = -240.0
+margin_top = -125.0
+margin_right = -240.0
+margin_bottom = -125.0
 
 [node name="DashTimer" type="Timer" parent="."]
 wait_time = 0.5

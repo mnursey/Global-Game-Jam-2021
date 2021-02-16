@@ -29,7 +29,7 @@ func set_stats_from_dict(d):
 	suction = d[StatsUtil.StatName.SUCTION]
 	homing = d[StatsUtil.StatName.HOMING]
 	gravity = d[StatsUtil.StatName.GRAVITY]
-	remaining_pulses = d[StatsUtil.StatName.SUBPULSES].x
+	remaining_pulses = round(d[StatsUtil.StatName.SUBPULSES].x) + 1
 	subpulse_delay = d[StatsUtil.StatName.SUBPULSE_DELAY]
 	split_chance = d[StatsUtil.StatName.SPLIT_CHANCE]
 
@@ -58,4 +58,6 @@ func _process(delta):
 func spawn_pulse(is_split = false):
 	velocity = (get_global_mouse_position() - global_position).normalized()
 	.spawn_pulse()
+	if randf() < (1 - pow(1 - BASE_SPLIT_CHANCE, split_chance.x)):
+		spawn_pulse(true)
 

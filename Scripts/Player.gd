@@ -46,6 +46,7 @@ var target_music_hutzpah = 0
 
 onready var anim_player = $AnimationPlayer
 onready var sprite = $Sprite
+onready var healthbar = $ShakeCamera2D/HealthBar
 onready var dash_timer = $DashTimer
 onready var invincibility_timer = $InvincibilityTimer
 onready var coyote_timer = $CoyoteTimer
@@ -56,12 +57,11 @@ onready var dash_audio =$DashAudio
 onready var camera = $ShakeCamera2D
 onready var hurtBox = $Hurtbox/CollisionShape2D
 onready var collisionBox = $CollisionShape2D
+onready var stats_display = $ShakeCamera2D/StatsDisplay
 onready var AST = $AST 
 onready var music_reduced = $Music1
 onready var music_combat = $Music2
 var EffectBank
-
-
 
 func _ready():
 	GM.player = self
@@ -81,6 +81,7 @@ func _ready():
 func apply_item(item):
 	EffectBank.absorb(item.get_node('EffectBank'))
 	recalculate_stats()
+	stats_display.refresh()
 	
 func recalculate_stats():
 	var stats = EffectBank.apply_to_base(base_stats)
@@ -88,11 +89,12 @@ func recalculate_stats():
 	AST.set_stats_from_dict(stats)
 	
 func set_stats_from_dict(d):
-	max_health = d[StatsUtil.StatName.MAX_HEALTH].x
-	max_dashes = d[StatsUtil.StatName.DASHES].x
-	max_jumps = d[StatsUtil.StatName.JUMPS].x
+	max_health = round(d[StatsUtil.StatName.MAX_HEALTH].x)
+	max_dashes = round(d[StatsUtil.StatName.DASHES].x)
+	max_jumps = round(d[StatsUtil.StatName.JUMPS].x)
 	dash_speed = d[StatsUtil.StatName.DASH_SPEED].x
 	move_speed = d[StatsUtil.StatName.MOVE_SPEED].x
+	healthbar.update_max_health(max_health)
 	if max_dashes + max_jumps <= 0:
 		max_dashes = 1
 
@@ -133,8 +135,17 @@ func get_input():
 	if Input.is_action_just_pressed("jump") and jumps > 0:
 		jump_audio.play()
 		is_jumping = true
-		velocity.y = max_jump_velocity
 		jumps -= 1
+		velocity.y = max_jump_velocity
+		if is_dashing:
+			is_dashing = false
+			if is_on_floor():
+				dashes = max_dashes
+			if dash_vector.y > 1:
+				velocity.y *= 0.7
+			else:
+				velocity.x *= 0.7
+			
 		
 	if Input.is_action_just_released("jump") and velocity.y < min_jump_velocity:
 		velocity.y = min_jump_velocity
@@ -150,15 +161,22 @@ func get_input():
 		if Input.is_action_just_pressed("dash"):
 			dash_vector = mouse_vector.normalized() * dash_speed
 		else:
-			dash_vector = Vector2(-int(Input.is_action_pressed("move_left")) + int(Input.is_action_pressed("move_right")), -int(Input.is_action_pressed("move_up")) + int(Input.is_action_pressed("move_down"))).normalized() * dash_speed
-			
-
+			dash_vector = Vector2(-int(Input.is_action_pressed("move_left")) + int(Input.is_action_pressed("move_right")), -int(Input.is_action_pressed("move_up")) + int(Input.is_action_pressed("move_down"))).normalized() * dash_speed + Vector2(0, 0.5)
+		
+	if Input.is_action_just_pressed("toggle_stats_ui"):
+		print('!')
+		stats_display.set_visible(true)
+	elif Input.is_action_just_released("toggle_stats_ui"):
+		stats_display.set_visible(false)
 	
 
 func apply_movement():
 	var was_on_floor = is_on_floor()
 	
 	if is_dashing:
+		if dash_vector.y > 1 and is_on_floor():
+			dash_vector = Vector2(dash_speed*sign(dash_vector.x), 2)	
+			
 		velocity = move_and_slide(dash_vector, Vector2.UP)
 		#velocity = lerp(velocity, velocity/100, 0.2)
 		sprite.scale = Vector2(0.9, 0.9)
@@ -184,7 +202,11 @@ func apply_gravity(delta):
 
 func get_move_input():
 	var move_direction = -int(Input.is_action_pressed("move_left")) + int(Input.is_action_pressed("move_right"))
-	velocity.x = lerp(velocity.x, move_speed * move_direction, 0.2)
+	if move_direction == 0 or sign(move_direction) != sign(velocity.x) or is_on_floor() or abs(move_speed) > abs(velocity.x):
+		velocity.x = lerp(velocity.x, move_speed * move_direction, 0.2)
+	else:
+		velocity.x = lerp(velocity.x, move_speed * move_direction, 0.02)
+
 	
 func animate():
 	if velocity.x > 0.5:
@@ -206,8 +228,9 @@ func animate():
 
 
 func _on_DashTimer_timeout():
-	velocity /= 2
-	is_dashing = false
+	if is_dashing:
+		velocity /= 2
+		is_dashing = false
 	
 func take_damage(amount):
 	if !dead and invincibility_timer.is_stopped():

@@ -20,12 +20,19 @@ var targeted_enemy = null
 var retarget_timer = 1
 
 var timer
+var enemy_recollision_timer = 0
 var has_spawned_subpulse = false
 var dead = false
 
 var mute = false
 var disable_particles = false
 var check_wall_collision = false
+var colliding_enemies = []
+
+
+var space_state
+var collision_query
+
 
 
 # Called when the node enters the scene tree for the first time.
@@ -35,6 +42,13 @@ func _ready():
 		pulse_sound.pitch_scale += 0.5*(randf() - 0.2)
 		pulse_sound.play()
 	if disable_particles: particles.emitting = false
+	space_state = get_world_2d().direct_space_state
+	
+	collision_query = Physics2DShapeQueryParameters.new()
+	collision_query.set_transform(transform)
+	collision_query.set_shape(get_node("CollisionShape2D").shape)
+	collision_query.collision_layer = 0b1000001
+	collision_query.collide_with_areas = true
 	
 
 func inherit_props(p):
@@ -115,7 +129,7 @@ func home_in(delta):
 		direction = direction.slerp(to_enemy, slerp_amount)
 		
 func succ(delta):
-	var succ_range = 10000
+	var succ_range = 22000
 	for enemy in GM.enemies:
 		if enemy:
 			var to_enemy = enemy.global_position - global_position
@@ -133,7 +147,6 @@ func _physics_process(delta):
 			timer = INF
 			
 		if check_wall_collision:
-			var space_state = get_world_2d().direct_space_state
 			if len(space_state.intersect_point(global_position, 1, [], 0b0001)) > 0:
 				distance /= 2
 				speed /= 2
@@ -158,13 +171,83 @@ func _physics_process(delta):
 		var displacement = velocity*delta
 		
 		#raycast.force_raycast_update()
-		raycast.cast_to = displacement
-		if raycast.is_colliding():
-			timer = INF
-			global_position = raycast.get_collision_point() + 0.1*(raycast.get_collision_point() - global_position)
-			velocity -= 2*velocity.dot(raycast.get_collision_normal())*raycast.get_collision_normal()
-		else:
-			position += displacement
+		#raycast.cast_to = displacement
+		#if raycast.is_colliding():
+		#	timer = INF
+		#	global_position = raycast.get_collision_point() + 0.1*(raycast.get_collision_point() - global_position)
+		#	velocity -= 2*velocity.dot(raycast.get_collision_normal())*raycast.get_collision_normal()
+		#else:
+		#	
+
+		collision_query.set_transform(transform)
+		collision_query.motion = displacement
+		
+		var high_speed = displacement.length_squared() > 400*cur_size*cur_size
+		if high_speed:
+			var total_dist = displacement.length()
+			var direction = displacement/total_dist
+			var dist_checked = 0
+			var pulse_width = 20*cur_size
+			var query_dist = total_dist
+			
+			
+			if enemy_recollision_timer < 0:
+				enemy_recollision_timer = 0.2
+				colliding_enemies = []
+			else:
+				enemy_recollision_timer -= delta
+		
+			while dist_checked < total_dist:
+				var dist_checked_this_loop = pulse_width
+				
+				collision_query.exclude = colliding_enemies
+				var cols = space_state.intersect_shape(collision_query)
+				if not cols.empty():
+					for c in cols:
+						if c.collider.is_in_group("Enemy"):
+							c.collider.get_hit(self)
+							colliding_enemies.append(c.rid)
+						elif not c.collider.is_in_group("Player"):
+							check_wall_collision = true
+							collision_query.collision_layer = 0b1000000
+						
+				else:
+					var col_dist = space_state.cast_motion(collision_query)
+					var d = 0 if col_dist.empty() else col_dist[0]
+					if d < 1:
+						dist_checked_this_loop += d*query_dist
+						
+					else:
+						#colliding_enemies = []
+						dist_checked = total_dist
+					
+				dist_checked += dist_checked_this_loop
+				query_dist -= dist_checked_this_loop
+				collision_query.transform.origin += direction*dist_checked_this_loop
+				collision_query.motion = direction*query_dist
+				
+		else: #Low-speed check
+			collision_query.exclude = []
+			
+			var d = 0
+			var col_dists = space_state.cast_motion(collision_query)
+			if not col_dists.empty(): d = col_dists[1]
+				
+			if d < 1:
+				collision_query.transform.origin += displacement*d
+				collision_query.exclude = colliding_enemies
+				var cols = space_state.intersect_shape(collision_query)
+				for c in cols:
+					if c.collider.is_in_group("Enemy"):
+						c.collider.get_hit(self)
+						colliding_enemies.append(c.rid)
+					elif not c.collider.is_in_group("Player"):
+						check_wall_collision = true
+						collision_query.collision_layer = 0b1000000
+			else:
+				colliding_enemies = []
+				
+		position += displacement
 			
 		if timer > lifetime.x*subpulse_delay.x and remaining_pulses > 0 and not has_spawned_subpulse:
 			has_spawned_subpulse = true
@@ -185,13 +268,13 @@ func _physics_process(delta):
 		
 	
 
-func _on_Pulse_body_entered(body):
-	if dead: return
-	
-	if body.is_in_group("Enemy"):
-		body.get_hit(self)
-	elif not body.is_in_group("Player"):
-		check_wall_collision = true
+#func _on_Pulse_body_entered(body):
+#	if dead: return
+#	
+#	if body.is_in_group("Enemy"):
+#		body.get_hit(self)
+#	elif not body.is_in_group("Player"):
+#		check_wall_collision = true
 		
 		
 func deal_damage(target):

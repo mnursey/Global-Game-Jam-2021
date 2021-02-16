@@ -60,7 +60,7 @@ class Effect:
 		
 		for i in range(3):
 			if addend[i] != 0: s += (n + suffixes[i] + (" +" if addend[i] > 0 else " -") + "%.2f\n") % abs(addend[i])
-			if multiplier[i] != 1: s += (n + suffixes[i] + (" +" if multiplier[i] > 1 else " -") + "%d%%\n") % (abs(multiplier[i]-1)*100)
+			if multiplier[i] != 1: s += (n + suffixes[i] + (" +" if multiplier[i] > 1 else " -") + "%d%%\n") % max(abs(multiplier[i]-1)*100, 1)
 		return s	
 		
 	class UnpackedEffect:
@@ -171,6 +171,9 @@ static func generate_effect_bank(num_buffs, num_debuffs, abs_cost, cost_bias, po
 	budgets.invert()
 	
 	for i in range(num_buffs):
+		if abs(budgets[i]) < 0.05:
+			continue
+			
 		if i == 0 and randf() < (0.2 + num_buffs/10):
 			new_effect = generate_random_effect(budgets[i], major_pool, used_effects)
 		else:
@@ -182,7 +185,6 @@ static func generate_effect_bank(num_buffs, num_debuffs, abs_cost, cost_bias, po
 		#Account for overdraft due to integer stat rounding
 		cost_bias += budgets[i] - new_effect.cost 
 			
-	#breakpoint
 	remaining_cost = abs_cost - cost_bias
 	budgets = [0, 1]
 	for _i in range(num_debuffs-1):
@@ -194,6 +196,9 @@ static func generate_effect_bank(num_buffs, num_debuffs, abs_cost, cost_bias, po
 	budgets.sort()
 	
 	for i in range(num_debuffs):
+		if abs(budgets[i]) < 0.05:
+			continue
+			
 		new_effect = generate_random_effect(budgets[i], pool, used_effects)
 		used_effects.append(new_effect)
 		bank.add_effect(new_effect)

@@ -53,7 +53,7 @@ const default_stats = {
 	StatName.SUCTION: 		Vector3(0, 0, 0),
 	StatName.HOMING: 		Vector3(0, 0, 0),
 	StatName.GRAVITY: 		Vector3(0.0, 0, 0),
-	StatName.SUBPULSES:		Vector3(2, 0, 0),
+	StatName.SUBPULSES:		Vector3(1, 0, 0),
 	StatName.SUBPULSE_DELAY:Vector3(0.5, 0, 0),
 	StatName.SPLIT_CHANCE: 	Vector3(1.0, 0, 0)
 }
@@ -101,7 +101,7 @@ const costs = {
 	StatName.SUCTION: 		Vector3(0.02,0.01,0.02),
 	StatName.HOMING: 		Vector3(0.05, 0.03, 0.05),
 	StatName.GRAVITY: 		Vector3(-0.01, -0.005, -0.01),
-	StatName.SUBPULSES:		Vector3(2, 0, 0),
+	StatName.SUBPULSES:		Vector3(3, 0, 0),
 	StatName.SUBPULSE_DELAY:Vector3(-10, 0, -15),
 	StatName.SPLIT_CHANCE: 	Vector3(1, 0, 1)
 }
@@ -120,7 +120,7 @@ const caps = {
 	StatName.LIFETIME: 		[Vector3(0.1, 0, -5), Vector3(10, 0, 5)],
 	StatName.SIZE: 			[Vector3(0.2, -10, -1), Vector3(10, +10, +5)],
 	StatName.DAMAGE: 		[Vector3(1, -50, -50), Vector3(INF, INF, INF)],
-	StatName.SPEED: 		[Vector3(-1000, -INF, -INF), Vector3(1000, INF, INF)],
+	StatName.SPEED: 		[Vector3(-INF, -INF, -INF), Vector3(INF, INF, INF)],
 	StatName.SCATTER:		[Vector3(0, 0, -360), Vector3(360, 0, 360)],
 	StatName.KNOCKBACK: 	[Vector3(-100, -INF, -INF), Vector3(INF, INF, INF)],
 	StatName.SUCTION: 		[Vector3(-300, -INF, -INF), Vector3(INF, INF, INF)],
@@ -193,7 +193,7 @@ const string_names = {
 	StatName.GRAVITY: 		"Pulse Gravity",
 	StatName.SUBPULSES:		"Subpulses",
 	StatName.SUBPULSE_DELAY:"Subpulse Delay",
-	StatName.SPLIT_CHANCE: 	"Subpulse Split Chance"
+	StatName.SPLIT_CHANCE: 	"Pulse Split Chance"
 }
 
 const sprite_offsets = {
@@ -236,7 +236,7 @@ static func appraise(stat, variant, op, amount):
 	if op == '+':
 		cost = float(amount)*costs[stat][variant]
 	else:
-		cost = log(float(amount)*sign(costs[stat][variant]))*LN_2*doubling_costs[stat]
+		cost = log(float(amount))*LN_2*doubling_costs[stat]*sign(costs[stat][variant])
 	return cost
 		
 

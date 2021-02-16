@@ -10,7 +10,7 @@ scale = Vector2( 10, 10 )
 texture = ExtResource( 2 )
 offset = Vector2( 20, 0 )
 region_enabled = true
-region_rect = Rect2( 0, 0, 8, 8 )
+region_rect = Rect2( 0, 0, 16, 16 )
 
 [node name="EffectBank" type="Node" parent="."]
 script = ExtResource( 1 )

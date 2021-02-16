@@ -199,24 +199,25 @@ const string_names = {
 const sprite_offsets = {
 	#Player
 	StatName.MAX_HEALTH:	Vector2(2, 0),
-	StatName.JUMPS:			Vector2(3, 2),
-	StatName.DASHES:		Vector2(3, 2),
-	StatName.MOVE_SPEED:	Vector2(3, 2),
+	StatName.JUMPS:			Vector2(3, 0),
+	StatName.DASHES:		Vector2(4, 0),
+	StatName.MOVE_SPEED:	Vector2(5, 0),
+	StatName.DASH_SPEED:	Vector2(6, 0),
 	#AST
-	StatName.FIRE_RATE: 	Vector2(0, 0),
-	StatName.DISTANCE: 		Vector2(1, 0),
-	StatName.LIFETIME: 		Vector2(0, 1),
-	StatName.SIZE: 			Vector2(3, 2),
-	StatName.DAMAGE: 		Vector2(3, 0),
-	StatName.SPEED: 		Vector2(1, 0),
-	StatName.SCATTER:		Vector2(2, 2),
-	StatName.KNOCKBACK: 	Vector2(3, 1),
-	StatName.SUCTION: 		Vector2(3, 3),
-	StatName.HOMING: 		Vector2(2, 2),
-	StatName.GRAVITY: 		Vector2(3, 3),
-	StatName.SUBPULSES:		Vector2(1, 2),
-	StatName.SUBPULSE_DELAY:Vector2(0, 0),
-	StatName.SPLIT_CHANCE: 	Vector2(1, 1),
+	StatName.FIRE_RATE: 	Vector2(7, 0),
+	StatName.DISTANCE: 		Vector2(8, 0),
+	StatName.LIFETIME: 		Vector2(9, 0),
+	StatName.SIZE: 			Vector2(10, 0),
+	StatName.DAMAGE: 		Vector2(11, 0),
+	StatName.SPEED: 		Vector2(12, 0),
+	StatName.SCATTER:		Vector2(13, 0),
+	StatName.KNOCKBACK: 	Vector2(14, 0),
+	StatName.SUCTION: 		Vector2(15, 0),
+	StatName.HOMING: 		Vector2(15, 1),
+	StatName.GRAVITY: 		Vector2(3, 1),
+	StatName.SUBPULSES:		Vector2(4, 1),
+	StatName.SUBPULSE_DELAY:Vector2(5, 1),
+	StatName.SPLIT_CHANCE: 	Vector2(6, 1),
 }
 
 static func purchase(stat, variant, op, cost):
@@ -250,7 +251,7 @@ static func generate_item(magnitude, quality):
 	var item = load('res://Scenes/Item.tscn').instance().duplicate()
 	var bank = load('res://Scenes/EffectBank.tscn').instance().generate_effect_bank(num_buffs, num_debuffs, cost, cost*quality, StatName.values().duplicate())
 	
-	item.get_node('Sprite').region_rect = Rect2(sprite_offsets[bank.get_primary_stat()]*8, Vector2(8, 8))
+	item.get_node('Sprite').region_rect = Rect2(sprite_offsets[bank.get_primary_stat()]*16, Vector2(16, 16))
 	item.get_node('EffectBank').absorb(bank) 
 	return item
 	

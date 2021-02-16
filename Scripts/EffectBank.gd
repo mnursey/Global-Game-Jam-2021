@@ -129,15 +129,11 @@ func _to_string():
 func get_primary_stat():
 	var primary
 	var max_cost = -INF
-	for e in effects.values():
+	for e in get_unpacked():
 		if e.cost > max_cost:
-			primary = e
+			primary = e.stat_name
 			max_cost = e.cost
-			
-	if(StatsUtil.sprite_offsets.has(primary.stat_name)):
-		return primary.stat_name	
-	else:
-		return 	StatsUtil.StatName.FIRE_RATE
+	return primary
 	
 	
 static func print_test_bank():

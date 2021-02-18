@@ -38,7 +38,6 @@ onready var Bullet = load('res://Scenes/Bullet.tscn')
 onready var hurtbox = $EnemyHurtbox
 onready var wanderController = $WanderController
 onready var animationPlayer = $AnimationPlayer
-onready var sprite = $Sprite
 onready var knockback_timer = $KnockbackTimer
 onready var raycast = $RayCast2D
 onready var particles = $Particles2D
@@ -53,12 +52,14 @@ const variant_bullet_speed = [120, 120, 150, 200]
 const variant_shot_cooldown = [1, 0.4, 1, 0.1]
 
 func _ready():
-	set_variant(0)#int(pow(randf(), 2) * 4))
+	set_variant(random_variant())
+	#set_variant(0)#int(pow(randf(), 2) * 4))
 	state = pick_random_state([IDLE])
 	animationPlayer.play("Idle")
 	
 func set_variant(v):
-	variant = v
+	#.set_variant(v)
+	variant  = v
 	health = variant_health[v]
 	bullet_damage = variant_damage[v]
 	max_speed = variant_speed[v]
@@ -67,6 +68,15 @@ func set_variant(v):
 	bullet_speed = variant_bullet_speed[v]
 	shot_cooldown = variant_shot_cooldown[v]
 	Healthbar.init(health)
+	match v:
+		0:
+			sprite.texture = load('res://Art/Enemies/enemy_drone_turret-sheet.png')
+		1:
+			sprite.texture = load('res://Art/Enemies/enemy_drone_turret2-sheet.png')
+		2:
+			sprite.texture = load('res://Art/Enemies/enemy_drone_turret3-sheet.png')
+		3:
+			sprite.texture = load('res://Art/Enemies/enemy_drone_turret4-sheet.png')
 
 
 func _physics_process(delta):

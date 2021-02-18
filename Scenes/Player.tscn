@@ -172,7 +172,11 @@ margin_right = -226.849
 margin_bottom = -120.915
 rect_scale = Vector2( 1.4, 1.4 )
 
-[node name="StatsDisplay" parent="ShakeCamera2D" instance=ExtResource( 13 )]
+[node name="StatsDisplayZ" type="Node2D" parent="ShakeCamera2D"]
+z_index = 2
+z_as_relative = false
+
+[node name="StatsDisplay" parent="ShakeCamera2D/StatsDisplayZ" instance=ExtResource( 13 )]
 visible = false
 margin_left = -240.0
 margin_top = -125.0

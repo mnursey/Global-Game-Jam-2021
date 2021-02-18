@@ -8,24 +8,35 @@ var stat_labels = []
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	rect_position -= rect_size/2
-	player = get_parent().get_parent()
+	player = get_parent().get_parent().get_parent()
 	var label_theme = load('res://Art/UIThemes/StatLabelTheme.tres')
-	var size = stats_container.rect_size
+	var size = stats_container.rect_min_size
+	var row_height = size.y/len(StatsUtil.StatName)
 	var stat_name_width = 140
 	var stat_value_width = 80
 	
-	stats_container.rect_min_size.x = stat_name_width + 3*stat_value_width 
+	stats_container.rect_min_size.x = row_height + stat_name_width + 3*stat_value_width 
 	
 	stat_labels = []
 	for stat in range(len(StatsUtil.StatName)):
 		stat = int(stat)
 		var hbox = HBoxContainer.new()
-		hbox.rect_min_size = Vector2(size.x, size.y/len(StatsUtil.StatName))
+		hbox.rect_min_size = Vector2(size.x, row_height)
+		
+		var icon = TextureRect.new()
+		icon.rect_min_size = Vector2(row_height,row_height)
+		#print(row_height)
+		icon.rect_size = icon.rect_min_size
+		icon.expand = true
+		icon.stretch_mode = TextureRect.STRETCH_SCALE
+		icon.texture = load('res://Art/StatIcons/items_space-sheet' + str(int(stat)+1) + '.png')
+		hbox.add_child(icon)
 		
 		var labels = []
 		for i in range(4):
 			var label = Label.new()
 			label.theme = label_theme
+			label.valign = Label.VALIGN_CENTER
 			if i == 0:
 				label.rect_min_size = Vector2(stat_name_width, hbox.rect_min_size.y)
 				label.text = StatsUtil.string_names[stat] + ':'

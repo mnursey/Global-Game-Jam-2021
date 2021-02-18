@@ -1,0 +1,26 @@
+{ "frames": {
+   "items_new.png": {
+    "frame": { "x": 0, "y": 0, "w": 320, "h": 16 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 320, "h": 16 },
+    "sourceSize": { "w": 320, "h": 16 },
+    "duration": 100
+   }
+ },
+ "meta": {
+  "app": "http://www.aseprite.org/",
+  "version": "1.2.8-x64",
+  "image": "C:\\Users\\Andrew\\Documents\\Godot\\Global-Game-Jam-2021\\Art\\items_space-sheet.png",
+  "format": "RGBA8888",
+  "size": { "w": 320, "h": 16 },
+  "scale": "1",
+  "frameTags": [
+  ],
+  "layers": [
+   { "name": "Layer", "opacity": 255, "blendMode": "normal" }
+  ],
+  "slices": [
+  ]
+ }
+}

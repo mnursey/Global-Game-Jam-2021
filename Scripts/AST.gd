@@ -59,5 +59,5 @@ func spawn_pulse(is_split = false):
 	velocity = (get_global_mouse_position() - global_position).normalized()
 	.spawn_pulse()
 	if randf() < (1 - pow(1 - BASE_SPLIT_CHANCE, split_chance.x)):
-		spawn_pulse(true)
+		.spawn_pulse(true)
 

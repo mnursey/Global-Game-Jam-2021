@@ -57,7 +57,7 @@ onready var dash_audio =$DashAudio
 onready var camera = $ShakeCamera2D
 onready var hurtBox = $Hurtbox/CollisionShape2D
 onready var collisionBox = $CollisionShape2D
-onready var stats_display = $ShakeCamera2D/StatsDisplay
+onready var stats_display = $ShakeCamera2D/StatsDisplayZ/StatsDisplay
 onready var AST = $AST 
 onready var music_reduced = $Music1
 onready var music_combat = $Music2
@@ -127,8 +127,8 @@ func _process(delta):
 		volume_changed = false
 		
 	if volume_changed:
-		music_combat.volume_db = 20*log(max(pow(music_hutzpah, 0.5), 0.0001))
-		music_reduced.volume_db = 20*log(max(pow(1 - music_hutzpah, 0.5), 0.0001))
+		music_combat.volume_db = 20*log(max(pow(music_hutzpah, 0.5), 0.0001)) - 3
+		music_reduced.volume_db = 20*log(max(pow(1 - music_hutzpah, 0.5), 0.0001)) - 3
 	
 
 func get_input():
@@ -234,7 +234,7 @@ func _on_DashTimer_timeout():
 	
 func take_damage(amount):
 	if !dead and invincibility_timer.is_stopped():
-		invincibility_timer.start()
+		invincibility_timer.start(0.3)
 		set_health(health - amount)
 		hit_audio.play()
 		camera.set_trauma(0.5)
@@ -264,7 +264,8 @@ func set_max_health():
 	set_health(max_health)
 
 func _on_Hurtbox_area_entered(area):
-	take_damage(area.deal_damage()) 
+	#if area.is_in_group('Enemy'):
+		take_damage(area.deal_damage()) 
 	
 
 func _on_Hurtbox_body_entered(body):

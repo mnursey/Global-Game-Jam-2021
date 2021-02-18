@@ -73,12 +73,13 @@ disabled = true
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
 position = Vector2( -0.375, -0.25 )
 frames = SubResource( 6 )
+frame = 2
 speed_scale = 2.0
 playing = true
 
 [node name="PulseSound" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource( 3 )
-volume_db = -10.0
+volume_db = 1.0
 max_distance = 1000.0
 attenuation = 0.31864
 

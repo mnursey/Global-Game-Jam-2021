@@ -3,9 +3,12 @@ extends Node
 const enemyNames = ['WalkingEnemy', 'FlyingEnemy', 'Walkie Enemy', 'FlyingRangedEnemy']
 const doorNames = ['Door']
 
-onready var enemies = []
-onready var doors = []
-onready var room_open = false
+onready var UpgradeStation = $UpgradeStation
+
+var enemies = []
+var doors = []
+var room_open = false
+
 
 signal doors_opened
 
@@ -52,6 +55,7 @@ func open_doors():
 		N.open()
 	emit_doors_opened_Signal()
 	GM.player.set_max_health()
+	UpgradeStation.set_active(true)
 	return
 	
 func handle_doors():

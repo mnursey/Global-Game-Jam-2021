@@ -2,6 +2,7 @@ extends KinematicBody2D
 
 const SUCTION_SPEED_CAP = 50
 
+onready var sprite = $Sprite
 onready var Healthbar = $HealthBar
 
 var velocity = Vector2.ZERO
@@ -48,6 +49,17 @@ func move():
 	imposed_accel = Vector2.ZERO
 	active_suction_vectors = 0
 	
+func random_variant():
+	var r = randf()
+	if r < 0.85:
+		return 0
+	elif r < 0.97:
+		return 1
+	elif r < 0.995:
+		return 2
+	else:
+		return 3
+	
 func take_damage(amount):
 	health -= amount
 	#emit_signal("damaged", health)
@@ -62,3 +74,12 @@ func get_hit(pulse):
 	
 func set_variant(v):
 	variant = v
+	match v:
+		0:
+			sprite.modulate = Color.white
+		1:
+			sprite.modulate = Color(1, 0.93, 0.63)
+		2:
+			sprite.modulate = Color(0.52, 0.79, 1)
+		3:
+			sprite.modulate = Color(1, 0.37, 0.90)

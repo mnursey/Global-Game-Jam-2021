@@ -30,7 +30,6 @@ var state = IDLE
 onready var hurtbox = $EnemyHurtbox
 onready var wanderController = $WanderController
 onready var animationPlayer = $AnimationPlayer
-onready var sprite = $Sprite
 onready var knockback_timer = $KnockbackTimer
 onready var raycast = $RayCast2D
 onready var particles = $Particles2D
@@ -44,12 +43,13 @@ const variant_kb_resist = [1, 1.5, 2, 3]
 
 
 func _ready():
-	set_variant(0)#int(pow(randf(), 2) * 4))
+	set_variant(random_variant())
+	#set_variant(0)#int(pow(randf(), 2) * 4))
 	state = pick_random_state([IDLE])
 	animationPlayer.play("Idle")
 	
 func set_variant(v):
-	variant = v
+	.set_variant(v)
 	health = variant_health[v]
 	contact_damage = variant_damage[v]
 	max_speed = variant_speed[v]

@@ -1,6 +1,6 @@
 [gd_scene load_steps=15 format=2]
 
-[ext_resource path="res://Art/enemy_drone-Sheet.png" type="Texture" id=1]
+[ext_resource path="res://Art/Enemies/enemy_drone_turret-Sheet.png" type="Texture" id=1]
 [ext_resource path="res://Scripts/FlyingRangedEnemy.gd" type="Script" id=2]
 [ext_resource path="res://Scripts/EnemyHitbox.gd" type="Script" id=3]
 [ext_resource path="res://Scripts/WanderController.gd" type="Script" id=4]

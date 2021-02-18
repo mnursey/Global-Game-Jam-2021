@@ -8,7 +8,7 @@
 [ext_resource path="res://TileMaps/ExportMap.tscn" type="PackedScene" id=6]
 [ext_resource path="res://TileMaps/Background.tscn" type="PackedScene" id=7]
 [ext_resource path="res://Scenes/RoomController.tscn" type="PackedScene" id=8]
-[ext_resource path="res://Scenes/ItemSelectionModal.tscn" type="PackedScene" id=9]
+[ext_resource path="res://Scenes/UpgradeStation.tscn" type="PackedScene" id=9]
 
 [node name="Template" type="Node2D"]
 
@@ -19,6 +19,8 @@
 [node name="Node2D" type="Node2D" parent="RoomController"]
 
 [node name="Door" parent="RoomController/Node2D" instance=ExtResource( 3 )]
+
+[node name="UpgradeStation" parent="RoomController" instance=ExtResource( 9 )]
 
 [node name="TileMap1" parent="." instance=ExtResource( 1 )]
 tile_data = PoolIntArray(  )
@@ -40,8 +42,5 @@ tile_data = PoolIntArray(  )
 
 [node name="TileMap" parent="Background/ParallaxLayer" index="0"]
 tile_data = PoolIntArray(  )
-
-[node name="ItemSelectionModal" parent="." instance=ExtResource( 9 )]
-[connection signal="doors_opened" from="RoomController" to="ItemSelectionModal" method="_on_RoomController_doors_opened"]
 
 [editable path="Background"]

@@ -47,14 +47,16 @@ const variant_jump_height = [3, 4, 5, 5]
 const variant_raycast_length = [20, 25, 30, 25]
 
 func _ready():
-	set_variant(0)#int(pow(randf(), 2) * 4))
+	set_variant(random_variant())
+	#set_variant(0)#int(pow(randf(), 2) * 4))
 	anim_player.play("Walk")
 	turn_to_face(1)
 	
 func set_variant(v):
-	variant = v
+	.set_variant(v)
 	health = variant_health[v]
 	contact_damage = variant_damage[v]
+	knockback_resist = variant_kb_resist[v]
 	movespeed = variant_speed[v] * TILESIZE
 	jump_speed = pow(2*gravity*variant_jump_height[v]*TILESIZE, 0.5) 
 	wall_raycast.cast_to = Vector2(variant_raycast_length[v], 0)

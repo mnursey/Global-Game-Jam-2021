@@ -20,6 +20,8 @@ var variant
 
 func _ready():
 	GM.add_enemy(self)
+	sprite.light_mask = 2
+	Healthbar.light_mask = 2
 	
 func _physics_process(delta):
 	if knockback_resist_multiplier > 1: 

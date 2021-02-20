@@ -1,0 +1,15 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=2]
+
+[ext_resource path="res://Shaders/FogShader.shader" type="Shader" id=1]
+
+[resource]
+shader = ExtResource( 1 )
+shader_param/FREQ = 250.0
+shader_param/OCTAVES = 4
+shader_param/MOTION_FREQ = 200.0
+shader_param/MOTION_OCTAVES = 3
+shader_param/MOTION_SPEED = 0.35
+shader_param/RATIO = 0.45
+shader_param/RESOLUTION = 3500.0
+shader_param/ALPHA = 0.15
+shader_param/color = Vector3( 0.7, 0.7, 0.8 )

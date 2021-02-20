@@ -4,6 +4,7 @@ onready var raycast = $RayCast2D
 onready var pulse_sound = $PulseSound
 onready var particles = $Particles2D
 onready var sprite = $AnimatedSprite
+var light
 
 var cur_size
 var cur_damage
@@ -96,6 +97,7 @@ func inherit_props(p):
 	cur_gravity = gravity.x
 	
 	s_vel = direction*speed.x
+	light = get_node('Light2D')
 	apply_growth(0)
 	
 
@@ -110,7 +112,9 @@ func apply_growth(delta):
 	
 	scale = Vector2(cur_size, cur_size)
 	var hue = 0.6 - min(pow(cur_damage/DAMAGE_MAX, 0.7), 1)*0.6
-	modulate = Color.from_hsv(hue, 1, 1)
+	var color = Color.from_hsv(hue, 1, 1)
+	modulate = color
+	light.color = color
 	
 func retarget_homing():
 	var min_dist = StatsUtil.HOMING_RANGE*StatsUtil.HOMING_RANGE
@@ -261,6 +265,7 @@ func _physics_process(delta):
 			dead = true
 			sprite.visible = false
 			particles.emitting = false
+			light.enabled = false
 			GM.pulse_count -= 1
 			
 	elif timer > 1:

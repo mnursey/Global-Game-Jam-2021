@@ -1,6 +1,7 @@
 extends Area2D
 
 onready var MenuContainer = $MenuZ/MenuContainer
+onready var light = $Light2D
 
 export var active = true
 var menu = null
@@ -24,6 +25,7 @@ func _on_UpgradeStation_body_exited(body):
 func set_active(state):
 	active = state
 	modulate = Color.white if active else Color('696969') #nice
+	light.enabled = state
 
 func show_menu():
 	if not menu:

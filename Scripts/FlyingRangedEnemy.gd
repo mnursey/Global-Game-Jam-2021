@@ -25,6 +25,7 @@ var target_point_offset = Vector2.ZERO
 var teleport_timer = 0
 var can_teleport = false
 var reposition_side = 0
+var spotlight_angle = 90
 
 enum {
 	IDLE,
@@ -41,6 +42,7 @@ onready var animationPlayer = $AnimationPlayer
 onready var knockback_timer = $KnockbackTimer
 onready var raycast = $RayCast2D
 onready var particles = $Particles2D
+onready var spotlight = $Light2D
 onready var hit_audio = $HitAudio
 
 const variant_health = [30, 80, 200, 500]
@@ -163,9 +165,18 @@ func _physics_process(delta):
 					if variant == 2:
 						shoot(bullet_vector.rotated(deg2rad(15)))
 						shoot(bullet_vector.rotated(deg2rad(-15)))
-					
+				
+			var player_angle = rad2deg((GM.player.global_position - global_position).angle())
+			var angle_diff = player_angle - spotlight_angle
+			if angle_diff > 180:
+				angle_diff -= 360
+			elif angle_diff < -180:
+				angle_diff += 360
+
+			spotlight_angle += min(150*delta, abs(angle_diff))*sign(angle_diff)
+			spotlight.rotation_degrees = spotlight_angle - 90
 							
-	sprite.flip_h = velocity.x < 0
+	sprite.flip_h = GM.player.global_position.x < global_position.x
 	.move()
 	
 func begin_chase():

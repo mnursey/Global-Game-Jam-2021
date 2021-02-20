@@ -127,7 +127,7 @@ func movement_logic(delta):
 				if dodge_buffered:
 					if variant < 3:
 						if not jumping and sign(velocity.x) == sign(to_player.x):
-							jump(400)
+							jump(350)
 							dodge_buffered = false
 					else:
 						if dash_cooldown_timer <= 0:

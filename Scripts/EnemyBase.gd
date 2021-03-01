@@ -1,9 +1,13 @@
 extends KinematicBody2D
 
 const SUCTION_SPEED_CAP = 50
+const LN5 = 1.609
 
+onready var room = $"../.."
 onready var sprite = $Sprite
-onready var Healthbar = $HealthBar
+onready var healthbar = $HealthBar
+onready var hit_audio = $HitAudio
+onready var death_audio = $AudioStreamPlayer2D
 
 var velocity = Vector2.ZERO
 var imposed_velocity = Vector2.ZERO
@@ -15,13 +19,19 @@ var contact_damage = 0
 var knockback_resist = 1
 var knockback_resist_multiplier = 1
 
+var scrap_held
+
 
 var variant
 
 func _ready():
-	GM.add_enemy(self)
-	sprite.light_mask = 2
-	Healthbar.light_mask = 2
+	#GM.add_enemy(self)
+	sprite.light_mask = 5
+	for AP in [hit_audio, death_audio]:
+		if AP:
+			
+			AP.max_distance = 500
+			AP.attenuation = 1.5
 	
 func _physics_process(delta):
 	if knockback_resist_multiplier > 1: 
@@ -30,7 +40,8 @@ func _physics_process(delta):
 		knockback_resist_multiplier = 1
 	
 func apply_knockback(kb):
-	velocity += kb/knockback_resist/knockback_resist_multiplier
+	var raw_kb_vector = kb/knockback_resist/knockback_resist_multiplier
+	velocity += raw_kb_vector*(1.5/pow(raw_kb_vector.length_squared(), 0.075))
 	knockback_resist_multiplier += 1
 		
 func apply_suction(succ):
@@ -63,12 +74,14 @@ func random_variant():
 		return 3
 	
 func take_damage(amount):
-	health -= amount
-	#emit_signal("damaged", health)
-	Healthbar.update_health(health)
-	if health <= 0:
-		contact_damage = 0
-		GM.remove_enemy(self)
+	if health > 0:
+		health -= amount
+		healthbar.update_health(health)
+		hit_audio.play()
+		if health <= 0:
+			death_audio.play()
+			contact_damage = 0
+			GM.spawn_scrap(scrap_held, global_position, room)
 
 func get_hit(pulse):
 	apply_knockback(pulse.velocity.normalized() * pow(abs(pulse.cur_knockback*600), 0.5) * sign(pulse.cur_knockback))
@@ -76,6 +89,8 @@ func get_hit(pulse):
 	
 func set_variant(v):
 	variant = v
+	scrap_held = int(6 * pow(3, v))
+	#if set_tint:
 	match v:
 		0:
 			sprite.modulate = Color.white

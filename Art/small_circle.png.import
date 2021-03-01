@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/light.png-a13d6b52081ecfd017a8232cedd81304.stex"
+path="res://.import/small_circle.png-0bb8d13a9d0028d845eba1f64eb823c3.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Art/light.png"
-dest_files=[ "res://.import/light.png-a13d6b52081ecfd017a8232cedd81304.stex" ]
+source_file="res://Art/small_circle.png"
+dest_files=[ "res://.import/small_circle.png-0bb8d13a9d0028d845eba1f64eb823c3.stex" ]
 
 [params]
 
@@ -20,7 +20,7 @@ compress/hdr_mode=0
 compress/bptc_ldr=0
 compress/normal_map=0
 flags/repeat=0
-flags/filter=true
+flags/filter=false
 flags/mipmaps=false
 flags/anisotropic=false
 flags/srgb=2
@@ -30,5 +30,5 @@ process/HDR_as_SRGB=false
 process/invert_color=false
 stream=false
 size_limit=0
-detect_3d=true
+detect_3d=false
 svg/scale=1.0

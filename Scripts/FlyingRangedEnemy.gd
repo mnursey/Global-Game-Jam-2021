@@ -43,25 +43,24 @@ onready var knockback_timer = $KnockbackTimer
 onready var raycast = $RayCast2D
 onready var particles = $Particles2D
 onready var spotlight = $Light2D
-onready var hit_audio = $HitAudio
+onready var shoot_audio = $ShootAudio
 
-const variant_health = [30, 80, 200, 500]
+const variant_health = [30, 70, 200, 500]
 const variant_speed = [50, 75, 100, 150]
 const variant_damage = [10, 15, 20, 20]
 const variant_acceleration = [300, 400, 500, 500]
 const variant_kb_resist = [4, 4, 4, 4]
-const variant_bullet_speed = [120, 120, 150, 200]
-const variant_shot_cooldown = [1, 0.4, 1, 0.1]
+const variant_bullet_speed = [120, 120, 200, 200]
+const variant_shot_cooldown = [1, 0.4, 0.8, 0.1]
 
 func _ready():
-	set_variant(random_variant())
+	set_variant(2)#random_variant())
 	#set_variant(0)#int(pow(randf(), 2) * 4))
 	state = pick_random_state([IDLE])
 	animationPlayer.play("Idle")
 	
 func set_variant(v):
-	#.set_variant(v)
-	variant  = v
+	.set_variant(v)
 	health = variant_health[v]
 	bullet_damage = variant_damage[v]
 	max_speed = variant_speed[v]
@@ -69,7 +68,7 @@ func set_variant(v):
 	knockback_resist = variant_kb_resist[v]
 	bullet_speed = variant_bullet_speed[v]
 	shot_cooldown = variant_shot_cooldown[v]
-	Healthbar.init(health)
+	healthbar.init(health)
 	match v:
 		0:
 			sprite.texture = load('res://Art/Enemies/enemy_drone_turret-sheet.png')
@@ -157,6 +156,7 @@ func _physics_process(delta):
 			if can_shoot or reposition_side != 0:
 				if shoot_timer > shot_cooldown:
 					shoot_timer = 0
+					shoot_audio.play()
 					var leading = GM.player.velocity/2 if variant != 1 else Vector2.ZERO
 					var bullet_vector = bullet_speed*global_position.direction_to(GM.player.global_position + leading)
 					if variant == 3:
@@ -233,7 +233,6 @@ func pick_random_state(state_list):
 
 func take_damage(amount):
 	.take_damage(amount)
-	hit_audio.play()
 	if state == IDLE: 
 		begin_chase()
 	if health <= 0:

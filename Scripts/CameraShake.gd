@@ -29,7 +29,7 @@ func _process(delta):
 		shake()
 		
 func add_trauma(amount):
-	trauma = min(trauma + amount, 1.0)
+	trauma = trauma + amount
 	
 func set_trauma(amount):
 	trauma = max(trauma, amount)

@@ -41,13 +41,12 @@ func _process(delta):
 		emit_signal("shot_ast")
 		spawn_pulse()
 		
-	if Input.is_action_just_pressed("debug_1"):
-		var item = StatsUtil.generate_item(2, 0.3)
-		item.global_position = global_position
-		#get_node('/root').add_child(item)
-		Player.apply_item(item)
-		print(item.get_node('EffectBank'))
-		
+#	if Input.is_action_just_pressed("debug_1"):
+#		var item = StatsUtil.generate_item(2, 0.3)
+#		item.global_position = global_position
+#		#get_node('/root').add_child(item)
+#		Player.apply_item(item)
+#		print(item.get_node('EffectBank'))
 		
 		#for _i in range(10):
 		#	var e = EffectBank.generate_effect_bank(2, 2, 1, 0.1, StatsUtil.AST_STATS)

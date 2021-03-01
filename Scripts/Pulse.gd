@@ -39,18 +39,17 @@ var collision_query
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	timer = 0;
+	if disable_particles: particles.emitting = false
 	if not mute: 
 		pulse_sound.pitch_scale += 0.5*(randf() - 0.2)
 		pulse_sound.play()
-	if disable_particles: particles.emitting = false
+		
 	space_state = get_world_2d().direct_space_state
-	
 	collision_query = Physics2DShapeQueryParameters.new()
 	collision_query.set_transform(transform)
 	collision_query.set_shape(get_node("CollisionShape2D").shape)
 	collision_query.collision_layer = 0b1000001
 	collision_query.collide_with_areas = true
-	
 
 func inherit_props(p):
 	start_position = p.global_position

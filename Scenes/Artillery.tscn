@@ -1,0 +1,66 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://Scenes/HealthBar.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Scripts/Artillery.gd" type="Script" id=2]
+[ext_resource path="res://Art/button3.png" type="Texture" id=3]
+[ext_resource path="res://Scripts/EnemyHealthBar.gd" type="Script" id=4]
+[ext_resource path="res://Sound/hit_1.wav" type="AudioStream" id=5]
+[ext_resource path="res://Sound/explosion_1.wav" type="AudioStream" id=6]
+
+[sub_resource type="RectangleShape2D" id=1]
+
+[sub_resource type="Animation" id=2]
+resource_name = "Dead"
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 0 ]
+}
+
+[node name="Artillery" type="KinematicBody2D" groups=[
+"Enemy",
+]]
+collision_layer = 64
+script = ExtResource( 2 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource( 1 )
+
+[node name="Sprite" type="Sprite" parent="."]
+light_mask = 5
+texture = ExtResource( 3 )
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+anims/Dead = SubResource( 2 )
+
+[node name="HealthBar" parent="." instance=ExtResource( 1 )]
+margin_left = -10.0
+margin_top = -14.0
+margin_right = -10.0
+margin_bottom = -13.92
+rect_scale = Vector2( 0.25, 0.25 )
+script = ExtResource( 4 )
+
+[node name="HealthBarOver" parent="HealthBar" index="1"]
+texture_over = null
+
+[node name="ArcRaycast" type="RayCast2D" parent="."]
+collision_mask = 3
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource( 6 )
+volume_db = -6.0
+
+[node name="HitAudio" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource( 5 )
+volume_db = -4.0
+[connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_AnimationPlayer_animation_finished"]
+
+[editable path="HealthBar"]

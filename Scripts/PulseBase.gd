@@ -54,10 +54,11 @@ func spawn_pulse(is_split = false):
 	var pulse = Pulse.instance()
 	pulse.inherit_props(self)
 	
-	if is_split:
-		pulse.mute = true
-		pulse.disable_particles = GM.pulse_count > GM.PARTICLE_EMITTING_PULSE_CAP
-		
+	if is_split: pulse.mute = true
+	if GM.pulse_count > GM.PARTICLE_EMITTING_PULSE_CAP:
+		pulse.disable_particles = true
+		pulse.get_node("Light2D").visible = false
+			
 	get_node("/root").add_child(pulse)
 	return pulse
 

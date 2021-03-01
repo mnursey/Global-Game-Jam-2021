@@ -37,7 +37,6 @@ onready var floor_raycast = $FloorRaycast
 onready var particles = $Particles2D
 onready var knockback_timer = $KnockbackTimer
 onready var anim_player = $AnimationPlayer
-onready var hit_audio = $HitAudio
 
 const variant_health = [40, 120, 400, 1000]
 const variant_speed = [6, 9, 12, 10]
@@ -60,16 +59,13 @@ func set_variant(v):
 	movespeed = variant_speed[v] * TILESIZE
 	jump_speed = pow(2*gravity*variant_jump_height[v]*TILESIZE, 0.5) 
 	wall_raycast.cast_to = Vector2(variant_raycast_length[v], 0)
-	Healthbar.init(health)
-			
+	healthbar.init(health)
 
 func take_damage(amount):
 	if is_dashing: return
-
 	.take_damage(amount)
 	aggro = true
 	jumping = true
-	hit_audio.play()
 	if health <= 0:
 		velocity = Vector2.ZERO
 		movespeed = 0
@@ -186,21 +182,6 @@ func turn_to_face(dir):
 		wall_raycast.cast_to.x = -abs(wall_raycast.cast_to.x)
 		$Sprite.flip_h = true
 	
-
-		
-
-func _on_EnemyHitbox_area_entered(area):
-	pass # Replace with function body.
-
-
-
-func _on_EnemyHurtbox_area_entered(_area):
-	#var areas = hurtbox.get_overlapping_areas()
-	#for area in areas:
-	#	if area.get_collision_mask() == 81:
-	#		get_hit(area)
-	pass
-
 
 func _on_KnockbackTimer_timeout():
 	hit = false

@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=2]
+[gd_scene load_steps=24 format=2]
 
 [ext_resource path="res://Scripts/Player.gd" type="Script" id=1]
 [ext_resource path="res://Art/player_character_full_sheet.png" type="Texture" id=2]
@@ -13,7 +13,8 @@
 [ext_resource path="res://Sound/finalspacefull.wav" type="AudioStream" id=11]
 [ext_resource path="res://Sound/finalspacereduction.wav" type="AudioStream" id=12]
 [ext_resource path="res://Scenes/StatsDisplay.tscn" type="PackedScene" id=13]
-[ext_resource path="res://Art/SmoothLight.png" type="Texture" id=14]
+[ext_resource path="res://Art/Lights/CircleLight.png" type="Texture" id=14]
+[ext_resource path="res://Scenes/ScrapDisplay.tscn" type="PackedScene" id=15]
 
 [sub_resource type="RectangleShape2D" id=1]
 
@@ -189,6 +190,13 @@ margin_top = -125.0
 margin_right = -240.0
 margin_bottom = -125.0
 
+[node name="ScrapDisplay" parent="ShakeCamera2D" instance=ExtResource( 15 )]
+margin_left = -227.896
+margin_top = -107.48
+margin_right = -227.896
+margin_bottom = -107.48
+rect_scale = Vector2( 0.5, 0.5 )
+
 [node name="DashTimer" type="Timer" parent="."]
 wait_time = 0.5
 one_shot = true
@@ -214,17 +222,19 @@ shape = SubResource( 7 )
 wait_time = 0.1
 one_shot = true
 
-[node name="DeadAudio" type="AudioStreamPlayer2D" parent="."]
-stream = ExtResource( 7 )
-volume_db = -15.0
+[node name="DeadAudio" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 6 )
+volume_db = -6.0
 
 [node name="Jump" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 5 )
-volume_db = -10.0
+volume_db = -6.0
+pitch_scale = 2.0
+mix_target = 2
 
-[node name="HitAudio" type="AudioStreamPlayer2D" parent="."]
+[node name="HitAudio" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 8 )
-volume_db = -10.0
+volume_db = -6.0
 
 [node name="DashAudio" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 9 )
@@ -234,13 +244,15 @@ volume_db = -10.0
 
 [node name="Music1" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 12 )
+autoplay = true
 
 [node name="Music2" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 11 )
+autoplay = true
 
 [node name="Light2D" type="Light2D" parent="."]
 texture = ExtResource( 14 )
-texture_scale = 0.1
+texture_scale = 0.5
 energy = 1.1
 mode = 2
 

@@ -33,7 +33,6 @@ onready var animationPlayer = $AnimationPlayer
 onready var knockback_timer = $KnockbackTimer
 onready var raycast = $RayCast2D
 onready var particles = $Particles2D
-onready var hit_audio = $HitAudio
 
 const variant_health = [30, 90, 300, 800]
 const variant_speed = [100, 150, 300, 300]
@@ -55,7 +54,7 @@ func set_variant(v):
 	max_speed = variant_speed[v]
 	acceleration = variant_acceleration[v]
 	knockback_resist = variant_kb_resist[v]
-	Healthbar.init(health)
+	healthbar.init(health)
 
 func _physics_process(delta):
 	#knockback = knockback.move_toward(Vector2.ZERO, air_friction * delta)
@@ -180,7 +179,6 @@ func pick_random_state(state_list):
 
 func take_damage(amount):
 	.take_damage(amount)
-	hit_audio.play()
 	if state == IDLE:
 		begin_chase()
 	if health <= 0:

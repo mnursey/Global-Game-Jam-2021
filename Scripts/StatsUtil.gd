@@ -2,6 +2,7 @@ class_name StatsUtil
 
 const HOMING_RANGE = 300
 const MIN_SUCC_RANGE = 50
+const SCRAP_COST = 0.01
 
 enum StatName {
 	#Player Stats
@@ -36,7 +37,7 @@ const SYMMETRICAL_STATS = [StatName.GRAVITY] # Stats that have the same cost whe
 
 const default_stats = {
 	#Player 
-	StatName.MAX_HEALTH:	Vector3(100, 0, 0),
+	StatName.MAX_HEALTH:	Vector3(1000, 0, 0),
 	StatName.JUMPS:			Vector3(1, 0, 0),
 	StatName.DASHES:		Vector3(1, 0, 0),
 	StatName.MOVE_SPEED:	Vector3(160, 0, 0),
@@ -103,7 +104,7 @@ const costs = {
 	StatName.GRAVITY: 		Vector3(-0.01, -0.005, -0.01),
 	StatName.SUBPULSES:		Vector3(3, 0, 0),
 	StatName.SUBPULSE_DELAY:Vector3(-10, 0, -15),
-	StatName.SPLIT_CHANCE: 	Vector3(1, 0, 1)
+	StatName.SPLIT_CHANCE: 	Vector3(1.5, 0, 1.5)
 }
 
 #Caps are for the sake of the framerate and quality of life ONLY
@@ -223,6 +224,7 @@ const sprite_offsets = {
 static func purchase(stat, variant, op, cost):
 	var amount
 	if op == '+':
+		if costs[stat][variant] == 0: return 0
 		amount = float(cost)/costs[stat][variant]
 		if stat in INTEGER_STATS: amount = round(amount) if abs(amount) > 0.5 else sign(amount)
 		if stat in SYMMETRICAL_STATS: amount *= sign(randf()-0.5)

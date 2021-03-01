@@ -21,9 +21,5 @@ func _process(delta):
 			interp_delay -= delta
 		else:
 			health_under.value = max(health_over.value, health_under.value - health_under.max_value*delta)
-			print(health_over.value)
-			print(health_under.value)
-			print(health_under.max_value*delta)
-			print(health_under.value - health_under.max_value*delta)
 	else:
 		interp_delay = 0.3

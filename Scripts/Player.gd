@@ -15,6 +15,15 @@ var mouse_vector = Vector2.ZERO
 var max_health = 100
 var health = max_health setget set_health
 
+var scrap = 0
+var scrap_counter = 0
+var scrap_timer = 0
+
+var selected_dispenser = null
+
+var effect_card_buffer = []
+var effect_card_timer = 0
+
 var base_stats
 
 var gravity
@@ -29,6 +38,7 @@ var fall_duration = 0.325
 var max_jumps = 1
 var jumps = 1
 var is_jumping = false
+var jump_buffer_timer = 0
 
 var max_dashes = 1
 var dashes = 1
@@ -47,6 +57,7 @@ var target_music_hutzpah = 0
 onready var anim_player = $AnimationPlayer
 onready var sprite = $Sprite
 onready var healthbar = $ShakeCamera2D/HealthBar
+onready var scrap_display = $ShakeCamera2D/ScrapDisplay/Label
 onready var dash_timer = $DashTimer
 onready var invincibility_timer = $InvincibilityTimer
 onready var coyote_timer = $CoyoteTimer
@@ -79,9 +90,12 @@ func _ready():
 	music_combat.volume_db = -80
 	
 func apply_item(item):
-	EffectBank.absorb(item.get_node('EffectBank'))
+	var bank = item.get_node('EffectBank')
+	EffectBank.absorb(bank)
 	recalculate_stats()
 	stats_display.refresh()
+	effect_card_buffer += bank.get_unpacked()
+	effect_card_timer = -1
 	
 func recalculate_stats():
 	var stats = EffectBank.apply_to_base(base_stats)
@@ -89,7 +103,10 @@ func recalculate_stats():
 	AST.set_stats_from_dict(stats)
 	
 func set_stats_from_dict(d):
+	var old_health = max_health
 	max_health = round(d[StatsUtil.StatName.MAX_HEALTH].x)
+	heal(max_health - old_health)
+	
 	max_dashes = round(d[StatsUtil.StatName.DASHES].x)
 	max_jumps = round(d[StatsUtil.StatName.JUMPS].x)
 	dash_speed = d[StatsUtil.StatName.DASH_SPEED].x
@@ -100,51 +117,43 @@ func set_stats_from_dict(d):
 
 func _physics_process(delta):
 	if Input.is_action_just_pressed("restart"):
-		get_tree().reload_current_scene()
+		GM.restart()
 		
 	if !dead:
+		jump_buffer_timer -= delta
+		
 		apply_gravity(delta)
 		get_move_input()
 		get_input()
 		apply_movement()
 		animate()
+		update_scrap_display(delta)
+		update_effect_cards(delta)
 		
 func _process(delta):
 	mouse_vector = get_global_mouse_position() - global_position
-	
-	target_music_hutzpah = 0
-	for enemy in GM.enemies:
-		if enemy and (enemy.global_position - global_position).length_squared() < 150000:
-			target_music_hutzpah = 1
-			break
-	
-	var volume_changed = true
-	if target_music_hutzpah > music_hutzpah:
-		music_hutzpah = min(music_hutzpah + delta, 1)
-	elif target_music_hutzpah < music_hutzpah:
-		music_hutzpah = max(music_hutzpah - delta, 0)
-	else:
-		volume_changed = false
-		
-	if volume_changed:
-		music_combat.volume_db = 20*log(max(pow(music_hutzpah, 0.5), 0.0001)) - 3
-		music_reduced.volume_db = 20*log(max(pow(1 - music_hutzpah, 0.5), 0.0001)) - 3
-	
+	handle_music(delta)
+
 
 func get_input():
-	if Input.is_action_just_pressed("jump") and jumps > 0:
-		jump_audio.play()
-		is_jumping = true
-		jumps -= 1
-		velocity.y = max_jump_velocity
-		if is_dashing:
-			is_dashing = false
-			if is_on_floor():
-				dashes = max_dashes
-			if dash_vector.y > 1:
-				velocity.y *= 0.7
-			else:
-				velocity.x *= 0.7
+	if Input.is_action_just_pressed("jump"):
+		jump_buffer_timer = 0.1
+		
+	if jump_buffer_timer > 0:
+		if jumps > 0:
+			jump_buffer_timer = 0
+			jump_audio.play()
+			is_jumping = true
+			jumps -= 1
+			velocity.y = max_jump_velocity
+			if is_dashing:
+				is_dashing = false
+				if is_on_floor():
+					dashes = max_dashes
+				if dash_vector.y > 1:
+					velocity.y *= 0.7
+				else:
+					velocity.x *= 0.7
 			
 		
 	if Input.is_action_just_released("jump") and velocity.y < min_jump_velocity:
@@ -163,11 +172,33 @@ func get_input():
 		else:
 			dash_vector = Vector2(-int(Input.is_action_pressed("move_left")) + int(Input.is_action_pressed("move_right")), -int(Input.is_action_pressed("move_up")) + int(Input.is_action_pressed("move_down"))).normalized() * dash_speed + Vector2(0, 0.5)
 		
+	if Input.is_action_just_pressed("use"):
+		if selected_dispenser:
+			print(selected_dispenser.price)
+			print(selected_dispenser.item.get_node("EffectBank").get_unpacked()[0])
+			if scrap >= selected_dispenser.price:
+				give_scrap(-selected_dispenser.price)
+				apply_item(selected_dispenser.item)
+				camera.set_trauma(0.2)
+				selected_dispenser.on_purchase(true)
+			else:
+				selected_dispenser.on_purchase(false)
+		
 	if Input.is_action_just_pressed("toggle_stats_ui"):
-		print('!')
 		stats_display.set_visible(true)
 	elif Input.is_action_just_released("toggle_stats_ui"):
 		stats_display.set_visible(false)
+		
+	if Input.is_action_just_pressed("debug_1"):
+		camera.set_trauma(3)
+		GM.spawn_scrap(1000, global_position, GM.active_room)
+		set_max_health()
+		for enemy in GM.active_room.enemies:
+			if enemy:
+				enemy.take_damage(enemy.health - 1)
+		for light in GM.active_room.lights:
+			light.set_effect(light.LightEffect.RAVE, true)
+			light.set_effect(light.LightEffect.SWING, true)
 	
 
 func apply_movement():
@@ -225,6 +256,43 @@ func animate():
 		anim_player.play("jump")
 	else:
 		anim_player.play("fall")
+		
+func update_scrap_display(delta):
+	if scrap_counter != scrap:
+		if scrap_timer < 0:
+			var dif = scrap - scrap_counter
+			scrap_display.set_trauma(sqrt(abs(dif)-1))
+			if abs(dif) < 10:
+				scrap_timer = 0.4/abs(dif)
+				scrap_counter += sign(dif)
+			else:
+				scrap_timer = 0.05
+				scrap_counter += int(dif/10)
+			scrap_display.text = str(scrap_counter)
+			scrap_display.rect_pivot_offset.x = 7*len(str(scrap_counter))
+		else:
+			scrap_timer -= delta
+			
+func update_effect_cards(delta):
+	if effect_card_buffer.empty(): return
+	if effect_card_timer < 0:
+		effect_card_timer = 0.3
+		var e = effect_card_buffer.pop_back()
+		var card = load("res://Scenes/EffectCard.tscn").instance().duplicate()
+		add_child(card)	
+		card.text = e.to_string()
+		card.init(-1 if facing_right else 1)
+		
+		if e.cost > 0:
+			card.add_color_override("font_color", Color(0.02, 0.9, 0.035))
+		else:
+			card.add_color_override("font_color", Color(1, 0.18, 0.18))
+		
+		
+	else:
+		effect_card_timer -= delta
+
+		
 
 
 func _on_DashTimer_timeout():
@@ -233,7 +301,7 @@ func _on_DashTimer_timeout():
 		is_dashing = false
 	
 func take_damage(amount):
-	if !dead and invincibility_timer.is_stopped():
+	if !dead and invincibility_timer.is_stopped() and amount > 0:
 		invincibility_timer.start(0.3)
 		set_health(health - amount)
 		hit_audio.play()
@@ -256,8 +324,28 @@ func set_health(value):
 	health = clamp(value, 0, max_health)
 	if health != prev_health:
 		emit_signal("health_updated", health)
-		if health == 0:
+		if health <= 0:
 			dead()
+			
+func give_scrap(v):
+	scrap += v
+	scrap_timer = -1
+	
+	
+func handle_music(delta):
+	target_music_hutzpah = int(!GM.active_room.room_cleared)
+	
+	var volume_changed = true
+	if target_music_hutzpah > music_hutzpah:
+		music_hutzpah = min(music_hutzpah + delta, 1)
+	elif target_music_hutzpah < music_hutzpah:
+		music_hutzpah = max(music_hutzpah - delta, 0)
+	else:
+		volume_changed = false
+		
+	if volume_changed:
+		music_combat.volume_db = 20*log(max(pow(music_hutzpah, 0.5), 0.0001)) - 3
+		music_reduced.volume_db = 20*log(max(pow(1 - music_hutzpah, 0.5), 0.0001)) - 3
 			
 
 func set_max_health():

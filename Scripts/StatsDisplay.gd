@@ -29,6 +29,7 @@ func _ready():
 		icon.rect_size = icon.rect_min_size
 		icon.expand = true
 		icon.stretch_mode = TextureRect.STRETCH_SCALE
+		icon.light_mask = 2
 		icon.texture = load('res://Art/StatIcons/items_space-sheet' + str(int(stat)+1) + '.png')
 		hbox.add_child(icon)
 		
@@ -37,6 +38,7 @@ func _ready():
 			var label = Label.new()
 			label.theme = label_theme
 			label.valign = Label.VALIGN_CENTER
+			label.light_mask = 2
 			if i == 0:
 				label.rect_min_size = Vector2(stat_name_width, hbox.rect_min_size.y)
 				label.text = StatsUtil.string_names[stat] + ':'

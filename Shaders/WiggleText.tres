@@ -1,0 +1,18 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=2]
+
+[sub_resource type="Shader" id=1]
+code = "shader_type canvas_item;
+
+uniform float WIGGLE_AMOUNT = 1.5;
+uniform float WIGGLE_SPEED = 5.0;
+uniform float WIGGLE_WAVELENGTH = 20;
+
+void vertex(){
+	VERTEX.y += sin((TIME + VERTEX.x/WIGGLE_WAVELENGTH)*WIGGLE_SPEED)*WIGGLE_AMOUNT;
+}"
+
+[resource]
+shader = SubResource( 1 )
+shader_param/WIGGLE_AMOUNT = 1.5
+shader_param/WIGGLE_SPEED = 7.0
+shader_param/WIGGLE_WAVELENGTH = 60.0
